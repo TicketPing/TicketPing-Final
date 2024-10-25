@@ -221,26 +221,26 @@
         
         (기댓값: 100, 결과값: 208)
         
-        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/96d7c853-2768-4ed9-88d1-b6fb7d740477/image.png)
+    <img width="422" alt="대기열트러블슈팅1" src="https://github.com/user-attachments/assets/0a0fd99c-2c40-4003-bcbd-3428bd346fde">
         
     
-    - 원인:  작업열의 토큰 카운터 값을 기반으로 분기 처리하는 부분에서, 여러 스레드가 동시에 조건을 만족하게 되어 max size이상의 토큰이 저장됨.
-        
-        
+- 원인:  작업열의 토큰 카운터 값을 기반으로 분기 처리하는 부분에서, 여러 스레드가 동시에 조건을 만족하게 되어 max size이상의 토큰이 저장됨.
+    
+    
         public GeneralQueueTokenResponse enterWaitingQueue(String userId, String performanceId) {
-            	// 작업열 인원 여유 확인
-            	AvailableSlots availableSlots = workingQueueRepository.countAvailableSlots(CountAvailableSlotsCommand.create(performanceId));
-            	if (availableSlots.isLimited()) {
-                	return getWaitingTokenResponse(userId, performanceId);
-            	}
-            	return getWorkingTokenResponse(userId, performanceId);
-        	}
-        
+                // 작업열 인원 여유 확인
+                AvailableSlots availableSlots = workingQueueRepository.countAvailableSlots(CountAvailableSlotsCommand.create(performanceId));
+                if (availableSlots.isLimited()) {
+                    return getWaitingTokenResponse(userId, performanceId);
+                }
+                return getWorkingTokenResponse(userId, performanceId);
+            }
         
     
-    - 해결: Redis의 연산들을 하나의 트랙잭션으로 묶어서 수행 가능한 Lua Script로 변경하여 해결
-        
-        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/aa38b05d-3f26-4824-b4a2-19be865ee049/image.png)
+
+- 해결: Redis의 연산들을 하나의 트랙잭션으로 묶어서 수행 가능한 Lua Script로 변경하여 해결
+    
+    <img width="424" alt="대기열트러블슈팅2" src="https://github.com/user-attachments/assets/d6fddd5e-fc1f-47ba-89c1-d6cc5ad66921">
         
   
   </details>  
@@ -253,7 +253,7 @@
   - 원인
         - RedisConfiguration을 만들 때, `GenericJackson2JsonRedisSerializer()` 를 사용하면 @class 정보가 함께 저장
         
-        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/eafe600b-0486-4ef1-acb0-0ea9cb865638/image.png)
+    ![좌석캐싱트러블슈팅1](https://github.com/user-attachments/assets/763ec8ae-5e17-4838-af19-2109a9890871)
         
         
         @Bean
@@ -271,7 +271,7 @@
   - 해결
         - RedisConfiguration 생성시 Serializer에 @class를 저장하지 않도록 설정하여 해결
         
-        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/b02153eb-5786-412d-b6ef-ccf20cc6bfd1/image.png)
+    ![좌석캐싱트러블슈팅2](https://github.com/user-attachments/assets/f6633e12-cea9-4ffb-8e01-a554c3f53440)
         
         
         @Bean
@@ -315,7 +315,7 @@
   - 해결
           - ngrox으로 localhost를 퍼블릭으로 포워딩해서 클라이언트와 통신.
           
-          ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/83c75a39-3aba-4ba4-a792-7aefe4b07895/50951aeb-f7d5-44cc-bcba-5ffb14240154/image.png)
+    ![cors트러블슈팅1](https://github.com/user-attachments/assets/0d8e3d2a-3863-4c58-b41f-e232080a9b2c)
   </details>
     
 
