@@ -16,55 +16,16 @@ public class RedisRepository {
 
     private final RedissonReactiveClient redissonClient;
 
-    public Mono<Integer> getSortedSetSize(String key) {
-        RScoredSortedSetReactive<String> sortedSet = redissonClient.getScoredSortedSet(key, StringCodec.INSTANCE);
-        return sortedSet.size();
+    public Mono<RScoredSortedSetReactive<String>> getSortedSet(String key) {
+        return Mono.just(redissonClient.getScoredSortedSet(key, StringCodec.INSTANCE));
     }
 
-    public Mono<Integer> getMemberRankFromSortedSet(String key, String member) {
-        RScoredSortedSetReactive<String> sortedSet = redissonClient.getScoredSortedSet(key, StringCodec.INSTANCE);
-        return sortedSet.rank(member);
+    public Mono<RBucketReactive<String>> getBucket(String key) {
+        return Mono.just(redissonClient.getBucket(key, StringCodec.INSTANCE));
     }
 
-    public Mono<String> getFirstMemberFromSortedSet(String key) {
-        RScoredSortedSetReactive<String> sortedSet = redissonClient.getScoredSortedSet(key, StringCodec.INSTANCE);
-        return sortedSet.first();
-    }
-
-    public Mono<Boolean> deleteMemberFromSortedSet(String key, String member) {
-        RScoredSortedSetReactive<String> sortedSet = redissonClient.getScoredSortedSet(key, StringCodec.INSTANCE);
-        return sortedSet.remove(member);
-    }
-
-    public Mono<Void> setElementWithTTL(String key, String value, long ttlInMinutes) {
-        RBucketReactive<String> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
-        return bucket.set(value, ttlInMinutes, TimeUnit.MINUTES);
-    }
-
-    public Mono<String> getElementFromBucket(String key) {
-        RBucketReactive<String> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
-        return bucket.get();
-    }
-
-    public Mono<Long> getElementRemainingTTL(String key) {
-        RBucketReactive<String> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
-        return bucket.remainTimeToLive()
-                .filter(ttl -> ttl != null && ttl > 0);
-    }
-
-    public Mono<Boolean> deleteElementFromBucket(String key) {
-        RBucketReactive<String> bucket = redissonClient.getBucket(key, StringCodec.INSTANCE);
-        return bucket.delete();
-    }
-
-    public Mono<Long> incrementCounter(String key) {
-        RAtomicLongReactive atomicLong = redissonClient.getAtomicLong(key);
-        return atomicLong.incrementAndGet();
-    }
-
-    public Mono<Long> decrementCounter(String key) {
-        RAtomicLongReactive atomicLong = redissonClient.getAtomicLong(key);
-        return atomicLong.decrementAndGet();
+    public Mono<RAtomicLongReactive> getCounter(String key) {
+        return Mono.just(redissonClient.getAtomicLong(key));
     }
 
 }

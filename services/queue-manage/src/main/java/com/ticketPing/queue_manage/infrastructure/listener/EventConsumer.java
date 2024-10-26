@@ -1,7 +1,7 @@
-package com.ticketPing.queue_manage.infrastructure.messaging;
+package com.ticketPing.queue_manage.infrastructure.listener;
 
-import static com.ticketPing.queue_manage.domain.model.enums.DeleteWorkingTokenCase.ORDER_COMPLETED;
-import static com.ticketPing.queue_manage.domain.utils.QueueTokenValueGenerator.generateTokenValue;
+import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase.ORDER_COMPLETED;
+import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
 import com.ticketPing.queue_manage.domain.events.OrderCompletedEvent;
@@ -23,7 +23,7 @@ public class EventConsumer {
         log.info("Received message from kafka: {}", message);
         OrderCompletedEvent event = EventSerializer.deserialize(message, OrderCompletedEvent.class);
         String tokenValue = generateTokenValue(event.userId(), event.performanceId());
-        workingQueueService.processQueueTransfer(ORDER_COMPLETED, tokenValue);
+        workingQueueService.transferToken(ORDER_COMPLETED, tokenValue);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.infrastructure.config;
 
-import com.ticketPing.queue_manage.infrastructure.config.listener.RedisExpirationListener;
+import com.ticketPing.queue_manage.infrastructure.listener.RedisExpirationListener;
 import java.util.concurrent.Executor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

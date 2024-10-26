@@ -9,17 +9,17 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * tokenValue: 사용자 토큰 값 (작업열 토큰 키)
  * queueName: 작업열 이름 (작업 인원 카운터 키)
+ * tokenValue: 사용자 토큰 값 (작업열 토큰 키)
  * cacheValue: 작업열 토큰 value
- * ttl: 작업열 토큰 TTL
+ * ttlInMinutes: 작업열 토큰 TTL
  */
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class InsertWorkingQueueTokenCommand {
 
-    private String tokenValue;
     private String queueName;
+    private String tokenValue;
     private String cacheValue;
     private long ttlInMinutes;
 
