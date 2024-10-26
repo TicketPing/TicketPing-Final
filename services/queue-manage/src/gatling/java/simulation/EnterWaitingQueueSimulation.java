@@ -27,13 +27,11 @@ public class EnterWaitingQueueSimulation extends Simulation {
                 .exec(http("대기열 진입")
                         .post(session -> String.format("/%s?performanceId=1", session.getString("userId")))
                         .check(status().is(200))
-                        .check(bodyString().saveAs("responseBody"))
                 )
-                .exec(session -> {
-                    String responseBody = session.getString("responseBody");
-                    System.out.println("Response Body: " + responseBody);
-                    return session;
-                })
+                .exec(http("대기열 상태 조회")
+                        .get(session -> String.format("/%s?performanceId=1", session.getString("userId")))
+                        .check(status().is(200))
+                )
                 .pause(1);
     }
 

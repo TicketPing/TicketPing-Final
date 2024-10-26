@@ -7,12 +7,13 @@ import com.ticketPing.queue_manage.domain.command.workingQueue.InsertWorkingQueu
 import com.ticketPing.queue_manage.domain.command.workingQueue.FindWorkingQueueTokenCommand;
 import com.ticketPing.queue_manage.domain.model.WorkingQueueToken;
 import com.ticketPing.queue_manage.domain.repository.WorkingQueueRepository;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RAtomicLongReactive;
+import org.redisson.api.RBucketReactive;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
@@ -21,24 +22,36 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
 
     @Override
     public Mono<Boolean> insertWorkingQueueToken(InsertWorkingQueueTokenCommand command) {
-        return redisRepository.getElementFromBucket(command.getTokenValue())
-                .hasElement()
-                .filter(exists -> !exists)
-                .flatMap(__ -> insertToken(command)
-                        .then(Mono.just(true))
-                )
-                .switchIfEmpty(Mono.just(false));
+        return redisRepository.getBucket(command.getTokenValue())
+                .flatMap(bucket -> handleIfTokenNotExists(command, bucket)
+                        .defaultIfEmpty(false)
+                );
     }
 
-    private Mono<Void> insertToken(InsertWorkingQueueTokenCommand command) {
-        return redisRepository.setElementWithTTL(command.getTokenValue(), command.getCacheValue(), command.getTtlInMinutes())
-                .then(redisRepository.incrementCounter(command.getQueueName()))
-                .then();
+    private Mono<Boolean> handleIfTokenNotExists(InsertWorkingQueueTokenCommand command, RBucketReactive<String> bucket) {
+        return bucket.get()
+                .hasElement()
+                .filter(hasValue -> !hasValue)
+                .flatMap(__ -> saveToken(command, bucket));
+    }
+
+    private Mono<Boolean> saveToken(InsertWorkingQueueTokenCommand command, RBucketReactive<String> bucket) {
+        return bucket.set(command.getCacheValue(), command.getTtlInMinutes(), TimeUnit.MINUTES)
+                .then(incrementQueueCounter(command.getQueueName()))
+                .thenReturn(true);
+    }
+
+    private Mono<Long> incrementQueueCounter(String queueName) {
+        return redisRepository.getCounter(queueName)
+                .flatMap(RAtomicLongReactive::incrementAndGet);
     }
 
     @Override
     public Mono<WorkingQueueToken> findWorkingQueueToken(FindWorkingQueueTokenCommand command) {
-        return redisRepository.getElementRemainingTTL(command.getTokenValue())
+        return redisRepository.getBucket(command.getTokenValue())
+                .flatMap(bucket -> bucket.remainTimeToLive()
+                        .filter(ttl -> ttl != null && ttl > 0)
+                )
                 .flatMap(ttl -> WorkingQueueToken.withValidUntil(
                         command.getUserId(),
                         command.getPerformanceId(),
@@ -56,24 +69,34 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
     }
 
     private Mono<Boolean> handleTokenExpired(String queueName) {
-        return redisRepository.decrementCounter(queueName)
-                .then(Mono.just(true));
+        return redisRepository.getCounter(queueName)
+                .flatMap(RAtomicLongReactive::decrementAndGet)
+                .thenReturn(true);
     }
 
     private Mono<Boolean> handleOrderCompleted(String queueName, String tokenValue) {
-        return redisRepository.getElementFromBucket(tokenValue)
-                .hasElement()
-                .filter(exists -> exists)
-                .flatMap(__ -> deleteToken(queueName, tokenValue)
-                        .then(Mono.just(true))
-                )
-                .switchIfEmpty(Mono.just(false));
+        return redisRepository.getBucket(tokenValue)
+                .flatMap(bucket -> handleIfTokenExists(queueName, bucket)
+                        .defaultIfEmpty(false)
+                );
     }
 
-    private Mono<Void> deleteToken(String queueName, String tokenValue) {
-        return redisRepository.deleteElementFromBucket(tokenValue)
-                .then(redisRepository.decrementCounter(queueName))
-                .then();
+    private Mono<Boolean> handleIfTokenExists(String queueName, RBucketReactive<String> bucket) {
+        return bucket.get()
+                .hasElement()
+                .filter(hasValue -> hasValue)
+                .flatMap(__ -> deleteToken(queueName, bucket));
+    }
+
+    private Mono<Boolean> deleteToken(String queueName, RBucketReactive<String> bucket) {
+        return bucket.delete()
+                .then(decrementQueueCounter(queueName))
+                .thenReturn(true);
+    }
+
+    private Mono<Long> decrementQueueCounter(String queueName) {
+        return redisRepository.getCounter(queueName)
+                .flatMap(RAtomicLongReactive::decrementAndGet);
     }
 
 }

@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.domain.model;
 
-import static com.ticketPing.queue_manage.domain.utils.QueueTokenValueGenerator.generateTokenValue;
+import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.domain.model.enums.TokenStatus;
 import common.dto.mapper.ObjectMapperBasedVoMapper;

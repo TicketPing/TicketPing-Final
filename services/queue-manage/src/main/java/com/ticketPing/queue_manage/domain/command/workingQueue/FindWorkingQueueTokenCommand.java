@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.domain.command.workingQueue;
 
-import static com.ticketPing.queue_manage.domain.utils.QueueTokenValueGenerator.generateTokenValue;
+import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import lombok.AccessLevel;
 import lombok.Builder;

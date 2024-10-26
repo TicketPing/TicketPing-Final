@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.presentaion.cases;
+package com.ticketPing.queue_manage.application.cases;
 
 import common.cases.ErrorCase;
 import lombok.Getter;
@@ -14,5 +14,6 @@ public enum QueueErrorCase implements ErrorCase {
 
     private final HttpStatus httpStatus;
     private final String message;
+
 }
 

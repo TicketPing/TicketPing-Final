@@ -1,18 +1,20 @@
 package com.ticketPing.queue_manage.application.service;
 
-import static com.ticketPing.queue_manage.presentaion.cases.QueueErrorCase.WORKING_TOKEN_NOT_FOUND;
+import static com.ticketPing.queue_manage.application.cases.QueueErrorCase.WORKING_TOKEN_NOT_FOUND;
 
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.domain.command.waitingQueue.DeleteFirstWaitingQueueTokenCommand;
 import com.ticketPing.queue_manage.domain.command.workingQueue.DeleteWorkingQueueTokenCommand;
-import com.ticketPing.queue_manage.domain.command.workingQueue.InsertWorkingQueueTokenCommand;
 import com.ticketPing.queue_manage.domain.command.workingQueue.FindWorkingQueueTokenCommand;
-import com.ticketPing.queue_manage.domain.model.enums.DeleteWorkingTokenCase;
+import com.ticketPing.queue_manage.domain.command.workingQueue.InsertWorkingQueueTokenCommand;
+import com.ticketPing.queue_manage.domain.model.WaitingQueueToken;
+import com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase;
 import com.ticketPing.queue_manage.domain.repository.WaitingQueueRepository;
 import com.ticketPing.queue_manage.domain.repository.WorkingQueueRepository;
 import common.exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -25,29 +27,33 @@ public class WorkingQueueService {
     private final WaitingQueueRepository waitingQueueRepository;
 
     public Mono<GeneralQueueTokenResponse> getWorkingQueueToken(String userId, String performanceId) {
-        FindWorkingQueueTokenCommand command = FindWorkingQueueTokenCommand.create(userId, performanceId);
-
+        val command = FindWorkingQueueTokenCommand.create(userId, performanceId);
         return workingQueueRepository.findWorkingQueueToken(command)
                 .doOnSuccess(token -> log.info("작업열 토큰 조회 완료 {}", token))
-                .map(token -> GeneralQueueTokenResponse.from(token))
+                .map(GeneralQueueTokenResponse::from)
                 .switchIfEmpty(Mono.error(new ApplicationException(WORKING_TOKEN_NOT_FOUND)));
     }
 
-    public Mono<Void> processQueueTransfer(DeleteWorkingTokenCase deleteCase, String tokenValue) {
-        DeleteWorkingQueueTokenCommand command = DeleteWorkingQueueTokenCommand.create(deleteCase, tokenValue);
+    public void transferToken(WorkingQueueTokenDeleteCase deleteCase, String tokenValue) {
+        val command = DeleteWorkingQueueTokenCommand.create(deleteCase, tokenValue);
+        workingQueueRepository.deleteWorkingQueueToken(command)
+                .doOnSuccess(isTokenDeleted -> log.info("작업열 토큰 삭제 완료 {}", isTokenDeleted))
+                .filter(Boolean::booleanValue)
+                .flatMap(deleted -> transferFirstWaitingQueueToken(tokenValue))
+                .subscribe();
+    }
 
-        return workingQueueRepository.deleteWorkingQueueToken(command)
-                .doOnSuccess(isWorkingQueueTokenDeleted -> log.info("작업열 토큰 삭제 완료 {}", isWorkingQueueTokenDeleted))
-                .filter(isWorkingQueueTokenDeleted -> isWorkingQueueTokenDeleted)
-                .flatMap(isWorkingQueueTokenDeleted ->
-                        waitingQueueRepository.deleteFirstWaitingQueueToken(DeleteFirstWaitingQueueTokenCommand.create(tokenValue))
-                                .doOnSuccess(deletedWaitingToken -> log.info("대기열 첫 번째 토큰 삭제 완료 {}", deletedWaitingToken))
-                                .flatMap(deletedWaitingToken ->
-                                        workingQueueRepository.insertWorkingQueueToken(InsertWorkingQueueTokenCommand.create(deletedWaitingToken.toWorkingQueueToken()))
-                                                .doOnSuccess(isWorkingQueueTokenSaved -> log.info("작업열 토큰 저장 완료 {}", isWorkingQueueTokenSaved))
-                                )
-                )
-                .then();
+    private Mono<Boolean> transferFirstWaitingQueueToken(String tokenValue) {
+        val command = DeleteFirstWaitingQueueTokenCommand.create(tokenValue);
+        return waitingQueueRepository.deleteFirstWaitingQueueToken(command)
+                .doOnSuccess(deletedWaitingToken -> log.info("대기열 첫 번째 토큰 삭제 완료 {}", deletedWaitingToken))
+                .flatMap(this::enterWorkingQueue);
+    }
+
+    private Mono<Boolean> enterWorkingQueue(WaitingQueueToken deletedWaitingToken) {
+        val command = InsertWorkingQueueTokenCommand.create(deletedWaitingToken.toWorkingQueueToken());
+        return workingQueueRepository.insertWorkingQueueToken(command)
+                .doOnSuccess(isWorkingQueueTokenSaved -> log.info("작업열 토큰 저장 완료 {}", isWorkingQueueTokenSaved));
     }
 
 }

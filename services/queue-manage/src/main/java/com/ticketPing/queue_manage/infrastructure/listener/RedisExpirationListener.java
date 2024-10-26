@@ -1,6 +1,6 @@
-package com.ticketPing.queue_manage.infrastructure.config.listener;
+package com.ticketPing.queue_manage.infrastructure.listener;
 
-import static com.ticketPing.queue_manage.domain.model.enums.DeleteWorkingTokenCase.TOKEN_EXPIRED;
+import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase.TOKEN_EXPIRED;
 import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.LEADER_KEY;
 import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.TOKEN_VALUE;
 
@@ -36,21 +36,19 @@ public class RedisExpirationListener implements MessageListener {
         }
     }
 
-    // 리더 선출 시도
     private void tryToLeader(String tokenValue, RLock leaderLock) {
         try {
             if (leaderLock.tryLock(0, 5, TimeUnit.SECONDS)) {
                 try {
-                    // 리더로 선출된 인스턴스만 작업 수행
                     log.info("This instance is the leader, processing job..");
-                    workingQueueService.processQueueTransfer(TOKEN_EXPIRED, tokenValue);
+                    workingQueueService.transferToken(TOKEN_EXPIRED, tokenValue);
                 } finally {
                     if (leaderLock.isHeldByCurrentThread()) {
                         leaderLock.unlock();
                     }
                 }
             } else {
-                log.info("Failed to acquire lock for key!");
+                log.info("Failed to acquire lock for key!!");
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
