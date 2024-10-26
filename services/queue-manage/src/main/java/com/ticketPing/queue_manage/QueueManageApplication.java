@@ -11,9 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ComponentScan(basePackages = {"com.ticketPing.queue_manage", "common"})
 @SpringBootApplication
 public class QueueManageApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(QueueManageApplication.class, args);
 	}
-
 }

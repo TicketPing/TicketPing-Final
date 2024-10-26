@@ -8,6 +8,7 @@ import com.ticketPing.queue_manage.domain.model.WaitingQueueToken;
 import com.ticketPing.queue_manage.domain.model.WorkingQueueToken;
 import com.ticketPing.queue_manage.domain.model.enums.TokenStatus;
 import com.ticketPing.queue_manage.domain.repository.WaitingQueueRepository;
+import com.ticketPing.queue_manage.infrastructure.repository.script.DeleteFirstTokenScript;
 import com.ticketPing.queue_manage.infrastructure.repository.script.SaveTokenScript;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,11 +19,12 @@ import reactor.core.publisher.Mono;
 public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     private final RedisRepository redisRepository;
-    private final SaveTokenScript script;
+    private final SaveTokenScript saveTokenScript;
+    private final DeleteFirstTokenScript deleteFirstTokenScript;
 
     @Override
     public Mono<QueueToken> insertWaitingQueueToken(InsertWaitingQueueTokenCommand command) {
-        return script.saveToken(command)
+        return saveTokenScript.saveToken(command)
                 .flatMap(tokenStatus -> createToken(
                         tokenStatus,
                         command.getUserId(),
@@ -54,10 +56,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     @Override
     public Mono<WaitingQueueToken> deleteFirstWaitingQueueToken(DeleteFirstWaitingQueueTokenCommand command) {
-        return redisRepository.getSortedSet(command.getQueueName())
-                .flatMap(ss -> ss.first()
-                        .delayUntil(ss::remove)
-                )
+        return deleteFirstTokenScript.deleteFirstToken(command)
                 .map(tokenValue -> WaitingQueueToken.valueOf(command.getPerformanceId(), tokenValue));
     }
 
