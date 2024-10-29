@@ -58,7 +58,7 @@
 <details>
   <summary> 대기열 시퀀스 다이어그램</summary> 
   
-![인프라 설계서 최종](https://github.com/user-attachments/assets/c0804b80-a714-455f-bb94-33d899541864)
+![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/1442b0f7-35dc-448a-a051-33d648bb9236)
 
 </details>
 
