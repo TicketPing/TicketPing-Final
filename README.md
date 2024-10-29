@@ -46,7 +46,7 @@
 
 ## 🛠️ 인프라 설계도
 
-![인프라 설계서 최종](https://github.com/user-attachments/assets/c0804b80-a714-455f-bb94-33d899541864)
+![ticketping_sa-최종](https://github.com/user-attachments/assets/a0352dd0-5074-49bc-9ebb-458396f03726)
 
 <br>
 
