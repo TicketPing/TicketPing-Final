@@ -39,14 +39,14 @@ public class SaveTokenScript {
                     // 작업열 여유 인원 조회
                     "local currentWorkers = tonumber(redis.call('GET', workingQueueName) or 0) " +
                     "local availableSlots = maxSlots - currentWorkers " +
-                    // 작업열 진입
+                    // 작업열 저장
                     "if availableSlots > 0 then " +
                     "    if redis.call('EXISTS', workingQueueTokenKey) == 0 then " +
                     "       redis.call('SET', workingQueueTokenKey, cacheValue, 'EX', ttl) " +
                     "       redis.call('INCR', workingQueueName) " +
                     "    end " +
                     "    return 1 " +
-                    // 대기열 진입
+                    // 대기열 저장
                     "else " +
                     "    if redis.call('EXISTS', workingQueueTokenKey) == 0 then " +
                     "       redis.call('ZADD', waitingQueueName, enterTime, tokenValue) " +
@@ -68,17 +68,21 @@ public class SaveTokenScript {
                 command.getWorkingQueueName(),
                 command.getTokenValue()
         );
+        List<Object> argv = Arrays.asList(
+                command.getWorkingQueueMaxSlots(),
+                command.getTokenValue(),
+                command.getEnterTime(),
+                command.getCacheValue(),
+                command.getTtlInMinutes() * 60
+        );
+
         return redissonClient.getScript(StringCodec.INSTANCE)
                 .evalSha(
                         RScript.Mode.READ_WRITE,
                         scriptSha,
                         RScript.ReturnType.VALUE,
                         keys,
-                        command.getWorkingQueueMaxSlots(),
-                        command.getTokenValue(),
-                        command.getEnterTime(),
-                        command.getCacheValue(),
-                        command.getTtlInMinutes() * 60
+                        argv.toArray()
                 )
                 .map(result -> (result.equals(1L) ? TokenStatus.WORKING : TokenStatus.WAITING));
     }
