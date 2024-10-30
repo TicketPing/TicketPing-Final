@@ -9,6 +9,7 @@ import com.ticketPing.queue_manage.domain.model.WorkingQueueToken;
 import com.ticketPing.queue_manage.domain.model.enums.TokenStatus;
 import com.ticketPing.queue_manage.domain.repository.WaitingQueueRepository;
 import com.ticketPing.queue_manage.infrastructure.repository.script.DeleteFirstTokenScript;
+import com.ticketPing.queue_manage.infrastructure.repository.script.GetRankAndSizeScript;
 import com.ticketPing.queue_manage.infrastructure.repository.script.SaveTokenScript;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,8 +19,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
-    private final RedisRepository redisRepository;
     private final SaveTokenScript saveTokenScript;
+    private final GetRankAndSizeScript getRankAndSizeScript;
     private final DeleteFirstTokenScript deleteFirstTokenScript;
 
     @Override
@@ -40,11 +41,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     @Override
     public Mono<WaitingQueueToken> findWaitingQueueToken(FindWaitingQueueTokenCommand command) {
-        return redisRepository.getSortedSet(command.getQueueName())
-                .flatMap(ss -> Mono.zip(
-                        ss.rank(command.getTokenValue()),
-                        ss.size()
-                ))
+        return getRankAndSizeScript.getRankAndSize(command.getQueueName(), command.getTokenValue())
                 .map(tuple -> WaitingQueueToken.withPosition(
                         command.getUserId(),
                         command.getPerformanceId(),
