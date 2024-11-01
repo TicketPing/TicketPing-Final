@@ -14,6 +14,18 @@ eureka:
   client:
     service-url:
       defaultZone: http://eureka-server:10000/eureka/
+management:
+  server:
+    port: 10012
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    enabled: true
 
 token-value:
   secret-key: secret-key
