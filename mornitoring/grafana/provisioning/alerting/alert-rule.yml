@@ -6,7 +6,7 @@ groups:
     interval: 1m
     rules:
       - uid: fe2ufg46pdou8a
-        title: CPU Usage Over 50% (Queue-manage-server)
+        title: CPU Usage Over 50%
         condition: C
         data:
           - refId: A

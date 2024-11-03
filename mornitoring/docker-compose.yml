@@ -13,6 +13,18 @@ services:
     networks:
       - monitoring
 
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/local-config.yml
+    command:
+      - '-config.file=/etc/loki/local-config.yml'
+    networks:
+      - monitoring
+
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -27,6 +39,7 @@ services:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     depends_on:
       - prometheus
+      - loki
     networks:
       - monitoring
 
