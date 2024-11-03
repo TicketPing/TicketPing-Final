@@ -22,6 +22,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=0000
       - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_DISCORD_WEBHOOK_URL=${GF_DISCORD_WEBHOOK_URL}
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     depends_on:
