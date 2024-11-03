@@ -15,8 +15,6 @@ eureka:
     service-url:
       defaultZone: http://eureka-server:10000/eureka/
 management:
-  server:
-    port: 10012
   endpoints:
     web:
       exposure:
