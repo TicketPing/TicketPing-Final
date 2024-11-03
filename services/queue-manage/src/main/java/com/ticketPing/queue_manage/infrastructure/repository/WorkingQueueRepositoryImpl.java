@@ -66,7 +66,7 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
     }
 
     private Mono<Boolean> handleTokenExpired(String queueName) {
-        return redisRepository.getCounter(queueName).decrementAndGet()
+        return decrementQueueCounter(queueName)
                 .thenReturn(true);
     }
 
