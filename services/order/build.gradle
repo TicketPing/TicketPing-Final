@@ -34,10 +34,10 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation project(':common')
-	implementation project(':common-jpa')
-	implementation project(':dtos:performance-dto')
-	implementation project(':dtos:order-dto')
+	implementation project(':common:mvc')
+	implementation project(':common:jpa')
+	implementation project(':common:dtos:performance-dto')
+	implementation project(':common:dtos:order-dto')
 
 	// redisson
 	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'

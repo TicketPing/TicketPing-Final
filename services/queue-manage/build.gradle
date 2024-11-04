@@ -23,7 +23,7 @@ ext {
 }
 
 dependencies {
-	implementation project(path: ':common')
+	implementation project(':common:webflux')
 
 	// spring cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
