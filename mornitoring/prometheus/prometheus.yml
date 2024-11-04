@@ -7,6 +7,11 @@ scrape_configs:
     static_configs:
       - targets: [ 'host.docker.internal:10010' ]
 
+  - job_name: gateway-server
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'host.docker.internal:10020' ]
+
   - job_name: user-server
     metrics_path: '/actuator/prometheus'
     static_configs:
