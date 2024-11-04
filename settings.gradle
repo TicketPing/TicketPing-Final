@@ -2,16 +2,16 @@ rootProject.name = 'ticketPing'
 
 include ("eureka-server")
 include("gateway")
-include ("auth")
 
-include ("common")
-include ("common-jpa")
+include ("common:mvc")
+include ("common:webflux")
+include ("common:jpa")
+include ("common:dtos:user-dto")
+include ("common:dtos:order-dto")
+include ("common:dtos:payment-dto")
+include ("common:dtos:performance-dto")
 
-include ("dtos:user-dto")
-include ("dtos:order-dto")
-include ("dtos:payment-dto")
-include ("dtos:performance-dto")
-
+include ("services:auth")
 include ("services:user")
 include ("services:order")
 include ("services:payment")

@@ -35,9 +35,9 @@ dependencyManagement {
 
 
 dependencies {
-	implementation project(':common')
-	implementation project(':common-jpa')
-	implementation project(':dtos:user-dto')
+	implementation project(':common:mvc')
+	implementation project(':common:jpa')
+	implementation project(':common:dtos:user-dto')
 
 	// Monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'

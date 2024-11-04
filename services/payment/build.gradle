@@ -28,10 +28,10 @@ ext {
 }
 
 dependencies {
-	implementation project(':common')
-	implementation project(':common-jpa')
-	implementation project(':dtos:payment-dto')
-	implementation project(':dtos:order-dto')
+	implementation project(':common:mvc')
+	implementation project(':common:jpa')
+	implementation project(':common:dtos:payment-dto')
+	implementation project(':common:dtos:order-dto')
 
 	// Monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
