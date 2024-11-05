@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: api-server
+
+server:
+  port: 10020
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:10000/eureka/
