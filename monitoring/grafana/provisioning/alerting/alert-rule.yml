@@ -5,8 +5,8 @@ groups:
     folder: TicketPing
     interval: 1m
     rules:
-      - uid: fe2ufg46pdou8a
-        title: CPU Usage Over 50%
+      - uid: de31h1522x1j4c
+        title: Gateway CPU Usage Over 50%
         condition: C
         data:
           - refId: A
@@ -17,7 +17,7 @@ groups:
             model:
               disableTextWrap: false
               editorMode: builder
-              expr: system_cpu_usage
+              expr: max_over_time(system_cpu_usage{job="gateway-server"}[1m])
               fullMetaSearch: false
               includeNullMetadata: true
               instant: true
@@ -55,8 +55,10 @@ groups:
               maxDataPoints: 43200
               refId: C
               type: threshold
-        noDataState: NoData
-        execErrState: Error
+        dashboardUid: ""
+        panelId: 0
+        noDataState: Alerting
+        execErrState: Alerting
         for: 1m
         annotations: {}
         labels: {}
