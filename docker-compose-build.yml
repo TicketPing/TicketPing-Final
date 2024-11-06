@@ -7,11 +7,11 @@ services:
       dockerfile: Dockerfile
     image: ticketping/eureka-server
 
-  gateway-server:
+  api-server:
     build:
-      context: ./gateway
+      context: ./api-server
       dockerfile: Dockerfile
-    image: ticketping/gateway-server
+    image: ticketping/api-server
 
   auth-server:
     build:

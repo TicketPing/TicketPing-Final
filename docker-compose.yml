@@ -146,13 +146,9 @@ services:
       eureka-server:
         condition: service_started
 
-  gateway-server:
-    container_name: gateway-server
-    image: ticketping/gateway-server:latest
-    env_file:
-      - .env
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+  api-server:
+    container_name: api-server
+    image: ticketping/api-server:latest
     ports:
       - "10020:10020"
     depends_on:
@@ -168,8 +164,6 @@ services:
         condition: service_started
       queue-manage-server:
         condition: service_started
-      redis:
-        condition: service_healthy
 
   user-server:
     container_name: user-server
