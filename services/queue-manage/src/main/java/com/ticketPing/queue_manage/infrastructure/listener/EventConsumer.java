@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.ReceiverRecord;
 import reactor.util.retry.Retry;
+import topics.OrderTopic;
 
 @Slf4j
 @Component
@@ -29,10 +30,17 @@ public class EventConsumer {
     public void consumeMessage() {
         reactiveKafkaConsumerTemplate
                 .receive()
-                .flatMap(this::handleOrderCompletedEvent)
+                .flatMap(this::handleMessage)
                 .doOnError(throwable -> log.error("Error occurred while consuming message:", throwable))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))) // 최대 3회 재시도
                 .subscribe();
+    }
+
+    private Mono<Void> handleMessage(ReceiverRecord<String, String> record) {
+        if (record.topic().equals(OrderTopic.COMPLETED.getTopic())) {
+            return handleOrderCompletedEvent(record);
+        }
+        return Mono.empty();
     }
 
     private Mono<Void> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
