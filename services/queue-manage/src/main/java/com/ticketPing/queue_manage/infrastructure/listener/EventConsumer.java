@@ -13,7 +13,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.ReceiverRecord;
 import reactor.util.retry.Retry;
@@ -27,23 +26,23 @@ public class EventConsumer {
     private final WorkingQueueService workingQueueService;
 
     @EventListener(ApplicationReadyEvent.class)
-    public Flux<ReceiverRecord<String, String>> consumeMessage() {
-        return reactiveKafkaConsumerTemplate
+    public void consumeMessage() {
+        reactiveKafkaConsumerTemplate
                 .receive()
                 .flatMap(this::handleOrderCompletedEvent)
                 .doOnError(throwable -> log.error("Error occurred while consuming message:", throwable))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
-                .repeat();
+                .subscribe();
     }
 
-    Mono<ReceiverRecord<String, String>> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
+    private Mono<Void> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
         log.info("Received message: {}, Offset: {}", record.value(), record.offset());
         OrderCompletedEvent event = EventSerializer.deserialize(record.value(), OrderCompletedEvent.class);
         String tokenValue = generateTokenValue(event.userId(), event.performanceId());
 
         return Mono.fromRunnable(() -> workingQueueService.transferToken(ORDER_COMPLETED, tokenValue))
                 .doOnTerminate(() -> record.receiverOffset().acknowledge())
-                .thenReturn(record);
+                .then();
     }
 
 }
