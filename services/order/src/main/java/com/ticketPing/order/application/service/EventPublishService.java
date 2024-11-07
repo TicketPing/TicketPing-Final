@@ -1,15 +1,15 @@
 package com.ticketPing.order.application.service;
 
-import com.ticketPing.order.domain.events.OrderCompletedEvent;
-import com.ticketPing.order.domain.events.OrderTopic;
 import common.utils.EventSerializer;
+import events.OrderCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import topics.OrderTopic;
 
 @Service
 @RequiredArgsConstructor
-public class EventApplicationService {
+public class EventPublishService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 

@@ -33,6 +33,7 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
                 .filter(hasValue -> !hasValue)
                 .flatMap(__ -> saveToken(command, bucket));
     }
+
     private Mono<Boolean> saveToken(InsertWorkingQueueTokenCommand command, RBucketReactive<String> bucket) {
         return bucket.set(command.getCacheValue(), command.getTtlInMinutes(), TimeUnit.MINUTES)
                 .then(incrementQueueCounter(command.getQueueName()))

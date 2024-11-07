@@ -4,26 +4,46 @@ import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDe
 import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
-import com.ticketPing.queue_manage.domain.events.OrderCompletedEvent;
 import common.utils.EventSerializer;
+import events.OrderCompletedEvent;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.kafka.receiver.ReceiverRecord;
+import reactor.util.retry.Retry;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class EventConsumer {
 
+    private final ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate;
     private final WorkingQueueService workingQueueService;
 
-    @KafkaListener(topics = "order-completed", groupId = "queue-manage-group")
-    public void handleOrderCompletedEvent(String message) {
-        log.info("Received message from kafka: {}", message);
-        OrderCompletedEvent event = EventSerializer.deserialize(message, OrderCompletedEvent.class);
+    @EventListener(ApplicationReadyEvent.class)
+    public Flux<ReceiverRecord<String, String>> consumeMessage() {
+        return reactiveKafkaConsumerTemplate
+                .receive()
+                .flatMap(this::handleOrderCompletedEvent)
+                .doOnError(throwable -> log.error("Error occurred while consuming message:", throwable))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
+                .repeat();
+    }
+
+    Mono<ReceiverRecord<String, String>> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
+        log.info("Received message: {}, Offset: {}", record.value(), record.offset());
+        OrderCompletedEvent event = EventSerializer.deserialize(record.value(), OrderCompletedEvent.class);
         String tokenValue = generateTokenValue(event.userId(), event.performanceId());
-        workingQueueService.transferToken(ORDER_COMPLETED, tokenValue);
+
+        return Mono.fromRunnable(() -> workingQueueService.transferToken(ORDER_COMPLETED, tokenValue))
+                .doOnTerminate(() -> record.receiverOffset().acknowledge())
+                .thenReturn(record);
     }
 
 }

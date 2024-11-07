@@ -10,14 +10,8 @@ spring:
     bootstrap-servers: localhost:9092
     consumer:
       group-id: ${spring.application.name}-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
         spring.json.trusted.packages: '*'
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 server:
   port: 10031
@@ -31,7 +25,7 @@ token-value:
   secret-key: secret-key
 
 working-queue:
-  max-size: 0
+  max-size: 1000
   token-ttl: 30
 
 management:

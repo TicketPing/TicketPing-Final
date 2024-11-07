@@ -1,5 +1,4 @@
-package com.ticketPing.order.domain.events;
-
+package events;
 
 public record OrderCompletedEvent(
         String userId,

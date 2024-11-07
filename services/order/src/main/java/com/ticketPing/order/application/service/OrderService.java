@@ -5,7 +5,6 @@ import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.application.dtos.UserReservationDto;
 import com.ticketPing.order.application.dtos.temp.SeatResponse;
-import com.ticketPing.order.domain.events.OrderCompletedEvent;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.domain.model.entity.Order;
@@ -15,6 +14,7 @@ import com.ticketPing.order.infrastructure.service.RedisService;
 import common.exception.ApplicationException;
 import dto.PaymentRequestDto;
 import dto.PaymentResponseDto;
+import events.OrderCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -38,7 +38,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final PerformanceClient performanceClient;
-    private final EventApplicationService eventApplicationService;
+    private final EventPublishService eventPublishService;
     private final RedisService redisService;
     private final RedissonClient redissonClient;
 
@@ -133,7 +133,7 @@ public class OrderService {
             //counter -1
             redisService.decreaseCounter(performanceId);
             //kafka
-            eventApplicationService.publishOrderCompletedEvent(
+            eventPublishService.publishOrderCompletedEvent(
                     OrderCompletedEvent.create(String.valueOf(order.getUserId()), performanceId.toString()));
         }
 

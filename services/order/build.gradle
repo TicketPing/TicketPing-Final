@@ -38,6 +38,7 @@ dependencies {
 	implementation project(':common:jpa')
 	implementation project(':common:dtos:performance-dto')
 	implementation project(':common:dtos:order-dto')
+	implementation project(':common:events')
 
 	// redisson
 	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'

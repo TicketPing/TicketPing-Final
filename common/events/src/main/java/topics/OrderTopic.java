@@ -1,4 +1,4 @@
-package com.ticketPing.order.domain.events;
+package topics;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -78,6 +78,35 @@ services:
       kafka:
         condition: service_healthy
 
+  order-db:
+    container_name: order-db
+    image: postgres:15.8
+    ports:
+      - "5002:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+  order-server:
+    container_name: order-server
+    image: ticketping/order-server:latest
+    ports:
+      - "10023:10023"
+    depends_on:
+      order-db:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+
 networks:
   default:
     driver: bridge
