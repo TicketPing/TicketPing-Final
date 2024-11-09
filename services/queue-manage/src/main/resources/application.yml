@@ -4,8 +4,14 @@ spring:
 
   data:
     redis:
-      host: redis
-      port: 6379
+      cluster:
+        nodes:
+          - host.docker.internal:7001
+          - host.docker.internal:7002
+          - host.docker.internal:7003
+          - host.docker.internal:7004
+          - host.docker.internal:7005
+          - host.docker.internal:7006
 
   kafka:
     bootstrap-servers: kafka:29092

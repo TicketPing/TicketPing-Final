@@ -17,7 +17,7 @@ public class DeleteFirstWaitingQueueTokenCommand {
     private String queueName;
 
     public static DeleteFirstWaitingQueueTokenCommand create(String tokenValue) {
-        String performanceId = tokenValue.split(":")[1];
+        String performanceId = tokenValue.split(":")[2];
         return DeleteFirstWaitingQueueTokenCommand.builder()
                 .performanceId(performanceId)
                 .queueName(WAITING_QUEUE.getValue() + performanceId)

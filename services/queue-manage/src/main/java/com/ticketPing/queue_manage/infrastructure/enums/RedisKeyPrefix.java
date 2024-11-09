@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum RedisKeyPrefix {
 
-    WAITING_QUEUE("WaitingQueue:"),
-    WORKING_QUEUE("WorkingQueue:"),
-    TOKEN_VALUE("Token:"),
-    LEADER_KEY("LeaderKey:");
+    WAITING_QUEUE("{Queue}:WaitingQueue:"),
+    WORKING_QUEUE("{Queue}:WorkingQueue:"),
+    TOKEN_VALUE("{Queue}:UserToken:"),
+    LEADER_KEY("{Queue}:LeaderKey:");
 
     private final String value;
 

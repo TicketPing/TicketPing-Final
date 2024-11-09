@@ -1,27 +1,33 @@
 package com.ticketPing.queue_manage.infrastructure.config;
 
+import com.ticketPing.queue_manage.infrastructure.enums.RedisClusterProperties;
+import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.RedissonReactiveClient;
+import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class RedissonConfig {
 
-    @Value("${spring.redis.host}")
-    private String redisHost;
+    private static final String REDISSON_PREFIX = "redis://";
 
-    @Value("${spring.redis.port}")
-    private String redisPort;
+    private final RedisClusterProperties redisClusterProperties;
 
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer()
-                .setAddress(String.format("redis://%s:%s", redisHost, redisPort));
+        ClusterServersConfig csc = config.useClusterServers()
+                .setScanInterval(2000)
+                .setConnectTimeout(100)
+                .setTimeout(3000)
+                .setRetryAttempts(3)
+                .setRetryInterval(1500);
+        redisClusterProperties.getNodes().forEach(node -> csc.addNodeAddress(REDISSON_PREFIX + node));
         return Redisson.create(config);
     }
 
