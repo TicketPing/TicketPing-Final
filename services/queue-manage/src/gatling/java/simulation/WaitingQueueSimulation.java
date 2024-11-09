@@ -6,13 +6,12 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 
 import java.util.UUID;
 
-import static io.gatling.javaapi.core.CoreDsl.bodyString;
 import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.core.OpenInjectionStep.atOnceUsers;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static io.gatling.javaapi.http.HttpDsl.status;
 
-public class EnterWaitingQueueSimulation extends Simulation {
+public class WaitingQueueSimulation extends Simulation {
     private static final String BASE_URL = "http://localhost:10031/api/v1/waiting-queue";
 
     private final HttpProtocolBuilder httpProtocolBuilder = http

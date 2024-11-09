@@ -2,6 +2,7 @@ package common.exception;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import common.response.CommonResponse;
 import feign.FeignException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import common.response.CommonResponse;
 
 @ControllerAdvice
 @RequiredArgsConstructor

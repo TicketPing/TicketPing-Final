@@ -40,3 +40,5 @@ application-private.yml
 application-local.yml
 
 .env
+
+docker-compose-queue.yml

@@ -224,8 +224,6 @@ services:
     ports:
       - "10031:10031"
     depends_on:
-      redis:
-        condition: service_healthy
       eureka-server:
         condition: service_started
       kafka:

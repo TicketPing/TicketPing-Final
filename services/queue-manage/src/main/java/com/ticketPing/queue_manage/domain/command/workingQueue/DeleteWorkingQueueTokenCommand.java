@@ -20,7 +20,7 @@ public class DeleteWorkingQueueTokenCommand {
     private WorkingQueueTokenDeleteCase deleteCase;
 
     public static DeleteWorkingQueueTokenCommand create(WorkingQueueTokenDeleteCase deleteCase, String tokenValue) {
-        String performanceId = tokenValue.split(":")[1];
+        String performanceId = tokenValue.split(":")[2];
         return DeleteWorkingQueueTokenCommand.builder()
                 .queueName(WORKING_QUEUE.getValue() + performanceId)
                 .tokenValue(tokenValue)
