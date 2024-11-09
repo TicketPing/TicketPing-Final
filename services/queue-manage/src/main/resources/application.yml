@@ -2,9 +2,10 @@ spring:
   application:
     name: queue-manage
 
-  redis:
-    host: redis
-    port: 6379
+  data:
+    redis:
+      host: redis
+      port: 6379
 
   kafka:
     bootstrap-servers: kafka:29092

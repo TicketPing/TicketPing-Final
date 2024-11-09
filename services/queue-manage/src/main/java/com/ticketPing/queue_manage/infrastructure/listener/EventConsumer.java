@@ -32,7 +32,7 @@ public class EventConsumer {
                 .receive()
                 .flatMap(this::handleMessage)
                 .doOnError(throwable -> log.error("Error occurred while consuming message:", throwable))
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))) // 최대 3회 재시도
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(1)))
                 .subscribe();
     }
 

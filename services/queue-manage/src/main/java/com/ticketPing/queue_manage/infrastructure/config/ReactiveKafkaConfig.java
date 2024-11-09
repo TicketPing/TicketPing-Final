@@ -37,7 +37,9 @@ public class ReactiveKafkaConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, 0);
 
+        // 토픽 할당
         List<String> topics = Arrays.asList(OrderTopic.COMPLETED.getTopic());
+
         return ReceiverOptions.<String, String>create(props)
                 .subscription(topics)
                 .addAssignListener(partitions -> log.info("Partitions assigned: {}", partitions))
