@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.application.service;
 
-import static com.ticketPing.queue_manage.application.cases.QueueErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
+import static com.ticketPing.queue_manage.cases.QueueErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
 
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.domain.command.waitingQueue.DeleteFirstWaitingQueueTokenCommand;

@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.application.cases;
+package com.ticketPing.queue_manage.cases;
 
 import common.cases.ErrorCase;
 import lombok.Getter;
