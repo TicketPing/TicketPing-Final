@@ -1,10 +1,7 @@
 package com.ticketPing.queue_manage.presentaion.controller;
 
-import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
-
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
-import com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase;
 import common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -17,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/working-queue")
 public class WorkingQueueController {
 
