@@ -28,29 +28,33 @@ ext {
 }
 
 dependencies {
-	implementation project(':common:mvc')
+	// Common Module
+	implementation project(':common:core')
+	implementation project(':common:dtos')
 	implementation project(':common:jpa')
-	implementation project(':common:dtos:payment-dto')
-	implementation project(':common:dtos:order-dto')
+	implementation project(':common:messaging')
+
+	// Cloud
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	// Monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
-	//testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	//stripe
-	implementation "com.stripe:stripe-java:27.1.0"
-	implementation("com.google.code.gson:gson:2.10.1")
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Valid
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+	// Test
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 dependencyManagement {

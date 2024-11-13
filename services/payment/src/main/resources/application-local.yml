@@ -7,25 +7,37 @@ spring:
     username: postgres
     password: 1234
     driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        use_sql_comments: true
-    generate-ddl: true
-    hibernate:
-      ddl-auto: create
+  config:
+    import: "classpath:application-jpa.yml"
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 server:
-  port: 8080
-
-stripe:
-  secret-key: ${secret-key}
-  public-key: ${public-key}
-  webhook-key: ${WEBHOOK_KEY}
+  port: 10024
 
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:10000/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  prometheus:
+    enabled: true

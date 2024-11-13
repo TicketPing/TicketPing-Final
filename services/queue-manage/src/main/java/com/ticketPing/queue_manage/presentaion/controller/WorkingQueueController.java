@@ -2,7 +2,6 @@ package com.ticketPing.queue_manage.presentaion.controller;
 
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
-import common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+import response.CommonResponse;
 
 @RestController
 @RequiredArgsConstructor

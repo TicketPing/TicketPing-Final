@@ -24,8 +24,8 @@ ext {
 
 dependencies {
 	// Common Module
-	implementation project(':common:webflux')
-	implementation project(':common:events')
+	implementation project(':common:core')
+	implementation project(':common:messaging')
 
 	// Cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'

@@ -1,7 +1,7 @@
 package com.ticketPing.auth.infrastructure.security;
 
 import com.ticketPing.auth.presentation.cases.AuthErrorCase;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

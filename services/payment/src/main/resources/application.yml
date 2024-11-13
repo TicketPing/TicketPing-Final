@@ -1,6 +1,7 @@
 spring:
   application:
     name: payment
+
   datasource:
     url: jdbc:postgresql://payment-db:5432/postgres
     username: postgres
@@ -9,6 +10,19 @@ spring:
   config:
     import: "classpath:application-jpa.yml"
 
+  kafka:
+    bootstrap-servers: kafka:29092
+    consumer:
+      group-id: ${spring.application.name}-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
 server:
   port: 10024
 
@@ -16,11 +30,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://eureka-server:10000/eureka/
-
-stripe:
-  secret-key: ${SECRET_KEY}
-  public-key: ${PUBLIC_KEY}
-  webhook-key: ${WEBHOOK_KEY}
 
 management:
   endpoints:

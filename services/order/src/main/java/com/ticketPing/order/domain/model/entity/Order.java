@@ -5,7 +5,6 @@ import audit.BaseEntity;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;

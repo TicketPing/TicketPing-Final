@@ -5,7 +5,7 @@ import com.ticketPing.performance.domain.model.entity.Performance;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.repository.ScheduleRepository;
 import com.ticketPing.performance.presentation.cases.exception.ScheduleExceptionCase;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

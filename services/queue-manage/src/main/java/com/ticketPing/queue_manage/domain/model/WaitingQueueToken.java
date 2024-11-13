@@ -3,12 +3,12 @@ package com.ticketPing.queue_manage.domain.model;
 import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.domain.model.enums.TokenStatus;
-import common.dto.mapper.ObjectMapperBasedVoMapper;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mapper.ObjectMapperBasedVoMapper;
 
 @Getter
 @NoArgsConstructor
