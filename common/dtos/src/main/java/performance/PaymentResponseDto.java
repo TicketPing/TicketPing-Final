@@ -1,4 +1,4 @@
-package dto;
+package performance;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
