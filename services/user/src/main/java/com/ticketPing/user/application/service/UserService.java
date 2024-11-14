@@ -4,15 +4,15 @@ import com.ticketPing.user.application.dto.UserResponse;
 import com.ticketPing.user.domain.entity.User;
 import com.ticketPing.user.domain.repository.UserRepository;
 import com.ticketPing.user.presentation.cases.UserErrorCase;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.ticketPing.user.presentation.request.CreateUserRequest;
-import request.LoginRequest;
 
 import java.util.UUID;
+import user.LoginRequest;
 
 @Service
 @RequiredArgsConstructor

@@ -34,8 +34,8 @@ dependencyManagement {
 }
 
 dependencies {
-	implementation project(':common:mvc')
-	implementation project(':common:dtos:user-dto')
+	implementation project(':common:core')
+	implementation project(':common:dtos')
 
 	// JWT
 	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'

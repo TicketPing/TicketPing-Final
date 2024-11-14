@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(basePackages = {"com.ticketPing.queue_manage", "common"})
+@ComponentScan(basePackages = {"com.ticketPing.queue_manage", "exception"})
 @EnableFeignClients
 @SpringBootApplication
 public class QueueManageApplication {

@@ -4,11 +4,10 @@ import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDe
 import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
-import common.utils.EventSerializer;
-import events.OrderCompletedEvent;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import mapper.EventSerializer;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.kafka.receiver.ReceiverRecord;
 import reactor.util.retry.Retry;
+import events.OrderCompletedEvent;
 import topics.OrderTopic;
 
 @Slf4j

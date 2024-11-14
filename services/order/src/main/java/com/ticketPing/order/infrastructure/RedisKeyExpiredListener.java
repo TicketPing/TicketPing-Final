@@ -5,7 +5,7 @@ import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
 import com.ticketPing.order.infrastructure.service.RedisService;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;

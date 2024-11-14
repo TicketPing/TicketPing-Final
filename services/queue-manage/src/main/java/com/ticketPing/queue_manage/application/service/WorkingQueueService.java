@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.application.service;
 
-import static com.ticketPing.queue_manage.cases.QueueErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
+import static com.ticketPing.queue_manage.domain.exception.QueueErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
 
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.domain.command.waitingQueue.DeleteFirstWaitingQueueTokenCommand;
@@ -11,7 +11,7 @@ import com.ticketPing.queue_manage.domain.model.WaitingQueueToken;
 import com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase;
 import com.ticketPing.queue_manage.domain.repository.WaitingQueueRepository;
 import com.ticketPing.queue_manage.domain.repository.WorkingQueueRepository;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;

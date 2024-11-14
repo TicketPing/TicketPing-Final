@@ -4,13 +4,13 @@ import com.ticketPing.performance.application.dtos.OrderInfoResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.application.service.SeatService;
 import com.ticketPing.performance.presentation.cases.success.SeatSuccessCase;
-import common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import response.CommonResponse;
 
 @RestController
 @RequestMapping("/api/v1/seats")

@@ -1,7 +1,7 @@
 package com.ticketPing.order.infrastructure.client;
 
 import com.ticketPing.order.application.dtos.temp.UserResponse;
-import common.response.CommonResponse;
+import response.CommonResponse;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

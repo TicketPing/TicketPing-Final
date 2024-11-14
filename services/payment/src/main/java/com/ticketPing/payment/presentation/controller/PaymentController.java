@@ -31,7 +31,7 @@ public class PaymentController {
     @GetMapping("/{paymentId}")
     public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(@RequestParam("paymentId") UUID paymentId) {
         return ResponseEntity
-                .status(201)
+                .status(200)
                 .body(success(paymentService.checkPaymentStatus(paymentId)));
     }
 

@@ -8,16 +8,16 @@ import com.ticketPing.auth.infrastructure.security.Role;
 import com.ticketPing.auth.infrastructure.service.RedisService;
 import com.ticketPing.auth.presentation.cases.AuthErrorCase;
 import com.ticketPing.auth.presentation.request.AuthLoginRequest;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import request.LoginRequest;
-import response.UserResponse;
 
 import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
+import user.LoginRequest;
+import user.UserResponse;
 
 @Service
 @RequiredArgsConstructor

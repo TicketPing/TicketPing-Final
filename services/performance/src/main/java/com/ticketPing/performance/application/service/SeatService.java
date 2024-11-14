@@ -7,7 +7,7 @@ import com.ticketPing.performance.domain.model.entity.Seat;
 import com.ticketPing.performance.domain.repository.SeatRepository;
 import com.ticketPing.performance.infrastructure.service.RedisService;
 import com.ticketPing.performance.presentation.cases.exception.SeatExceptionCase;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

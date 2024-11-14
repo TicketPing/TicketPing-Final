@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableFeignClients
-@ComponentScan(basePackages = {"com.ticketPing.order", "audit", "common/exception", "common/aop"})
+@ComponentScan(basePackages = {"com.ticketPing.order", "audit", "exception", "aop"})
 public class OrderApplication {
 
     public static void main(String[] args) {

@@ -9,7 +9,6 @@ import com.ticketPing.performance.domain.model.entity.Performance;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.presentation.cases.success.PerformanceSuccessCase;
 import com.ticketPing.performance.presentation.cases.success.ScheduleSuccessCase;
-import common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import response.CommonResponse;
 
 @RestController
 @RequestMapping("/api/v1/performances")

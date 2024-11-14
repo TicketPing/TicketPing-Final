@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.ticketPing.user.presentation.request.CreateUserRequest;
-import common.response.CommonResponse;
-import request.LoginRequest;
+
 
 import java.util.UUID;
+import response.CommonResponse;
+import user.LoginRequest;
 
 @RestController
 @RequiredArgsConstructor

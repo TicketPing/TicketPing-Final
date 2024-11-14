@@ -1,7 +1,7 @@
 package com.ticketPing.auth.infrastructure.security;
 
 import com.ticketPing.auth.presentation.cases.AuthErrorCase;
-import common.exception.ApplicationException;
+import exception.ApplicationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

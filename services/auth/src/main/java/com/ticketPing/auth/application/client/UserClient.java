@@ -1,10 +1,9 @@
 package com.ticketPing.auth.application.client;
 
-import common.response.CommonResponse;
-import request.LoginRequest;
-import response.UserResponse;
-
 import java.util.UUID;
+import response.CommonResponse;
+import user.LoginRequest;
+import user.UserResponse;
 
 public interface UserClient {
     CommonResponse<UserResponse> getUserByEmailAndPassword(LoginRequest loginRequest);

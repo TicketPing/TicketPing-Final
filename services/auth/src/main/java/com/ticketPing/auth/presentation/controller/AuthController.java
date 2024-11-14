@@ -5,12 +5,12 @@ import com.ticketPing.auth.application.dto.UserCacheDto;
 import com.ticketPing.auth.application.service.AuthService;
 import com.ticketPing.auth.presentation.cases.AuthSuccessCase;
 import com.ticketPing.auth.presentation.request.AuthLoginRequest;
-import common.response.CommonResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.CommonResponse;
 
 @RestController
 @RequiredArgsConstructor
