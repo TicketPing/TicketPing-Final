@@ -3,11 +3,11 @@ package events;
 import java.util.UUID;
 
 public record PaymentCompletedEvent(
-        UUID paymentId
+        UUID orderId
 ) {
-    public static PaymentCompletedEvent create(UUID paymentId) {
+    public static PaymentCompletedEvent create(UUID orderId) {
         return new PaymentCompletedEvent(
-                paymentId
+                orderId
         );
     }
 }

@@ -26,7 +26,9 @@ public class PaymentService {
     @Transactional
     public PaymentResponse requestPayment(UUID userId, UUID orderId) {
         OrderInfoResponse orderInfo = orderClient.getOrderInfo(orderId);
+
         // TODO: PG사 결제 요청
+
         Payment payment = createPayment(userId, orderInfo);
         return PaymentResponse.from(payment);
     }
@@ -40,9 +42,12 @@ public class PaymentService {
     @Transactional
     public PaymentResponse checkPaymentStatus(UUID paymentId) {
         // TODO: PG사 결제 상태 확인
+
         Payment payment = findPayment(paymentId);
         payment.complete();
-        eventPublishService.publishPaymentCompletedEvent(PaymentCompletedEvent.create(paymentId));
+
+        PaymentCompletedEvent event = PaymentCompletedEvent.create(payment.getOrderId());
+        eventPublishService.publishPaymentCompletedEvent(event);
         return PaymentResponse.from(payment);
     }
 
