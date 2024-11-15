@@ -30,7 +30,6 @@ public class Order extends BaseEntity {
     private UUID companyId;
     private String performanceName;
 
-    @Setter
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_seat_id")
     private OrderSeat orderSeat;
@@ -52,4 +51,9 @@ public class Order extends BaseEntity {
     public void updateOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
+
+    public void updateOrderSeat(OrderSeat orderSeat) {
+        this.orderSeat = orderSeat;
+    }
+
 }

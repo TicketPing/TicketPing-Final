@@ -1,22 +1,18 @@
 package com.ticketPing.order.application.dtos;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
-public class OrderSeatInfo {
-    private String seatId;
-    private int row;
-    private int col;
-    @Builder.Default
-    private boolean seatState = false;
-    private String seatRate;
-    private int cost;
+public record OrderSeatInfo (
+    String seatId,
+    int row,
+    int col,
+    boolean seatState,
+    String seatRate,
+    int cost
+) {
+    public OrderSeatInfo(String seatId, int row, int col, String seatRate, int cost) {
+        this(seatId, row, col, false, seatRate, cost);
+    }
 }
 

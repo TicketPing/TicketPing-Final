@@ -6,8 +6,8 @@ import lombok.Getter;
 public enum OrderStatus {
 
     PENDING("결제 대기"),
-    RESERVATION_FAIL("예매 실패"),
-    RESERVATION_COMPLETED("예매 완료"),
+    FAIL("예매 실패"),
+    COMPLETED("예매 완료"),
     CANCELED("예매 취소");
 
     private final String value;
