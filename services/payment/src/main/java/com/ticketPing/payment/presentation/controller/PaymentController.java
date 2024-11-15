@@ -20,7 +20,7 @@ public class PaymentController {
 
     @Operation(summary = "PG사 결제 요청")
     @PostMapping
-    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(@RequestHeader("X-User-Id") UUID userId,
+    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(@RequestHeader("X-USER-ID") UUID userId,
                                                                           @RequestParam("orderId") UUID orderId) {
         return ResponseEntity
                 .status(201)

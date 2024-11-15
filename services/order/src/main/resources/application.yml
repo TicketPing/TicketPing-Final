@@ -7,26 +7,15 @@ spring:
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
-  config:
-    import: "classpath:application-jpa.yml"
 
-  kafka:
-    bootstrap-servers: kafka:29092
-    consumer:
-      group-id: ${spring.application.name}-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      properties:
-        spring.json.trusted.packages: '*'
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  config:
+    import:
+      - "classpath:application-jpa.yml"
+      - "classpath:application-kafka.yml"
 
 redis:
   host: redis
   port: 6379
-
 
 server:
   port: 10023

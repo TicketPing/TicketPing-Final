@@ -34,6 +34,8 @@ dependencies {
 	implementation project(':common:jpa')
 	implementation project(':common:messaging')
 
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	// Cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
