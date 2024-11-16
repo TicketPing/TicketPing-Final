@@ -1,35 +1,26 @@
 package com.ticketPing.order.application.service;
 
-import com.ticketPing.order.application.dtos.OrderCreateDto;
+import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.OrderResponse;
-import com.ticketPing.order.application.dtos.UserReservationDto;
-import com.ticketPing.order.application.dtos.temp.SeatResponse;
-import com.ticketPing.order.domain.model.enums.OrderStatus;
-import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
+import com.ticketPing.order.domain.model.enums.OrderStatus;
+import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
 import com.ticketPing.order.infrastructure.service.RedisService;
+import events.OrderCompletedEvent;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import performance.PaymentRequestDto;
-import performance.PaymentResponseDto;
-import events.OrderCompletedEvent;
 
-import static com.ticketPing.order.presentation.cases.exception.OrderExceptionCase.*;
+import static com.ticketPing.order.exception.OrderExceptionCase.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,156 +28,89 @@ import static com.ticketPing.order.presentation.cases.exception.OrderExceptionCa
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PerformanceClient performanceClient;
     private final EventService eventService;
     private final RedisService redisService;
-    private final RedissonClient redissonClient;
+    private final PerformanceClient performanceClient;
 
     private final static int SEAT_LOCK_CACHE_EXPIRE_SECONDS = 330;
     private final static String TTL_PREFIX = "seat_ttl:";
 
     @Transactional
     public OrderResponse createOrder(OrderCreateDto orderCreateRequestDto, UUID userId) {
-        String scheduleId = orderCreateRequestDto.scheduleId().toString();
-        String seatId = orderCreateRequestDto.seatId().toString();
-        String redisKey = "seat:" + scheduleId + ":" + seatId;
+        UUID scheduleId = orderCreateRequestDto.scheduleId();
+        UUID seatId = orderCreateRequestDto.seatId();
 
-        SeatResponse seatResponse = Optional.ofNullable(redisService.getValueAsClass(redisKey, SeatResponse.class))
-                .orElseThrow(() -> new ApplicationException(ORDER_FOR_PERFORMANCE_CACHE_NOT_FOUND));
+        // 루아스크립트로
+        // 좌석 선점 확인(캐시 상태 확인), 좌석 선점(캐시 변경, ttl 생성)
+        // 좌석 캐시 -> "seat:" + scheduleId + ":" + seatId
+        // 좌석 ttl -> TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId
 
-        if(seatResponse.getSeatState()) {
-            throw new ApplicationException(ORDER_ALREADY_OCCUPIED);
-        }
-
-        return redLockForSeat(userId, seatId, seatResponse, scheduleId);
-    }
-
-    private OrderResponse redLockForSeat(UUID userId, String seatId, SeatResponse redisSeat, String scheduleId) {
-        String lockKey = "lock:" + seatId;
-        RLock lock = redissonClient.getLock(lockKey);
-        try {
-            if (lock.tryLock(0, 5, TimeUnit.SECONDS)) { // 1초 대기, 최대 10초 락 유지
-                try {
-                    String seatIdWithTTLPrefix = verifyTtlForSeat(seatId, scheduleId);
-                    Order order = orderWithOrderSeatSave(UUID.fromString(seatId), userId);
-                    setTtlInLock(redisSeat, scheduleId, seatIdWithTTLPrefix, order);
-                    return OrderResponse.from(order);
-                } finally {
-                    if (lock.isHeldByCurrentThread()) {
-                        lock.unlock();
-                    }
-                }
-            } else {
-                throw new ApplicationException(LOCK_ACQUISITION_FAIL);
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new ApplicationException(LOCK_ACQUISITION_FAIL);
-        }
-    }
-
-    private String verifyTtlForSeat(String seatId, String scheduleId) {
-        String seatIdWithTTLPrefix = "seat_ttl:" + scheduleId + ":" + seatId;
-
-        boolean exists = redisService.keysStartingWith(seatIdWithTTLPrefix);
-        if (exists) {
-            throw new ApplicationException(TTL_ALREADY_EXISTS);
-        }
-
-        return seatIdWithTTLPrefix;
-    }
-
-    private void setTtlInLock(SeatResponse seatResponse, String scheduleId, String seatIdWithTTLPrefix, Order order){
-        String SeatIdWithTTL = seatIdWithTTLPrefix +":"+ order.getId();
-        redisService.setValueWithTTL(SeatIdWithTTL, true, SEAT_LOCK_CACHE_EXPIRE_SECONDS);
-
-        seatResponse.updateSeatState(true);
-        redisService.setValue("seat:" + scheduleId + ":" + seatResponse.getSeatId(), seatResponse);
+        return OrderResponse.from(saveOrderWithOrderSeat(seatId, userId));
     }
 
     @Transactional
-    public Order orderWithOrderSeatSave(UUID seatId, UUID userId) {
+    public Order saveOrderWithOrderSeat(UUID seatId, UUID userId) {
         OrderInfoResponse orderData = performanceClient.getOrderInfo(seatId.toString()).getBody().getData();
 
-        Order order = Order.create(userId, orderData.companyId(), orderData.performanceName(),
-                LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
-        Order savedOrder =  orderRepository.save(order);
+        Order order = Order.create(userId, orderData.companyId(), orderData.performanceName(), LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
+        Order savedOrder = orderRepository.save(order);
 
-        OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(),
-                orderData.col(), orderData.seatRate(), orderData.cost());
-        savedOrder.setOrderSeat(orderSeat);
+        OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatRate(), orderData.cost());
+        savedOrder.updateOrderSeat(orderSeat);
+
         return order;
     }
 
-    @Transactional
-    public void updateOrderStatus(UUID orderId, String status, UUID performanceId) {
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
-        // success -> 예매 완료 -> seatStatus : true -> counter -1, ttl 삭제
-        if(status.equals("success")) {
-            UUID scheduleId = order.getScheduleId();
-            UUID seatId = order.getOrderSeat().getSeatId();
-            performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);
-            //redis ttl 삭제
-            String ttlRedisKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
-            redisService.deleteKey(ttlRedisKey); // 키 삭제
-            //counter -1
-            redisService.decreaseCounter(performanceId);
-            //kafka
-            eventService.publishOrderCompletedEvent(
-                    OrderCompletedEvent.create(String.valueOf(order.getUserId()), performanceId.toString()));
-        }
-
+    @Transactional(readOnly = true)
+    public OrderResponse orderInfoResponseToPayment(UUID orderId, UUID userId) {
+        Order order = findOrderById(orderId);
+        validateDuplicateOrder(order, userId);
+        return OrderResponse.from(order);
     }
 
-    public PaymentResponseDto orderInfoResponseToPayment(UUID orderId) {
-        Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new ApplicationException(REQUEST_ORDER_INFORMATION_BY_PAYMENT_NOT_FOUND));
+    public void validateDuplicateOrder(Order order, UUID userId) {
+        UUID seatId = order.getOrderSeat().getSeatId();
+        UUID scheduleId = order.getScheduleId();
 
-        return new PaymentResponseDto(order.getPerformanceName(),order.getScheduleId(),
-            order.getOrderSeat().getSeatId(), (long) order.getOrderSeat().getCost(),order.getUserId());
-    }
-
-    public boolean verifyOrder(PaymentRequestDto requestDto) {
-        // TODO: 중복 검증
-        // 같은 seatId, scheduleId로 예매된 내역이 있는지
-        // userId -> 내거는 아니면서 삭제가 안됐고, 결제 대기중이거나 예매 완료인 친구가 있는지?
-        UUID seatId = requestDto.getSeatId();
-        UUID scheduleId = requestDto.getScheduleId();
-        UUID userId = requestDto.getUserId();
-
-        List<Order> order = orderRepository.findByScheduleIdAndOrderSeatSeatId(seatId, scheduleId)
+        List<Order> duplicateOrders = orderRepository.findByScheduleIdAndOrderSeatSeatId(seatId, scheduleId)
                 .stream()
                 .filter(o -> !o.getUserId().equals(userId) &&
-                        (o.getOrderStatus().equals(OrderStatus.PENDING)
-                                || o.getOrderStatus().equals(OrderStatus.RESERVATION_COMPLETED)))
+                        (o.getOrderStatus().equals(OrderStatus.PENDING) ||
+                        o.getOrderStatus().equals(OrderStatus.COMPLETED)))
                 .toList();
 
-        return order.isEmpty();
+        if(!duplicateOrders.isEmpty())
+            throw new ApplicationException(ORDER_ALREADY_OCCUPIED);
     }
 
-    @Transactional(readOnly = true)
-    public List<UserReservationDto> getUserReservation(UUID userId) {
+    public List<OrderResponse> getUserOrders(UUID userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream().map(OrderResponse::from).toList();
+    }
 
-        if (orders.isEmpty()) {
-            throw new ApplicationException(ORDER_OF_USER_NOT_FOUND);
-        }
+    @Transactional
+    public void updateOrderStatus(UUID orderId, UUID performanceId) {
+        Order order = findOrderById(orderId);
 
-        List<UserReservationDto> userReservationDtos = new ArrayList<>();
+        UUID scheduleId = order.getScheduleId();
+        UUID seatId = order.getOrderSeat().getSeatId();
 
-        for (Order order : orders) {
-            // OrderSeat 객체를 가져옵니다.
-            OrderSeat orderSeat = order.getOrderSeat();
+        performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);  // 1. 좌석 db 업데이트 (kafka로 변경?)
 
-            // OrderSeat이 null이 아닐 경우 DTO로 매핑
-            if (orderSeat != null) {
-                UserReservationDto dto = UserReservationDto.from(order, orderSeat);
-                userReservationDtos.add(dto);
-            }
-        }
+        String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
+        redisService.deleteKey(ttlKey);
 
-        return userReservationDtos; // UserReservationDto 리스트 반환
+        String counterKey = "AvailableSeats:" + performanceId;
+        redisService.decrement(counterKey);
+
+        var createOrderCompleteEvent = OrderCompletedEvent.create(String.valueOf(order.getUserId()), performanceId.toString());
+        eventService.publishOrderCompletedEvent(createOrderCompleteEvent);
+    }
+
+    @Transactional
+    public Order findOrderById(UUID orderId){
+        return orderRepository.findById(orderId)
+                .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
     }
 
 }

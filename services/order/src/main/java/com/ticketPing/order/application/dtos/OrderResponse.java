@@ -1,7 +1,6 @@
 package com.ticketPing.order.application.dtos;
 
 import com.ticketPing.order.domain.model.entity.Order;
-import com.ticketPing.order.domain.model.enums.OrderStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 
@@ -11,7 +10,7 @@ import java.util.UUID;
 @Builder(access = AccessLevel.PRIVATE)
 public record OrderResponse(
     UUID id,
-    OrderStatus orderStatus,
+    String orderStatus,
     LocalDateTime reservationDate,
     UUID userId,
     UUID scheduleId,
@@ -22,7 +21,6 @@ public record OrderResponse(
     String seatGrade,
     int price
 ) {
-
     public static OrderResponse from(Order order) {
         return OrderResponse.builder()
             .id(order.getId())
@@ -32,11 +30,10 @@ public record OrderResponse(
             .userId(order.getUserId())
             .performanceName(order.getPerformanceName())
             .companyId(order.getCompanyId())
-            .orderStatus(order.getOrderStatus())
+            .orderStatus(order.getOrderStatus().toString())
             .reservationDate(order.getReservationDate())
             .scheduleId(order.getScheduleId())
-            .seatGrade(order.getOrderSeat().getSeatRate().toString())
+            .seatGrade(order.getOrderSeat().getSeatRate())
             .build();
     }
-
 }

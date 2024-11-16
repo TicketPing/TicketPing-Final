@@ -1,4 +1,4 @@
-package com.ticketPing.order.infrastructure;
+package com.ticketPing.order.infrastructure.listener;
 
 import com.ticketPing.order.application.dtos.temp.SeatResponse;
 import com.ticketPing.order.domain.model.entity.Order;
@@ -14,43 +14,31 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static com.ticketPing.order.presentation.cases.exception.OrderExceptionCase.NOT_FOUND_ORDER_ID_IN_TTL;
-import static com.ticketPing.order.presentation.cases.exception.OrderExceptionCase.NOT_FOUND_SCHEDULE_ID_IN_TTL;
+import static com.ticketPing.order.exception.OrderExceptionCase.INVALID_TTL_NAME;
+import static com.ticketPing.order.exception.OrderExceptionCase.NOT_FOUND_ORDER_ID_IN_TTL;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class RedisKeyExpiredListener implements MessageListener {
-
     private final RedisService redisService;
     private final OrderRepository orderRepository;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String expiredKey = message.toString(); // 만료된 키
-        log.info("Expired key: " + expiredKey);
+        log.info("Expired key: {}", expiredKey);
 
-        // 만료된 키에서 seatId와 orderId 추출
         String[] parts = expiredKey.split(":");
-        if (parts.length == 4) {
-            String scheduleId = parts[1];
-            String seatId = parts[2]; // seatId
-            String orderId = parts[3]; // orderId
+        if (parts.length != 4)
+            throw new ApplicationException(INVALID_TTL_NAME);
 
-            // 현재 Order 객체 가져오기
-            Order order = orderRepository.findById(UUID.fromString(orderId))
-                .orElseThrow(() -> new ApplicationException(NOT_FOUND_ORDER_ID_IN_TTL));
+        String scheduleId = parts[1];
+        String seatId = parts[2];
+        String orderId = parts[3];
 
-            // ttl 만료되면 상태 변경하는 로직
-            order.updateOrderStatus(OrderStatus.RESERVATION_FAIL);
-            orderRepository.save(order);
-
-            updateRedisSeatState(scheduleId, seatId);
-
-        } else {
-            throw new ApplicationException(NOT_FOUND_SCHEDULE_ID_IN_TTL);
-        }
-
+        updateRedisSeatState(scheduleId, seatId);
+        updateOrderStatus(orderId);
     }
 
     private void updateRedisSeatState(String scheduleId, String seatId) {
@@ -58,5 +46,13 @@ public class RedisKeyExpiredListener implements MessageListener {
         SeatResponse seatResponse = redisService.getValueAsClass(key, SeatResponse.class);
         seatResponse.updateSeatState(false);
         redisService.setValue(key, seatResponse);
+    }
+
+    private void updateOrderStatus(String orderId) {
+        Order order = orderRepository.findById(UUID.fromString(orderId))
+                .orElseThrow(() -> new ApplicationException(NOT_FOUND_ORDER_ID_IN_TTL));
+
+        order.updateOrderStatus(OrderStatus.FAIL);
+        orderRepository.save(order);
     }
 }

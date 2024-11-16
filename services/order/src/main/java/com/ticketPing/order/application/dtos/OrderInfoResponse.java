@@ -5,19 +5,17 @@ import java.util.UUID;
 
 public record OrderInfoResponse(
     UUID seatId,
-    Integer row,
-    Integer col,
-    Boolean seatState,
+    int row,
+    int col,
+    boolean seatState,
     String seatRate,
-    Integer cost,
+    int cost,
     UUID scheduleId,
     LocalDateTime startTime,
     UUID performanceHallId,
     String performanceHallName,
     UUID performanceId,
     String performanceName,
-    Integer performanceGrade,
+    int performanceGrade,
     UUID companyId
-) {
-
-}
+) {}
