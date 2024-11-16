@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
-import order.OrderInfoResponse;
+import order.OrderInfoForPaymentResponse;
 
 @Getter
 @NoArgsConstructor
@@ -28,20 +28,20 @@ public class Payment extends BaseEntity {
     private PaymentStatus status;
 
     private UUID orderId;
-    private String performanceName;
+    private UUID performanceId;
     private UUID performanceScheduleId;
-    private Long amount;
     private UUID seatId;
+    private Long amount;
 
-    public static Payment create(UUID userId, OrderInfoResponse orderInfo) {
+    public static Payment create(UUID userId, OrderInfoForPaymentResponse orderInfo) {
         return Payment.builder()
                 .userId(userId)
                 .status(PaymentStatus.PENDING)
-                .orderId(orderInfo.orderId())
-                .performanceName(orderInfo.performanceName())
+                .orderId(orderInfo.id())
+                .performanceId(orderInfo.performanceId())
                 .performanceScheduleId(orderInfo.performanceScheduleId())
-                .amount(orderInfo.amount())
                 .seatId(orderInfo.seatId())
+                .amount(orderInfo.amount())
                 .build();
     }
 

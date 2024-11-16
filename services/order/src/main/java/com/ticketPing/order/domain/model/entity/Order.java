@@ -28,16 +28,18 @@ public class Order extends BaseEntity {
     private UUID userId;
     private UUID scheduleId;
     private UUID companyId;
+    private UUID performanceId;
     private String performanceName;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_seat_id")
     private OrderSeat orderSeat;
 
-    public static Order create(UUID userId, UUID companyId, String performanceName,
-        LocalDateTime reservationDate, OrderStatus orderStatus, UUID scheduleId) {
+    public static Order create(UUID userId, UUID companyId, UUID performanceId, String performanceName,
+                               LocalDateTime reservationDate, OrderStatus orderStatus, UUID scheduleId) {
         return Order.builder()
                 .companyId(companyId)
+                .performanceId(performanceId)
                 .performanceName(performanceName)
                 .orderStatus(orderStatus)
                 .isOrderCancelled(false)
@@ -54,6 +56,10 @@ public class Order extends BaseEntity {
 
     public void updateOrderSeat(OrderSeat orderSeat) {
         this.orderSeat = orderSeat;
+    }
+
+    public void complete(){
+        this.orderStatus = OrderStatus.COMPLETED;
     }
 
 }

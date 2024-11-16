@@ -1,8 +1,5 @@
 package com.ticketPing.order.application.dtos;
 
-import lombok.Getter;
-
-@Getter
 public record OrderSeatInfo (
     String seatId,
     int row,

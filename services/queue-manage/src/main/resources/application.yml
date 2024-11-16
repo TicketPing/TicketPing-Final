@@ -13,12 +13,9 @@ spring:
           - host.docker.internal:7005
           - host.docker.internal:7006
 
-  kafka:
-    bootstrap-servers: kafka:29092
-    consumer:
-      group-id: ${spring.application.name}-group
-      properties:
-        spring.json.trusted.packages: '*'
+  config:
+    import:
+      - "classpath:application-kafka.yml"
 
 server:
   port: 10031
@@ -27,13 +24,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://eureka-server:10000/eureka/
-
-token-value:
-  secret-key: secret-key
-
-working-queue:
-  max-size: 1000
-  token-ttl: 30
 
 management:
   endpoints:
@@ -45,3 +35,10 @@ management:
       show-details: always
   prometheus:
     enabled: true
+
+token-value:
+  secret-key: secret-key
+
+working-queue:
+  max-size: 1000
+  token-ttl: 30

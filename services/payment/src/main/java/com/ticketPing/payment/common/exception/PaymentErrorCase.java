@@ -1,4 +1,4 @@
-package com.ticketPing.payment.domain.exception;
+package com.ticketPing.payment.common.exception;
 
 import cases.ErrorCase;
 import lombok.Getter;

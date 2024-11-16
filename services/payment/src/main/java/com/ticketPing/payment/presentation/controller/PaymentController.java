@@ -3,7 +3,8 @@ package com.ticketPing.payment.presentation.controller;
 import static response.CommonResponse.success;
 
 import com.ticketPing.payment.application.dto.PaymentResponse;
-import com.ticketPing.payment.application.service.PaymentService;
+import com.ticketPing.payment.application.service.PaymentApplicationService;
+import jakarta.validation.Valid;
 import response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.UUID;
@@ -16,23 +17,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/payments")
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    private final PaymentApplicationService paymentApplicationService;
 
     @Operation(summary = "PG사 결제 요청")
     @PostMapping
-    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(@RequestHeader("X-USER-ID") UUID userId,
-                                                                          @RequestParam("orderId") UUID orderId) {
+    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(@Valid @RequestHeader("X-USER-ID") UUID userId,
+                                                                          @Valid @RequestParam("orderId") UUID orderId) {
         return ResponseEntity
                 .status(201)
-                .body(success(paymentService.requestPayment(userId, orderId)));
+                .body(success(paymentApplicationService.requestPayment(userId, orderId)));
     }
 
     @Operation(summary = "결제 상태 확인")
     @GetMapping("/{paymentId}")
-    public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(@RequestParam("paymentId") UUID paymentId) {
+    public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(@Valid @PathVariable("paymentId") UUID paymentId) {
         return ResponseEntity
                 .status(200)
-                .body(success(paymentService.checkPaymentStatus(paymentId)));
+                .body(success(paymentApplicationService.checkPaymentStatus(paymentId)));
     }
 
 }

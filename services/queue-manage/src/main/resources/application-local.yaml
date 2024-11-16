@@ -28,13 +28,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:10000/eureka/
 
-token-value:
-  secret-key: secret-key
-
-working-queue:
-  max-size: 1000
-  token-ttl: 30
-
 management:
   endpoints:
     web:
@@ -45,3 +38,10 @@ management:
       show-details: always
   prometheus:
     enabled: true
+
+token-value:
+  secret-key: secret-key
+
+working-queue:
+  max-size: 1000
+  token-ttl: 30

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class RedisRepository {
+public class RedissonRepository {
 
     private final RedissonReactiveClient redissonClient;
 
