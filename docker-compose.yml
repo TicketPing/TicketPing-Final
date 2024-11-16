@@ -210,6 +210,8 @@ services:
         condition: service_healthy
       eureka-server:
         condition: service_started
+      kafka:
+        condition: service_healthy
 
   queue-manage-server:
     container_name: queue-manage-server

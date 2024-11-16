@@ -1,5 +1,6 @@
 package com.ticketPing.order.application.service;
 
+import com.ticketPing.order.application.dtos.OrderInfoForPaymentResponse;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.OrderResponse;
@@ -13,6 +14,7 @@ import events.OrderCompletedEvent;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,11 +30,10 @@ import static com.ticketPing.order.exception.OrderExceptionCase.*;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final EventService eventService;
+    private final EventApplicationService eventApplicationService;
     private final RedisService redisService;
     private final PerformanceClient performanceClient;
 
-    private final static int SEAT_LOCK_CACHE_EXPIRE_SECONDS = 330;
     private final static String TTL_PREFIX = "seat_ttl:";
 
     @Transactional
@@ -52,7 +53,7 @@ public class OrderService {
     public Order saveOrderWithOrderSeat(UUID seatId, UUID userId) {
         OrderInfoResponse orderData = performanceClient.getOrderInfo(seatId.toString()).getBody().getData();
 
-        Order order = Order.create(userId, orderData.companyId(), orderData.performanceName(), LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
+        Order order = Order.create(userId, orderData.companyId(), orderData.performanceId(), orderData.performanceName(), LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
         Order savedOrder = orderRepository.save(order);
 
         OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatRate(), orderData.cost());
@@ -62,10 +63,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderResponse orderInfoResponseToPayment(UUID orderId, UUID userId) {
+    public OrderInfoForPaymentResponse getOrderInfoForPayment(UUID orderId, UUID userId) {
         Order order = findOrderById(orderId);
         validateDuplicateOrder(order, userId);
-        return OrderResponse.from(order);
+        return OrderInfoForPaymentResponse.from(order);
     }
 
     public void validateDuplicateOrder(Order order, UUID userId) {
@@ -89,9 +90,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateOrderStatus(UUID orderId, UUID performanceId) {
+    public void updateOrderStatus(UUID orderId) {
         Order order = findOrderById(orderId);
+        order.complete();
 
+        UUID performanceId = order.getPerformanceId();
         UUID scheduleId = order.getScheduleId();
         UUID seatId = order.getOrderSeat().getSeatId();
 
@@ -103,14 +106,18 @@ public class OrderService {
         String counterKey = "AvailableSeats:" + performanceId;
         redisService.decrement(counterKey);
 
-        var createOrderCompleteEvent = OrderCompletedEvent.create(String.valueOf(order.getUserId()), performanceId.toString());
-        eventService.publishOrderCompletedEvent(createOrderCompleteEvent);
+        publishOrderCompletedEvent(orderId, performanceId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Order findOrderById(UUID orderId){
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
+    }
+
+    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
+        val event = OrderCompletedEvent.create(userId, performanceId);
+        eventApplicationService.publishOrderCompletedEvent(event);
     }
 
 }

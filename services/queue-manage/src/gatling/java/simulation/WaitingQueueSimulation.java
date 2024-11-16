@@ -38,7 +38,7 @@ public class WaitingQueueSimulation extends Simulation {
         setUp(
                 waitingQueueScenario()
                         .injectOpen(
-                                atOnceUsers(1000) // 1000명 동시 접속
+                                atOnceUsers(2000)
                         )
                         .protocols(httpProtocolBuilder)
         );

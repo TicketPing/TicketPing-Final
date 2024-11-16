@@ -10,7 +10,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
-public class RedisConfig {
+public class RedisMessageListenerConfig {
 
     @Bean(name = "redisMessageTaskExecutor")
     public Executor redisMessageTaskExecutor() {

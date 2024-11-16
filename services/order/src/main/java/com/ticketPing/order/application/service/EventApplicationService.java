@@ -9,7 +9,7 @@ import topics.OrderTopic;
 
 @Service
 @RequiredArgsConstructor
-public class EventService {
+public class EventApplicationService {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 

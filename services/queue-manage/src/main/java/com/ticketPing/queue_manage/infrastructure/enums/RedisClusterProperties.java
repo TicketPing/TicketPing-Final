@@ -11,7 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.data.redis.cluster")
 public class RedisClusterProperties {
-
     private List<String> nodes;
-
 }

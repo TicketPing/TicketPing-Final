@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisExpirationListener implements MessageListener {
 
-    private final WorkingQueueService workingQueueService;
     private final RedissonClient redissonClient;
+    private final WorkingQueueService workingQueueService;
 
     @Override
     public void onMessage(final Message message, final byte[] pattern) {

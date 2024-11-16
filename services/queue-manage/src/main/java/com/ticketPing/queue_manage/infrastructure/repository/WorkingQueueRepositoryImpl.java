@@ -17,11 +17,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
 
-    private final RedisRepository redisRepository;
+    private final RedissonRepository redissonRepository;
 
     @Override
     public Mono<Boolean> insertWorkingQueueToken(InsertWorkingQueueTokenCommand command) {
-        RBucketReactive<String> bucket = redisRepository.getBucket(command.getTokenValue());
+        RBucketReactive<String> bucket = redissonRepository.getBucket(command.getTokenValue());
 
         return handleIfTokenNotExists(command, bucket)
                 .defaultIfEmpty(false);
@@ -41,12 +41,12 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
     }
 
     private Mono<Long> incrementQueueCounter(String queueName) {
-        return redisRepository.getCounter(queueName).incrementAndGet();
+        return redissonRepository.getCounter(queueName).incrementAndGet();
     }
 
     @Override
     public Mono<WorkingQueueToken> findWorkingQueueToken(FindWorkingQueueTokenCommand command) {
-        RBucketReactive<String> bucket = redisRepository.getBucket(command.getTokenValue());
+        RBucketReactive<String> bucket = redissonRepository.getBucket(command.getTokenValue());
 
         return bucket.remainTimeToLive()
                 .filter(ttl -> ttl != null && ttl > 0)
@@ -72,7 +72,7 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
     }
 
     private Mono<Boolean> handleOrderCompleted(String queueName, String tokenValue) {
-        RBucketReactive<String> bucket = redisRepository.getBucket(tokenValue);
+        RBucketReactive<String> bucket = redissonRepository.getBucket(tokenValue);
         return handleIfTokenExists(queueName, bucket)
                 .defaultIfEmpty(false);
     }
@@ -91,7 +91,7 @@ public class WorkingQueueRepositoryImpl implements WorkingQueueRepository {
     }
 
     private Mono<Long> decrementQueueCounter(String queueName) {
-        return redisRepository.getCounter(queueName).decrementAndGet();
+        return redissonRepository.getCounter(queueName).decrementAndGet();
     }
 
 }

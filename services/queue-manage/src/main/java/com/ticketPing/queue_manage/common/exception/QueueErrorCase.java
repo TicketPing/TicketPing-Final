@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.domain.exception;
+package com.ticketPing.queue_manage.common.exception;
 
 import cases.ErrorCase;
 import lombok.Getter;
