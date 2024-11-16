@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.infrastructure.utils;
+package com.ticketPing.queue_manage.common.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

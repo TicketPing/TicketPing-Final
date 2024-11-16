@@ -9,8 +9,7 @@ import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
-import com.ticketPing.order.infrastructure.service.RedisService;
-import events.OrderCompletedEvent;
+import messaging.events.OrderCompletedEvent;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import caching.repository.RedisRepository;
 
 import static com.ticketPing.order.exception.OrderExceptionCase.*;
 
@@ -31,7 +31,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final EventApplicationService eventApplicationService;
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
     private final PerformanceClient performanceClient;
 
     private final static String TTL_PREFIX = "seat_ttl:";
@@ -101,10 +101,10 @@ public class OrderService {
         performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);  // 1. 좌석 db 업데이트 (kafka로 변경?)
 
         String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
-        redisService.deleteKey(ttlKey);
+        redisRepository.deleteKey(ttlKey);
 
         String counterKey = "AvailableSeats:" + performanceId;
-        redisService.decrement(counterKey);
+        redisRepository.decrement(counterKey);
 
         publishOrderCompletedEvent(orderId, performanceId);
     }

@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-  redis:
-    container_name: redis
-    image: redis:latest
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli","ping"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 10s
-    command: [
-      "sh",
-      "-c",
-      "redis-server --notify-keyspace-events Ex"
-    ]
-
   user-db:
     container_name: user-db
     image: postgres:15.8
@@ -131,21 +114,6 @@ services:
     ports:
       - "10000:10000"
 
-  auth-server:
-    container_name: auth-server
-    image: ticketping/auth-server:latest
-    env_file:
-      - .env
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-    ports:
-      - "10010:10010"
-    depends_on:
-      user-db:
-        condition: service_healthy
-      eureka-server:
-        condition: service_started
-
   api-server:
     container_name: api-server
     image: ticketping/api-server:latest
@@ -163,6 +131,21 @@ services:
       payment-server:
         condition: service_started
       queue-manage-server:
+        condition: service_started
+
+  auth-server:
+    container_name: auth-server
+    image: ticketping/auth-server:latest
+    env_file:
+      - .env
+    environment:
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    ports:
+      - "10010:10010"
+    depends_on:
+      user-db:
+        condition: service_healthy
+      eureka-server:
         condition: service_started
 
   user-server:

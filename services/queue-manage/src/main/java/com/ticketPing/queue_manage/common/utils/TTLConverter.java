@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.infrastructure.utils;
+package com.ticketPing.queue_manage.common.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -1,10 +1,10 @@
 package com.ticketPing.payment.application.service;
 
+import com.ticketPing.payment.application.client.OrderClient;
 import com.ticketPing.payment.application.dto.PaymentResponse;
 import com.ticketPing.payment.domain.model.entity.Payment;
 import com.ticketPing.payment.domain.service.PaymentDomainService;
-import com.ticketPing.payment.infrastructure.client.OrderClient;
-import events.PaymentCompletedEvent;
+import messaging.events.PaymentCompletedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -37,6 +37,7 @@ public class PaymentApplicationService {
         Payment payment = paymentDomainService.completePayment(paymentId);
 
         publishPaymentCompletedEvent(payment);
+
         return PaymentResponse.from(payment);
     }
 

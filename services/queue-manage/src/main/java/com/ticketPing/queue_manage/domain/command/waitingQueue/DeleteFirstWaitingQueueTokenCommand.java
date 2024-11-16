@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.domain.command.waitingQueue;
 
-import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.WAITING_QUEUE;
+import static caching.enums.RedisKeyPrefix.WAITING_QUEUE;
 
 import lombok.AccessLevel;
 import lombok.Builder;

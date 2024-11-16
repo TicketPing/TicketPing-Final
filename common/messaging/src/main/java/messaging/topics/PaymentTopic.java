@@ -1,13 +1,13 @@
-package topics;
+package messaging.topics;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum OrderTopic {
+public enum PaymentTopic {
 
-    COMPLETED("order-completed");
+    COMPLETED("payment-completed");
 
     private final String topic;
 

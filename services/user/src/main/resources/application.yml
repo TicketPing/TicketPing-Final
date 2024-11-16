@@ -1,6 +1,7 @@
 spring:
   application:
     name: user
+
   datasource:
     url: jdbc:postgresql://user-db:5432/postgres
     username: postgres
@@ -8,6 +9,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   base-package:
     jpa: com.ticketPing.performance.domain.entity
+
   config:
     import: "classpath:application-jpa.yml"
 

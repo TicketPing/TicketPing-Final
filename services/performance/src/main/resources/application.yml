@@ -1,17 +1,17 @@
 spring:
   application:
     name: performance
+
   datasource:
     url: jdbc:postgresql://performance-db:5432/postgres
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
+
   config:
-    import: "classpath:application-jpa.yml"
-  data:
-    redis:
-      host: redis
-      port: 6379
+    import:
+      - "classpath:application-jpa.yml"
+      - "classpath:application-redis.yml"
 
 server:
   port: 10022

@@ -22,23 +22,28 @@ ext {
 	set('springCloudVersion', "2023.0.3")
 }
 
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
 dependencies {
 	// Common Module
 	implementation project(':common:core')
+	implementation project(':common:caching')
 	implementation project(':common:messaging')
-
-	// Cloud
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
 	// WebFlux
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+	// Cloud
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
 	// Redisson
 	implementation 'org.redisson:redisson-spring-boot-starter:3.33.0'
 
-	// Kafka
-	implementation 'org.springframework.kafka:spring-kafka'
+	// Reactive Kafka
 	implementation 'io.projectreactor.kafka:reactor-kafka:1.3.22'
 
 	// Swagger
@@ -46,30 +51,15 @@ dependencies {
 
 	// Monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
-	// Lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-
-	// Valid
-	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
 	// Test
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test:3.4.10'
 	testImplementation 'org.springframework.kafka:spring-kafka-test:2.8.0'
 
 	// Gatling
 	testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.12.0'
 	testImplementation 'io.gatling:gatling-test-framework:3.12.0'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
 }
 
 tasks.named('test') {
