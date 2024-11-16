@@ -1,8 +1,7 @@
 package com.ticketPing.queue_manage.infrastructure.listener;
 
+import static caching.enums.RedisKeyPrefix.TOKEN_VALUE;
 import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase.TOKEN_EXPIRED;
-import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.LEADER_KEY;
-import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.TOKEN_VALUE;
 
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
 import java.util.concurrent.TimeUnit;
@@ -19,17 +18,20 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class RedisExpirationListener implements MessageListener {
 
+    private final static String LEADER_KEY_PREFIX = "LeaderKey:";
+
     private final RedissonClient redissonClient;
     private final WorkingQueueService workingQueueService;
 
     @Override
     public void onMessage(final Message message, final byte[] pattern) {
-        // 작업열 토큰 확인
         String tokenValue = message.toString();
+
+        // 작업열 토큰 확인
         if (tokenValue.startsWith(TOKEN_VALUE.getValue())) {
             log.info("WorkingQueueToken has expired: {}", tokenValue);
 
-            String leaderKey = LEADER_KEY.getValue() + tokenValue;
+            String leaderKey = LEADER_KEY_PREFIX + tokenValue;
             RLock leaderLock = redissonClient.getLock(leaderKey);
 
             tryToLeader(tokenValue, leaderLock);

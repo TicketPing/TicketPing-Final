@@ -26,13 +26,15 @@ repositories {
 bootJar {
 	enabled = false
 }
+
 jar {
 	enabled = true
 }
 
-
 dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+	// Kafka
 	api 'org.springframework.kafka:spring-kafka'
 }
 

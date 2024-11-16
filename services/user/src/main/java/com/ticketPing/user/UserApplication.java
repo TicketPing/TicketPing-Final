@@ -5,11 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.ticketPing.user", "audit", "exception", "aop"})
+@ComponentScan(basePackages = {"com.ticketPing.user", "aop", "exception", "audit"})
 public class UserApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(UserApplication.class, args);
 	}
-
 }

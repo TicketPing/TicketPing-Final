@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.infrastructure.repository;
 
-import static com.ticketPing.queue_manage.infrastructure.utils.TTLConverter.toLocalDateTime;
+import static com.ticketPing.queue_manage.common.utils.TTLConverter.toLocalDateTime;
 
 import com.ticketPing.queue_manage.domain.command.workingQueue.DeleteWorkingQueueTokenCommand;
 import com.ticketPing.queue_manage.domain.command.workingQueue.InsertWorkingQueueTokenCommand;

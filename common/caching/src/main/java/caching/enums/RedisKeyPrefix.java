@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.infrastructure.enums;
+package caching.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,7 @@ public enum RedisKeyPrefix {
 
     WAITING_QUEUE("{Queue}:WaitingQueue:"),
     WORKING_QUEUE("{Queue}:WorkingQueue:"),
-    TOKEN_VALUE("{Queue}:UserToken:"),
-    LEADER_KEY("{Queue}:LeaderKey:");
+    TOKEN_VALUE("{Queue}:UserToken:");
 
     private final String value;
 

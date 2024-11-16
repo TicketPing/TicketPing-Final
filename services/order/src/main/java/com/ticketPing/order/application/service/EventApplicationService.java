@@ -1,11 +1,11 @@
 package com.ticketPing.order.application.service;
 
-import mapper.EventSerializer;
-import events.OrderCompletedEvent;
+import messaging.utils.EventSerializer;
+import messaging.events.OrderCompletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import topics.OrderTopic;
+import messaging.topics.OrderTopic;
 
 @Service
 @RequiredArgsConstructor

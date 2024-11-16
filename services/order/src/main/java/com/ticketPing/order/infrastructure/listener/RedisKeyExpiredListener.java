@@ -1,10 +1,10 @@
 package com.ticketPing.order.infrastructure.listener;
 
+import caching.repository.RedisRepository;
 import com.ticketPing.order.application.dtos.temp.SeatResponse;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
-import com.ticketPing.order.infrastructure.service.RedisService;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import static com.ticketPing.order.exception.OrderExceptionCase.NOT_FOUND_ORDER_
 @Component
 @RequiredArgsConstructor
 public class RedisKeyExpiredListener implements MessageListener {
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
     private final OrderRepository orderRepository;
 
     @Override
@@ -43,9 +43,9 @@ public class RedisKeyExpiredListener implements MessageListener {
 
     private void updateRedisSeatState(String scheduleId, String seatId) {
         String key = "seat:" + scheduleId + ":" + seatId;
-        SeatResponse seatResponse = redisService.getValueAsClass(key, SeatResponse.class);
+        SeatResponse seatResponse = redisRepository.getValueAsClass(key, SeatResponse.class);
         seatResponse.updateSeatState(false);
-        redisService.setValue(key, seatResponse);
+        redisRepository.setValue(key, seatResponse);
     }
 
     private void updateOrderStatus(String orderId) {

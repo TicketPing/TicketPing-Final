@@ -1,11 +1,11 @@
 package com.ticketPing.performance.application.service;
 
+import caching.repository.RedisRepository;
 import com.ticketPing.performance.application.dtos.OrderInfoResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.model.entity.Seat;
 import com.ticketPing.performance.domain.repository.SeatRepository;
-import com.ticketPing.performance.infrastructure.service.RedisService;
 import com.ticketPing.performance.presentation.cases.exception.SeatExceptionCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class SeatService {
     private final SeatRepository seatRepository;
-    private final RedisService redisService;  // TODO: 상위 서비스 만들어서 불러오기
+    private final RedisRepository redisRepository;  // TODO: 상위 서비스 만들어서 불러오기
 
     @Transactional(readOnly = true)
     public SeatResponse getSeat(UUID id) {
@@ -48,11 +48,11 @@ public class SeatService {
 
     @Transactional
     public List<SeatResponse> getAllScheduleSeats(UUID scheduleId) {
-        Set<String> ids = redisService.getKeys("seat:" + scheduleId + ":*");
+        Set<String> ids = redisRepository.getKeys("seat:" + scheduleId + ":*");
         if(ids.isEmpty()) {
             throw new ApplicationException(SeatExceptionCase.SEAT_CACHE_NOT_FOUND);
         }
-        return redisService.getValuesAsClass(ids.stream().toList(), SeatResponse.class);
+        return redisRepository.getValuesAsClass(ids.stream().toList(), SeatResponse.class);
     }
 
     @Transactional
@@ -68,11 +68,11 @@ public class SeatService {
             String prefix = "seat:" + schedule.getId() + ":";
             Map<String, Object> seatMap = new HashMap<>();
             seats.forEach(seat -> {seatMap.put(prefix+seat.getId(), SeatResponse.of(seat));});
-            redisService.setValues(seatMap);
+            redisRepository.setValues(seatMap);
         }
 
         // counter 생성
-        redisService.setValue("AvailableSeats:" + performanceId, String.valueOf(availableSeats));
+        redisRepository.setValue("AvailableSeats:" + performanceId, String.valueOf(availableSeats));
     }
 
     @Transactional

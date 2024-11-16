@@ -5,16 +5,17 @@ plugins {
 }
 
 ext {
-	springBootVersion = '3.3.4' // springBootVersion 변수를 정의합니다.
+	springBootVersion = '3.3.4'
 }
 
 repositories {
-	mavenCentral() // 루트 프로젝트에도 레포지토리 설정 추가
+	mavenCentral()
 }
 
 bootJar {
 	enabled = false
 }
+
 jar {
 	enabled = true
 }
@@ -61,8 +62,15 @@ subprojects {
 
 	dependencies {
 		implementation 'org.springframework.boot:spring-boot-starter'
+
+		// Lombok
 		compileOnly 'org.projectlombok:lombok'
 		annotationProcessor 'org.projectlombok:lombok'
+
+		// Valid
+		implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
+		// Test
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	}
@@ -70,4 +78,5 @@ subprojects {
 	tasks.named('test') {
 		useJUnitPlatform()
 	}
+
 }

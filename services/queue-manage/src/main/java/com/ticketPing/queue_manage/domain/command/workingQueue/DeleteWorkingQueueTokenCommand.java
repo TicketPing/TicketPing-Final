@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.domain.command.workingQueue;
 
-import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.WORKING_QUEUE;
+import static caching.enums.RedisKeyPrefix.WORKING_QUEUE;
 
 import com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase;
 import lombok.AccessLevel;

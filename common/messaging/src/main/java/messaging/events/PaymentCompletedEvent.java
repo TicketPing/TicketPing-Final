@@ -1,4 +1,4 @@
-package events;
+package messaging.events;
 
 import java.util.UUID;
 

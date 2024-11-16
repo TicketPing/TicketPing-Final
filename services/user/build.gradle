@@ -34,20 +34,26 @@ dependencyManagement {
 }
 
 dependencies {
+	// Common Module
 	implementation project(':common:core')
-	implementation project(':common:jpa')
 	implementation project(':common:dtos')
+	implementation project(':common:jpa')
+
+	// MVC
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Cloud
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+	// Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 
 	// Monitoring
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
-	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 tasks.named('test') {

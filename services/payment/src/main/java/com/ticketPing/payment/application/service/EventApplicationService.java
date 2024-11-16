@@ -1,11 +1,11 @@
 package com.ticketPing.payment.application.service;
 
 import lombok.RequiredArgsConstructor;
-import mapper.EventSerializer;
+import messaging.utils.EventSerializer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import events.PaymentCompletedEvent;
-import topics.PaymentTopic;
+import messaging.events.PaymentCompletedEvent;
+import messaging.topics.PaymentTopic;
 
 @Service
 @RequiredArgsConstructor

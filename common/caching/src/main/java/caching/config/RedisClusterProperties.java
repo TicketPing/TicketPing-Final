@@ -1,4 +1,4 @@
-package com.ticketPing.queue_manage.infrastructure.enums;
+package caching.config;
 
 import java.util.List;
 import lombok.Getter;
@@ -11,5 +11,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.data.redis.cluster")
 public class RedisClusterProperties {
+    private int maxRedirects;
     private List<String> nodes;
 }

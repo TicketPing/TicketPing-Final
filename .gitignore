@@ -41,4 +41,4 @@ application-local.yml
 
 .env
 
-docker-compose-queue.yml
+docker-compose-test.yml
