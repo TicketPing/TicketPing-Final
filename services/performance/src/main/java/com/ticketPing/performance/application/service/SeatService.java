@@ -65,14 +65,14 @@ public class SeatService {
             availableSeats += seats.stream().filter(s -> !s.getSeatState()).count();
 
             // 좌석 캐싱
-            String prefix = "seat:" + schedule.getId() + ":";
+            String prefix = "{Seat}:seat:" + schedule.getId() + ":";
             Map<String, Object> seatMap = new HashMap<>();
             seats.forEach(seat -> {seatMap.put(prefix+seat.getId(), SeatResponse.of(seat));});
             redisRepository.setValues(seatMap);
         }
 
         // counter 생성
-        redisRepository.setValue("AvailableSeats:" + performanceId, String.valueOf(availableSeats));
+        redisRepository.setValue("{PERFORMANCE}:AvailableSeats:" + performanceId, String.valueOf(availableSeats));
     }
 
     @Transactional

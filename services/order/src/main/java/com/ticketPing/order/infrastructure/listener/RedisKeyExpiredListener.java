@@ -30,12 +30,12 @@ public class RedisKeyExpiredListener implements MessageListener {
         log.info("Expired key: {}", expiredKey);
 
         String[] parts = expiredKey.split(":");
-        if (parts.length != 4)
+        if (parts.length != 5)
             throw new ApplicationException(INVALID_TTL_NAME);
 
-        String scheduleId = parts[1];
-        String seatId = parts[2];
-        String orderId = parts[3];
+        String scheduleId = parts[2];
+        String seatId = parts[3];
+        String orderId = parts[4];
 
         updateRedisSeatState(scheduleId, seatId);
         updateOrderStatus(orderId);

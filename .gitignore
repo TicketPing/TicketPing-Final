@@ -37,7 +37,7 @@ out/
 .vscode/
 
 application-private.yml
-application-local.yml
+application**local.yml
 
 .env
 
