@@ -14,7 +14,7 @@ spring:
       - "classpath:application-redis.yml"
 
 server:
-  port: 10022
+  port: 10012
 
 eureka:
   client:

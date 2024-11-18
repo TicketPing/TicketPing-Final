@@ -8,7 +8,7 @@ spring:
      port: 6379
 
 server:
-  port: 10020
+  port: 10001
 
 eureka:
   client:

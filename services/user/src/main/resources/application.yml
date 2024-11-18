@@ -14,7 +14,7 @@ spring:
     import: "classpath:application-jpa.yml"
 
 server:
-  port: 10021
+  port: 10011
 
 eureka:
   client:
