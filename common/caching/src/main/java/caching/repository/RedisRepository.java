@@ -53,4 +53,16 @@ public class RedisRepository {
         redisTemplate.opsForValue().decrement(key);
     }
 
+    public Object getValue(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    public Long getSortedSetSize(String key) {
+        return redisTemplate.opsForZSet().size(key);
+    }
+
+    public Boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
 }
