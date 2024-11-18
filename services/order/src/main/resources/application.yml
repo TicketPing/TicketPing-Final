@@ -15,7 +15,7 @@ spring:
       - "classpath:application-kafka.yml"
 
 server:
-  port: 10023
+  port: 10013
 
 eureka:
   client:
