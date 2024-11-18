@@ -1,8 +1,8 @@
 package com.ticketPing.gateway.infrastructure.security;
 
+import caching.repository.RedisRepository;
 import com.ticketPing.gateway.application.dto.UserCache;
 import com.ticketPing.gateway.exception.ApplicationException;
-import com.ticketPing.gateway.infrastructure.repository.RedisRepository;
 import com.ticketPing.gateway.infrastructure.utils.ResponseWriter;
 import com.ticketPing.gateway.presentation.cases.SecurityErrorCase;
 import io.jsonwebtoken.*;

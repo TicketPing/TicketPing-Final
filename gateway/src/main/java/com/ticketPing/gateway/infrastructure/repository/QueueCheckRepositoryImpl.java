@@ -3,6 +3,7 @@ package com.ticketPing.gateway.infrastructure.repository;
 import static com.ticketPing.gateway.infrastructure.enums.RedisKeyPrefix.AVAILABLE_SEATS;
 import static com.ticketPing.gateway.infrastructure.enums.RedisKeyPrefix.WAITING_QUEUE;
 
+import caching.repository.RedisRepository;
 import com.ticketPing.gateway.domain.repository.QueueCheckRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -34,8 +34,9 @@ public class RouteConfig {
 
                 .route("queue-manage-service", r -> r.path("/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
                         .uri("lb://queue-manage"))
-                .route("queue-docs", r -> r.path("/services/queue-manage-service/v3/api-docs")
-                        .filters(f -> f.rewritePath("/services/queue-manage-service/v3/api-docs", "/v3/api-docs"))
+
+                .route("queue-docs", r -> r.path("/v3/api-docs/queue-manage-service")
+                        .filters(f -> f.rewritePath("/v3/api-docs/queue-manage-service", "/v3/api-docs"))
                         .uri("lb://queue-manage"))
 
                 .build();

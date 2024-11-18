@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
-@ComponentScan(basePackages = {"com.ticketPing.auth", "caching"})
+@ComponentScan(basePackages = {"com.ticketPing.gateway", "caching"})
 @EnableFeignClients
 @SpringBootApplication
 public class GatewayApplication {
