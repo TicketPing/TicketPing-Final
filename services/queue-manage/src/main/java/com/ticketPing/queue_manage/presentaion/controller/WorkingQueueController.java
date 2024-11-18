@@ -3,6 +3,7 @@ package com.ticketPing.queue_manage.presentaion.controller;
 import com.ticketPing.queue_manage.application.dto.GeneralQueueTokenResponse;
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 import response.CommonResponse;
 
+@Tag(name = "작업열 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/working-queue")

@@ -4,10 +4,10 @@ include ("eureka-server")
 include("gateway")
 
 include ("common:core")
+include ("common:dtos")
 include ("common:jpa")
 include ("common:caching")
 include ("common:messaging")
-include ("common:dtos")
 
 include ("services:auth")
 include ("services:user")
