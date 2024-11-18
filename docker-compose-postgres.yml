@@ -1,0 +1,41 @@
+version: "3.1"
+services:
+  user-db:
+    container_name: user-db
+    image: postgres:15.8
+    ports:
+      - "5000:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  performance-db:
+    container_name: performance-db
+    image: postgres:15.8
+    ports:
+      - "5001:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  order-db:
+    container_name: order-db
+    image: postgres:15.8
+    ports:
+      - "5002:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+  payment-db:
+    container_name: payment-db
+    image: postgres:15.8
+    ports:
+      - "5003:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
