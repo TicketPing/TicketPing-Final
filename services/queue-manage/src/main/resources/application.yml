@@ -26,6 +26,15 @@ management:
   prometheus:
     enabled: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan: com.ticketPing.queue_manage
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
 token-value:
   secret-key: secret-key
 

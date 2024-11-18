@@ -49,10 +49,6 @@ dependencies {
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
 
-	// Monitoring
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
 	// Test
 	testImplementation 'io.projectreactor:reactor-test:3.4.10'
 	testImplementation 'org.springframework.kafka:spring-kafka-test:2.8.0'
