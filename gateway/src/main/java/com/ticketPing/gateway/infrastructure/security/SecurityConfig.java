@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/v1/performances/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/v1/schedules/{scheduleId}").permitAll()
                         .pathMatchers("/actuator/prometheus").permitAll()
-                        .pathMatchers("/services/*/v3/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
+                        .pathMatchers("/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
                         .anyExchange().permitAll()
                 )
                 .build();
