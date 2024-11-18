@@ -40,8 +40,6 @@ services:
     ports:
       - "10010:10010"
     depends_on:
-      user-db:
-        condition: service_healthy
       eureka-server:
         condition: service_started
 
@@ -80,8 +78,6 @@ services:
     depends_on:
       eureka-server:
         condition: service_started
-      kafka:
-        condition: service_healthy
 
   queue-manage-server:
     container_name: queue-manage-server
@@ -91,8 +87,6 @@ services:
     depends_on:
       eureka-server:
         condition: service_started
-      kafka:
-        condition: service_healthy
 
 networks:
   default:
