@@ -39,6 +39,7 @@ dependencies {
 	implementation project(':common:dtos')
 	implementation project(':common:jpa')
 	implementation project(':common:messaging')
+	implementation project(':common:monitoring')
 
 	// MVC
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -49,10 +50,6 @@ dependencies {
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-
-	// Monitoring
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {

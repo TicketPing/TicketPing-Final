@@ -2,37 +2,38 @@ global:
   scrape_interval: 15s
 
 scrape_configs:
+
+  - job_name: gateway-server
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [ 'host.docker.internal:10001' ]
+
   - job_name: auth-server
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets: [ 'host.docker.internal:10010' ]
 
-  - job_name: gateway-server
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: [ 'host.docker.internal:10020' ]
-
   - job_name: user-server
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:10021' ]
+      - targets: [ 'host.docker.internal:10011' ]
 
   - job_name: performance-server
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:10022' ]
+      - targets: [ 'host.docker.internal:10012' ]
 
   - job_name: order-server
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:10023' ]
+      - targets: [ 'host.docker.internal:10013' ]
 
   - job_name: payment-server
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:10024' ]
+      - targets: [ 'host.docker.internal:10014' ]
 
   - job_name: queue-manage-server
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: [ 'host.docker.internal:10031']
+      - targets: [ 'host.docker.internal:10015']

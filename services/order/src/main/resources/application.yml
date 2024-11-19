@@ -10,25 +10,11 @@ spring:
 
   config:
     import:
+      - "classpath:application-eureka.yml"
       - "classpath:application-jpa.yml"
       - "classpath:application-redis.yml"
       - "classpath:application-kafka.yml"
+      - "classpath:application-monitoring.yml"
 
 server:
   port: 10013
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server:10000/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-  prometheus:
-    enabled: true

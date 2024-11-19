@@ -8,6 +8,7 @@ include ("common:dtos")
 include ("common:jpa")
 include ("common:caching")
 include ("common:messaging")
+include ("common:monitoring")
 
 include ("services:auth")
 include ("services:user")
