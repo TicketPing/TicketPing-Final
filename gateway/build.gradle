@@ -22,7 +22,9 @@ ext {
 }
 
 dependencies {
+	// Common Module
 	implementation project(':common:caching')
+	implementation project(':common:monitoring')
 
 	// Cloud
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -39,10 +41,6 @@ dependencies {
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
-
-	// Monitoring
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 }
 
 dependencyManagement {
