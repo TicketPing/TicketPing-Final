@@ -7,10 +7,6 @@ import lombok.RequiredArgsConstructor;
 import messaging.utils.EventLogger;
 import messaging.utils.EventSerializer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import messaging.events.PaymentCompletedEvent;
-import messaging.utils.EventSerializer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
