@@ -4,10 +4,12 @@ import com.ticketPing.payment.application.client.OrderClient;
 import com.ticketPing.payment.application.dto.PaymentResponse;
 import com.ticketPing.payment.domain.model.entity.Payment;
 import com.ticketPing.payment.domain.service.PaymentDomainService;
+import com.ticketPing.payment.infrastructure.client.OrderClient;
 import messaging.events.PaymentCompletedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import messaging.events.PaymentCreatedEvent;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -27,7 +29,15 @@ public class PaymentApplicationService {
         // TODO: PG사 결제 요청
 
         Payment payment = paymentDomainService.createPayment(userId, orderInfo);
+
+        publishPaymentCreatedEvent(payment);
+
         return PaymentResponse.from(payment);
+    }
+
+    private void publishPaymentCreatedEvent(Payment payment) {
+        val event = PaymentCreatedEvent.create(payment.getId(), payment.getOrderId());
+        eventApplicationService.publishPaymentCreatedEvent(event);
     }
 
     @Transactional

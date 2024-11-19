@@ -3,6 +3,7 @@ package com.ticketPing.payment.domain.model.entity;
 import audit.BaseEntity;
 import com.ticketPing.payment.domain.model.enums.PaymentStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,13 +25,17 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "payment_id")
     private UUID id;
+
+    @NotNull
     private UUID userId;
+
+    @NotNull
     private PaymentStatus status;
 
+    @NotNull
     private UUID orderId;
-    private UUID performanceId;
-    private UUID performanceScheduleId;
-    private UUID seatId;
+
+    @NotNull
     private Long amount;
 
     public static Payment create(UUID userId, OrderInfoForPaymentResponse orderInfo) {
@@ -38,9 +43,6 @@ public class Payment extends BaseEntity {
                 .userId(userId)
                 .status(PaymentStatus.PENDING)
                 .orderId(orderInfo.id())
-                .performanceId(orderInfo.performanceId())
-                .performanceScheduleId(orderInfo.performanceScheduleId())
-                .seatId(orderInfo.seatId())
                 .amount(orderInfo.amount())
                 .build();
     }

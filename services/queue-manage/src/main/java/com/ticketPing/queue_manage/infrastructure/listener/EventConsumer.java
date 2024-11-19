@@ -44,7 +44,7 @@ public class EventConsumer {
     }
 
     private Mono<Void> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
-        log.info("Received message: {}, Offset: {}", record.value(), record.offset());
+        log.info("Received message from topic {}: {} (offset: {})", record.topic(), record.value(), record.offset());
         OrderCompletedEvent event = EventSerializer.deserialize(record.value(), OrderCompletedEvent.class);
         String tokenValue = generateTokenValue(event.userId(), event.performanceId());
 
