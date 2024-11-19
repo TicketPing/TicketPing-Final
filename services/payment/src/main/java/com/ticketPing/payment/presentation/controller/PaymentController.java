@@ -28,7 +28,7 @@ public class PaymentController {
                 .body(success(paymentApplicationService.requestPayment(userId, orderId)));
     }
 
-    @Operation(summary = "결제 상태 확인")
+    @Operation(summary = "PG사 결제 상태 확인")
     @GetMapping("/{paymentId}")
     public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(@Valid @PathVariable("paymentId") UUID paymentId) {
         return ResponseEntity
