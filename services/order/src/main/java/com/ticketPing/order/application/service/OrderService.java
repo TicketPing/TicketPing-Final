@@ -10,7 +10,7 @@ import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
 import com.ticketPing.order.infrastructure.service.RedisService;
-import events.OrderCompletedEvent;
+import messaging.events.OrderCompletedEvent;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
