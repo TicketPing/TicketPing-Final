@@ -35,7 +35,14 @@ dependencies {
 	// Monitoring
 	api 'org.springframework.boot:spring-boot-starter-actuator'
 	api 'io.micrometer:micrometer-registry-prometheus'
+
+	// Loki
 	api 'com.github.loki4j:loki-logback-appender:1.5.1'
+
+	// Zipkin
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.github.openfeign:feign-micrometer'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
 }
 
 tasks.named('test') {
