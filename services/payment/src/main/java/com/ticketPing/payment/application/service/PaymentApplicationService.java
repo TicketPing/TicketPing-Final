@@ -4,7 +4,6 @@ import com.ticketPing.payment.application.client.OrderClient;
 import com.ticketPing.payment.application.dto.PaymentResponse;
 import com.ticketPing.payment.domain.model.entity.Payment;
 import com.ticketPing.payment.domain.service.PaymentDomainService;
-import com.ticketPing.payment.infrastructure.client.OrderClient;
 import messaging.events.PaymentCompletedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
