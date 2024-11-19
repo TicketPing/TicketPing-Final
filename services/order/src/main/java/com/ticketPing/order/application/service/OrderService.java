@@ -1,6 +1,7 @@
 package com.ticketPing.order.application.service;
 
 import com.ticketPing.order.application.dtos.OrderInfoForPaymentResponse;
+import com.ticketPing.order.infrastructure.service.RedisLuaService;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.OrderResponse;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import caching.repository.RedisRepository;
 
 import static com.ticketPing.order.exception.OrderExceptionCase.*;
 
@@ -31,22 +33,26 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final EventApplicationService eventApplicationService;
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
+    private final RedisLuaService redisLuaService;
     private final PerformanceClient performanceClient;
 
-    private final static String TTL_PREFIX = "seat_ttl:";
+    private final static String SEAT_PREFIX = "{Seat}:seat:";
+    private final static String TTL_PREFIX = "{Seat}:seat_ttl:";
+    private final static String SEAT_LOCK_CACHE_EXPIRE_SECONDS = "30";
 
     @Transactional
     public OrderResponse createOrder(OrderCreateDto orderCreateRequestDto, UUID userId) {
         UUID scheduleId = orderCreateRequestDto.scheduleId();
         UUID seatId = orderCreateRequestDto.seatId();
 
-        // 루아스크립트로
-        // 좌석 선점 확인(캐시 상태 확인), 좌석 선점(캐시 변경, ttl 생성)
-        // 좌석 캐시 -> "seat:" + scheduleId + ":" + seatId
-        // 좌석 ttl -> TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId
+        Order order = saveOrderWithOrderSeat(seatId, userId);
 
-        return OrderResponse.from(saveOrderWithOrderSeat(seatId, userId));
+        String seatKey = SEAT_PREFIX + scheduleId + ":" + seatId;
+        String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + order.getId();
+        redisLuaService.updateSeatStatus(seatKey, ttlKey, SEAT_LOCK_CACHE_EXPIRE_SECONDS);
+
+        return OrderResponse.from(order);
     }
 
     @Transactional
@@ -59,7 +65,7 @@ public class OrderService {
         OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatRate(), orderData.cost());
         savedOrder.updateOrderSeat(orderSeat);
 
-        return order;
+        return savedOrder;
     }
 
     @Transactional(readOnly = true)
@@ -81,7 +87,7 @@ public class OrderService {
                 .toList();
 
         if(!duplicateOrders.isEmpty())
-            throw new ApplicationException(ORDER_ALREADY_OCCUPIED);
+            throw new ApplicationException(SEAT_ALREADY_TAKEN);
     }
 
     public List<OrderResponse> getUserOrders(UUID userId) {
@@ -101,10 +107,10 @@ public class OrderService {
         performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);  // 1. 좌석 db 업데이트 (kafka로 변경?)
 
         String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
-        redisService.deleteKey(ttlKey);
+        redisRepository.deleteKey(ttlKey);
 
         String counterKey = "AvailableSeats:" + performanceId;
-        redisService.decrement(counterKey);
+        redisRepository.decrement(counterKey);
 
         publishOrderCompletedEvent(orderId, performanceId);
     }

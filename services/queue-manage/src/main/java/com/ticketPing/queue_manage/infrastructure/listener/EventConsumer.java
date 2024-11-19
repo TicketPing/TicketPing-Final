@@ -1,7 +1,7 @@
 package com.ticketPing.queue_manage.infrastructure.listener;
 
 import static com.ticketPing.queue_manage.domain.model.enums.WorkingQueueTokenDeleteCase.ORDER_COMPLETED;
-import static com.ticketPing.queue_manage.domain.utils.TokenValueGenerator.generateTokenValue;
+import static com.ticketPing.queue_manage.common.utils.TokenValueGenerator.generateTokenValue;
 
 import com.ticketPing.queue_manage.application.service.WorkingQueueService;
 import java.time.Duration;

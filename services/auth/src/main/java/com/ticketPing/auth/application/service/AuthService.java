@@ -1,11 +1,11 @@
 package com.ticketPing.auth.application.service;
 
+import caching.repository.RedisRepository;
 import com.ticketPing.auth.application.client.UserClient;
 import com.ticketPing.auth.application.dto.LoginResponse;
 import com.ticketPing.auth.application.dto.UserCacheDto;
 import com.ticketPing.auth.infrastructure.security.JwtUtil;
 import com.ticketPing.auth.infrastructure.security.Role;
-import com.ticketPing.auth.infrastructure.service.RedisService;
 import com.ticketPing.auth.presentation.cases.AuthErrorCase;
 import com.ticketPing.auth.presentation.request.AuthLoginRequest;
 import exception.ApplicationException;
@@ -24,7 +24,7 @@ import user.UserResponse;
 public class AuthService {
     private final JwtUtil jwtUtil;
     private final UserClient userClient;
-    private final RedisService redisService;
+    private final RedisRepository redisRepository;
 
     public LoginResponse login(AuthLoginRequest authLoginRequest) {
         LoginRequest loginRequest = new LoginRequest(authLoginRequest.email(), authLoginRequest.password());
@@ -62,6 +62,6 @@ public class AuthService {
     }
 
     public void cacheUser(UserCacheDto userCacheDto, Duration duration) {
-        redisService.setValueWithTTL(userCacheDto.userId().toString(), userCacheDto, duration);
+        redisRepository.setValueWithTTL(userCacheDto.userId().toString(), userCacheDto, duration);
     }
 }

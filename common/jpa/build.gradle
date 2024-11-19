@@ -26,13 +26,16 @@ repositories {
 bootJar {
 	enabled = false
 }
+
 jar {
 	enabled = true
 }
 
-
 dependencies {
+	// JPA
 	api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// PostgreSQL
 	api 'org.postgresql:postgresql'
 }
 

@@ -37,8 +37,8 @@ out/
 .vscode/
 
 application-private.yml
-application-local.yml
+application**local.yml
 
 .env
 
-docker-compose-queue.yml
+docker-compose-test.yml

@@ -7,6 +7,10 @@ import messaging.utils.EventLogger;
 import messaging.utils.EventSerializer;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import messaging.utils.EventSerializer;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+import messaging.events.PaymentCompletedEvent;
 import messaging.topics.PaymentTopic;
 
 @Service

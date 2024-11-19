@@ -2,39 +2,15 @@ spring:
   application:
     name: queue-manage
 
-  data:
-    redis:
-      cluster:
-        nodes:
-          - host.docker.internal:7001
-          - host.docker.internal:7002
-          - host.docker.internal:7003
-          - host.docker.internal:7004
-          - host.docker.internal:7005
-          - host.docker.internal:7006
-
   config:
     import:
+      - "classpath:application-eureka.yml"
+      - "classpath:application-redis.yml"
       - "classpath:application-kafka.yml"
+      - "classpath:application-monitoring.yml"
 
 server:
-  port: 10031
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server:10000/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-  prometheus:
-    enabled: true
+  port: 10015
 
 token-value:
   secret-key: secret-key

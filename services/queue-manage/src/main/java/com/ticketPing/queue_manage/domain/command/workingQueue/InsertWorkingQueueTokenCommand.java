@@ -1,7 +1,7 @@
 package com.ticketPing.queue_manage.domain.command.workingQueue;
 
-import static com.ticketPing.queue_manage.infrastructure.enums.RedisKeyPrefix.WORKING_QUEUE;
-import static com.ticketPing.queue_manage.infrastructure.utils.ConfigHolder.workingQueueTokenTTL;
+import static caching.enums.RedisKeyPrefix.WORKING_QUEUE;
+import static com.ticketPing.queue_manage.common.utils.ConfigHolder.workingQueueTokenTTL;
 
 import com.ticketPing.queue_manage.domain.model.WorkingQueueToken;
 import lombok.AccessLevel;

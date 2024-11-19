@@ -1,6 +1,7 @@
 spring:
   application:
     name: user
+
   datasource:
     url: jdbc:postgresql://user-db:5432/postgres
     username: postgres
@@ -8,24 +9,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   base-package:
     jpa: com.ticketPing.performance.domain.entity
+
   config:
-    import: "classpath:application-jpa.yml"
+    import:
+      - "classpath:application-eureka.yml"
+      - "classpath:application-jpa.yml"
+      - "classpath:application-monitoring.yml"
 
 server:
-  port: 10021
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://eureka-server:10000/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: always
-  prometheus:
-    enabled: true
+  port: 10011

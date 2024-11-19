@@ -1,0 +1,12 @@
+spring:
+  data:
+    redis:
+      cluster:
+        max-redirects: 3
+        nodes:
+          - host.docker.internal:7001
+          - host.docker.internal:7002
+          - host.docker.internal:7003
+          - host.docker.internal:7004
+          - host.docker.internal:7005
+          - host.docker.internal:7006

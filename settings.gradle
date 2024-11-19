@@ -2,13 +2,13 @@ rootProject.name = 'ticketPing'
 
 include ("eureka-server")
 include("gateway")
-include("api-server")
 
 include ("common:core")
+include ("common:dtos")
 include ("common:jpa")
 include ("common:caching")
 include ("common:messaging")
-include ("common:dtos")
+include ("common:monitoring")
 
 include ("services:auth")
 include ("services:user")

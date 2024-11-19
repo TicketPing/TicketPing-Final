@@ -1,5 +1,6 @@
 package com.ticketPing.payment.application.service;
 
+import com.ticketPing.payment.application.client.OrderClient;
 import com.ticketPing.payment.application.dto.PaymentResponse;
 import com.ticketPing.payment.domain.model.entity.Payment;
 import com.ticketPing.payment.domain.service.PaymentDomainService;
@@ -46,6 +47,7 @@ public class PaymentApplicationService {
         Payment payment = paymentDomainService.completePayment(paymentId);
 
         publishPaymentCompletedEvent(payment);
+
         return PaymentResponse.from(payment);
     }
 

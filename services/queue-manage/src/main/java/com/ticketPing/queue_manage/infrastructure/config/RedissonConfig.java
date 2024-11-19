@@ -1,6 +1,5 @@
 package com.ticketPing.queue_manage.infrastructure.config;
 
-import com.ticketPing.queue_manage.infrastructure.enums.RedisClusterProperties;
 import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -9,6 +8,7 @@ import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import caching.config.RedisClusterProperties;
 
 @Configuration
 @RequiredArgsConstructor
