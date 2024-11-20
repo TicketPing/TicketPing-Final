@@ -33,9 +33,8 @@ public class JwtFilter implements ServerSecurityContextRepository {
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
             String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                UserCacheDto userCache = authClient.validateToken(token).getBody();
+            if (authHeader != null) {
+                UserCacheDto userCache = authClient.validateToken(authHeader).getBody().getData();
 
                 Collection<GrantedAuthority> roleCollection = List.of(userCache::role);
                 UsernamePasswordAuthenticationToken authentication =

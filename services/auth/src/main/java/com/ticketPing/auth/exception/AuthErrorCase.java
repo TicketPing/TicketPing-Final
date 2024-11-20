@@ -14,7 +14,8 @@ public enum AuthErrorCase implements ErrorCase {
     UNSUPPORTED_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "지원되지 않는 로그인 토큰입니다."),
     WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "로그인 토큰 타입이 맞지 않습니다."),
     INVALID_ROLE(HttpStatus.UNAUTHORIZED, "유효하지 않은 사용자 역할입니다."),
-    INVALID_USER_ID(HttpStatus.UNAUTHORIZED, "유효하지 않은 userId 입니다.");
+    INVALID_USER_ID(HttpStatus.UNAUTHORIZED, "유효하지 않은 userId 입니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "리프레시 토큰이 존재하지 않습니다. 다시 로그인해주세요.");
 
     private final HttpStatus httpStatus;
     private final String message;

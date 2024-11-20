@@ -9,12 +9,14 @@ import com.ticketPing.auth.exception.AuthErrorCase;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import user.UserLookupRequest;
 import user.UserResponse;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,8 +50,33 @@ public class AuthService {
         redisRepository.setValueWithTTL(key , refreshToken, Duration.ofMillis(refreshTokenExpiration));
     }
 
-    public UserCacheDto validateToken(String jwtToken) {
-        Claims claims = tokenService.extractClaims(jwtToken);
+    public LoginResponse refreshAccessToken(String token) {
+        String accessToken = extractAccessToken(token);
+        Claims claims;
+        try {
+            claims = tokenService.getClaimsFromToken(accessToken);
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
+        }
+
+        String userId = String.valueOf(parseUserId(claims));
+        validateRefreshToken(userId);
+
+        String newAccessToken = tokenService.createAccessToken(userId, parseUserRole((claims)));
+
+        return new LoginResponse(newAccessToken);
+    }
+
+    private void validateRefreshToken(String userId) {
+        String key = "user:" + userId + ":refresh_token";
+        String refreshToken = Optional.ofNullable(redisRepository.getValueAsClass(key, String.class))
+                .orElseThrow(() -> new ApplicationException(AuthErrorCase.REFRESH_TOKEN_NOT_FOUND));
+        tokenService.validateToken(refreshToken);
+    }
+
+    public UserCacheDto validateToken(String token) {
+        String accessToken = extractAccessToken(token);
+        Claims claims = tokenService.extractClaims(accessToken);
 
         UUID userId = parseUserId(claims);
         Role role = parseUserRole((claims));
@@ -57,6 +84,12 @@ public class AuthService {
         validateUser(userId, role);
 
         return new UserCacheDto(userId, role.getValue());
+    }
+
+    private String extractAccessToken(String token) {
+        if (token == null || !token.startsWith("Bearer "))
+            throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
+        return  token.substring(7);
     }
 
     private UUID parseUserId(Claims claims) {
