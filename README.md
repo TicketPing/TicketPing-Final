@@ -299,36 +299,37 @@
         
   </details>
 
-  <details>
-    <summary>
-      [결제] CORS 에러
-    </summary>
-    
-  - 문제
-          - CORS 설정을 했음에도 배포된 클라이언트가 로컬의 서버와 통신하려고 할 때 CORS 에러 발생
-          
-          
-          has been blocked by CORS policy
-          : Response to preflight request doesn't pass access control check
-          : No 'Access-Control-Allow-Origin' header is present on the requested resource. 
-          If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
-          
-          
-  - 원인
-          - 로컬의 서버가 프라이빗 서버로 인식되기 때문에 배포된 퍼블릭 클라이언트와 통신이 막힘.
-  - 해결
-          - ngrox으로 localhost를 퍼블릭으로 포워딩해서 클라이언트와 통신.
-          
-    ![cors트러블슈팅1](https://github.com/user-attachments/assets/0d8e3d2a-3863-4c58-b41f-e232080a9b2c)
-  </details>
-    
-
   <br>
   
 ## 🙋🏻 CONTRIBUTORS
-| 팀원명 | 포지션 | 담당(개인별 기여점) | 깃허브 링크 |
-| --- | --- | --- | --- |
-| 김지희 | `팀장`<br>인증/인가<br> 회원 가입, 로그인 | ▶ **사용자 관리** <br>- 회원 가입, 로그인 <br> - gateway 회원 인가 필터 구현 <br> ▶ **공연 서비스** <br> - 공연, 공연장, 공연 일정, 좌석 더미 데이터 생성 <br> - 공연, 공연 일정 조회 구현 <br> - 공연 좌석 정보 캐싱 |[ 지희's Github ](https://github.com/mii2026/ ) |
-| 강태원 | `부팀장` <br> - 대기열 서비스 <br> - 대기열 요청 선처리 필터| **▶ 대기열 관리**  <br>  - 대기열 진입, 대기열 상태, 작업열 토큰 조회 구현 <br> - 결제 및 작업열 토큰 만료 이벤트 시 토큰 이동 <br> **▶ 대기열 요청 선처리 필터 (게이트웨이)** <br> - 대기열 및 예매 API 요청 선처리 필터 구현 | [ 태원's Github ](https://github.com/rivertw777) |
-| 김례화 | `팀원` <br>  - 결제 서비스|  ▶ **결제 서비스 화면 구현** <br>  - 결제 플로우 React로 화면 구현 <br> ▶ **PG사(Stripe) 연동** <br> - 결제 요청 <br> - 결제 승인 확인 | [ 례화's Github ](https://github.com/ryehwa) |
-| 장숭혁 | `팀원` <br> - 예매 서비스 | ▶ **예매 서비스** <br> - 좌석 선점 <br> - 예매 정보 조회 | [ 숭혁's Github ](https://github.com/Mcgeolypazun)|
+<div align="center">
+<table style="width: 100%">
+    <tr>
+        <th style="text-align: center;">팀원</th>
+        <th style="text-align: center;">담당</th>
+        <th style="text-align: center;">깃허브 링크</th>
+    </tr>
+    <tr>
+        <td align="center"><img src="https://avatars.githubusercontent.com/rivertw777" width="100px;" alt=""/><br /><sub><b>강태원</b></sub></a></td>
+        <td>
+          - 대기열 서비스 개발 <br>
+          - 결제 서비스 개발 <br>
+          - 예매 API 요청 선처리 필터 개발 (게이트웨이) <br>
+          - 공통 모듈 관리 <br>
+          - Redis 클러스터 구축 <br>
+        </td>
+        <td align="center"><a href="https://github.com/rivertw777">GitHub</a></td>
+    </tr>
+    <tr>
+        <td align="center"><img src="https://avatars.githubusercontent.com/mii2026" width="100px;" alt=""/><br /><sub><b>김지희</b></sub></a></td>
+        <td>
+          - 회원, 인증 서비스 개발 <br>
+          - 공연 서비스 개발 <br>
+          - 주문 서비스 개발 <br>
+          - 게이트웨이 개발 <br>
+          - 모니터링 시스템 구축 <br>
+        </td>
+        <td align="center"><a href="https://github.com/mii2026">GitHub</a></td>
+    </tr>
+</table>
+</div>
