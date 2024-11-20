@@ -1,4 +1,4 @@
-package com.ticketPing.auth.application.dto;
+package auth;
 
 import java.util.UUID;
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ticketPing.user.presentation.request.CreateUserRequest;
 
 import java.util.UUID;
-import user.LoginRequest;
+import user.UserLookupRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUserByEmailAndPassword(LoginRequest request) {
+    public UserResponse getUserByEmailAndPassword(UserLookupRequest request) {
         User user = findUserByEmail(request.email());
 
         if(!passwordEncoder.matches(request.password(), user.getPassword()))

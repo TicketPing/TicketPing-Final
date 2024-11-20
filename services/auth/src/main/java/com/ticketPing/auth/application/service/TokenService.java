@@ -1,6 +1,7 @@
-package com.ticketPing.auth.infrastructure.security;
+package com.ticketPing.auth.application.service;
 
-import com.ticketPing.auth.presentation.cases.AuthErrorCase;
+import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.application.service.enums.Role;
 import exception.ApplicationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -12,34 +13,48 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
+public class TokenService {
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_EXPIRATION = 60 * 60 * 1000L;
 
-    private Key secretKey;
+    private final Key secretKey;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
+    public TokenService(@Value("${jwt.secret}") String secret,
+                        @Value("${jwt.accessToken.expiration}") long accessTokenExpiration,
+                        @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
+        this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public String createToken(String userId, Role role) {
+    public String createAccessToken(String userId, Role role) {
         Date now = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(userId)
                         .claim(AUTHORIZATION_KEY, role)
-                        .setExpiration(new Date(now.getTime() + TOKEN_EXPIRATION))
                         .setIssuedAt(new Date(now.getTime()))
+                        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }
 
-    public boolean validateToken(String token) {
+    public String createRefreshToken(String userId) {
+        Date now = new Date();
+        return Jwts.builder()
+                        .setSubject(userId)
+                        .setIssuedAt(new Date(now.getTime()))
+                        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
+                        .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                        .compact();
+    }
+
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
@@ -47,11 +62,16 @@ public class JwtUtil {
         } catch (UnsupportedJwtException e) {
             throw new ApplicationException(AuthErrorCase.UNSUPPORTED_AUTHENTICATION);
         } catch (IllegalArgumentException e) {
-            throw new ApplicationException(AuthErrorCase.ILLEGAL_CLAIM);
+            throw new ApplicationException(AuthErrorCase.WRONG_TYPE_TOKEN);
         }
     }
 
     public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+    }
+
+    public Claims extractClaims(String jwtToken) {
+        validateToken(jwtToken);
+        return getClaimsFromToken(jwtToken);
     }
 }

@@ -1,67 +1,118 @@
 package com.ticketPing.auth.application.service;
 
+import auth.UserCacheDto;
 import caching.repository.RedisRepository;
 import com.ticketPing.auth.application.client.UserClient;
 import com.ticketPing.auth.application.dto.LoginResponse;
-import com.ticketPing.auth.application.dto.UserCacheDto;
-import com.ticketPing.auth.infrastructure.security.JwtUtil;
-import com.ticketPing.auth.infrastructure.security.Role;
-import com.ticketPing.auth.presentation.cases.AuthErrorCase;
-import com.ticketPing.auth.presentation.request.AuthLoginRequest;
+import com.ticketPing.auth.application.service.enums.Role;
+import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.presentation.request.LoginRequest;
 import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
-import java.util.Date;
-import java.util.UUID;
-import user.LoginRequest;
+import user.UserLookupRequest;
 import user.UserResponse;
 
+import java.time.Duration;
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
-@RequiredArgsConstructor
 public class AuthService {
-    private final JwtUtil jwtUtil;
+    private final TokenService tokenService;
     private final UserClient userClient;
     private final RedisRepository redisRepository;
+    private final long refreshTokenExpiration;
 
-    public LoginResponse login(AuthLoginRequest authLoginRequest) {
-        LoginRequest loginRequest = new LoginRequest(authLoginRequest.email(), authLoginRequest.password());
-        UserResponse userResponse = userClient.getUserByEmailAndPassword(loginRequest).getData();
-
-        cacheUser(new UserCacheDto(userResponse.userId(), Role.USER.getValue()), Duration.ofSeconds(3600));
-
-        String jwtToken = jwtUtil.createToken(userResponse.userId().toString(), Role.USER);
-
-        return new LoginResponse(jwtToken);
+    public AuthService(TokenService tokenService, UserClient userClient, RedisRepository redisRepository,
+                       @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
+        this.tokenService = tokenService;
+        this.userClient = userClient;
+        this.redisRepository = redisRepository;
+        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public UserCacheDto validateToken(String jwtToken) {
-        jwtUtil.validateToken(jwtToken);
-        Claims claims = jwtUtil.getClaimsFromToken(jwtToken);
-        UUID userId = UUID.fromString(claims.getSubject());
-        String role = claims.get("auth", String.class);
+    public LoginResponse login(LoginRequest loginRequest) {
+        UserLookupRequest request = new UserLookupRequest(loginRequest.email(), loginRequest.password());
+        UserResponse userResponse = userClient.getUserByEmailAndPassword(request).getData();
+
+        String accessToken = tokenService.createAccessToken(String.valueOf(userResponse.userId()), Role.USER);
+        createRefreshToken(String.valueOf(userResponse.userId()));
+
+        return new LoginResponse(accessToken);
+    }
+
+    private void createRefreshToken(String userId) {
+        String refreshToken = tokenService.createRefreshToken(userId);
+        String key = "user:" + userId + ":refresh_token";
+        redisRepository.setValueWithTTL(key , refreshToken, Duration.ofMillis(refreshTokenExpiration));
+    }
+
+    public LoginResponse refreshAccessToken(String token) {
+        String accessToken = extractAccessToken(token);
+        Claims claims;
+        try {
+            claims = tokenService.getClaimsFromToken(accessToken);
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
+        }
+
+        String userId = String.valueOf(parseUserId(claims));
+        validateRefreshToken(userId);
+
+        String newAccessToken = tokenService.createAccessToken(userId, parseUserRole((claims)));
+
+        return new LoginResponse(newAccessToken);
+    }
+
+    private void validateRefreshToken(String userId) {
+        String key = "user:" + userId + ":refresh_token";
+        String refreshToken = Optional.ofNullable(redisRepository.getValueAsClass(key, String.class))
+                .orElseThrow(() -> new ApplicationException(AuthErrorCase.REFRESH_TOKEN_NOT_FOUND));
+        tokenService.validateToken(refreshToken);
+    }
+
+    public UserCacheDto validateToken(String token) {
+        String accessToken = extractAccessToken(token);
+        Claims claims = tokenService.extractClaims(accessToken);
+
+        UUID userId = parseUserId(claims);
+        Role role = parseUserRole((claims));
 
         validateUser(userId, role);
 
-        UserCacheDto userCacheDto = new UserCacheDto(userId, role);
-        cacheUser(userCacheDto, Duration.ofSeconds((claims.getExpiration().getTime() - new Date().getTime()) / 1000));
-
-        return userCacheDto;
+        return new UserCacheDto(userId, role.getValue());
     }
 
-    public void validateUser(UUID userId, String role) {
-        Role enumRole = Role.valueOf(role);
+    private String extractAccessToken(String token) {
+        if (token == null || !token.startsWith("Bearer "))
+            throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
+        return  token.substring(7);
+    }
 
-        if(enumRole.equals(Role.USER)) {
-            userClient.getUser(userId);
-        } else {
+    private UUID parseUserId(Claims claims) {
+        try {
+            return UUID.fromString(claims.getSubject());
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException(AuthErrorCase.INVALID_USER_ID);
+        }
+    }
+
+    private Role parseUserRole(Claims claims) {
+        try {
+            return Role.valueOf(claims.get("auth", String.class));
+        } catch (IllegalArgumentException | NullPointerException e) {
             throw new ApplicationException(AuthErrorCase.INVALID_ROLE);
         }
     }
 
-    public void cacheUser(UserCacheDto userCacheDto, Duration duration) {
-        redisRepository.setValueWithTTL(userCacheDto.userId().toString(), userCacheDto, duration);
+    private void validateUser(UUID userId, Role role) {
+        if(role.equals(Role.USER)) {
+            userClient.getUser(userId).getData();
+        } else {
+            throw new ApplicationException(AuthErrorCase.INVALID_ROLE);
+        }
     }
 }

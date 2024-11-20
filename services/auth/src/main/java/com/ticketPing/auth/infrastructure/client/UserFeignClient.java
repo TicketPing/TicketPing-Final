@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.UUID;
 import response.CommonResponse;
-import user.LoginRequest;
+import user.UserLookupRequest;
 import user.UserResponse;
 
 @FeignClient(name = "user")
 public interface UserFeignClient extends UserClient {
     @GetMapping("/api/v1/users/login")
-    CommonResponse<UserResponse> getUserByEmailAndPassword(@RequestBody LoginRequest loginRequest);
+    CommonResponse<UserResponse> getUserByEmailAndPassword(@RequestBody UserLookupRequest userLookupRequest);
 
     @GetMapping("/api/v1/users/{userId}")
     CommonResponse<UserResponse> getUser(@RequestParam("userId") UUID userId);

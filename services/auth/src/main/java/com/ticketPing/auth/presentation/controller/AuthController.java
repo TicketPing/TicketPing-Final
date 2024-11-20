@@ -1,10 +1,11 @@
 package com.ticketPing.auth.presentation.controller;
 
 import com.ticketPing.auth.application.dto.LoginResponse;
-import com.ticketPing.auth.application.dto.UserCacheDto;
+import auth.UserCacheDto;
 import com.ticketPing.auth.application.service.AuthService;
-import com.ticketPing.auth.presentation.cases.AuthSuccessCase;
-import com.ticketPing.auth.presentation.request.AuthLoginRequest;
+import com.ticketPing.auth.presentation.request.LoginRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,19 +20,31 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "사용자 로그인")
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody @Valid final AuthLoginRequest authLoginRequest) {
-        LoginResponse loginResponse = authService.login(authLoginRequest);
+    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody @Valid final LoginRequest loginRequest) {
+        LoginResponse loginResponse = authService.login(loginRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(AuthSuccessCase.SUCCESS_LOGIN, loginResponse));
+                .body(CommonResponse.success(loginResponse));
     }
 
-    @GetMapping("/validate")
-    public ResponseEntity<UserCacheDto> validateToken(String token) {
+    @Operation(summary = "토큰 검증")
+    @PostMapping("/validate")
+    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@Parameter(hidden = true) @RequestHeader(value = "Authorization") String token) {
         UserCacheDto response = authService.validateToken(token);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(response));
+    }
+
+    @Operation(summary = "토큰 재발급")
+    @PostMapping("/refresh")
+    public ResponseEntity<CommonResponse<LoginResponse>> getUser(@Parameter(hidden = true) @RequestHeader(value = "Authorization") String token) {
+        LoginResponse loginResponse = authService.refreshAccessToken(token);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success(loginResponse));
     }
 
 }
