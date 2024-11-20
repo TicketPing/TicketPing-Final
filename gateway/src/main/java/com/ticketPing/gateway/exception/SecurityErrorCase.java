@@ -1,12 +1,13 @@
-package com.ticketPing.gateway.presentation.cases;
+package com.ticketPing.gateway.exception;
 
+import cases.ErrorCase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum SecurityErrorCase implements ErrorCase{
+public enum SecurityErrorCase implements ErrorCase {
 
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "JWT Token이 유효하지 않습니다."),
     EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT Token 만료되었습니다."),
@@ -15,4 +16,5 @@ public enum SecurityErrorCase implements ErrorCase{
 
     private final HttpStatus httpStatus;
     private final String message;
+
 }

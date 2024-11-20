@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class RedisRepository {
 
+
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
