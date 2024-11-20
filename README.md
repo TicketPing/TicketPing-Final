@@ -1,14 +1,17 @@
 ## 🎫 캐치! 티켓핑 : **대규모 트래픽 처리 공연 예매 서비스**
-
-![티켓핑 배경 이미지](https://github.com/user-attachments/assets/57572f9b-6c7c-4ffd-aa50-e32c2056341f)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/57572f9b-6c7c-4ffd-aa50-e32c2056341f" width="80%" alt="티켓핑 배경 이미지">
+</p>
+<br>
 
 ## 👋🏻 프로젝트 소개
 
 <aside>
-
-대규모 트래픽에도 안정적인 예매가 가능한 서비스를 제공하는 MSA 기반의 공연 예매 시스템입니다.
-
+티켓핑은 대규모 트래픽에도 안정적인 예매가 가능한 서비스를 제공하는 MSA 기반의 공연 예매 시스템입니다.
 </aside>
+
+<br>
+<br>
 
 ## 🎯 프로젝트 목표
 
@@ -46,8 +49,9 @@
 
 ## 🛠️ 인프라 설계도
 
-![ticketping_sa-최종](https://github.com/user-attachments/assets/a0352dd0-5074-49bc-9ebb-458396f03726)
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a0352dd0-5074-49bc-9ebb-458396f03726" height="80%" width="80%" alt="sa">
+</p>
 <br>
 
 ## 💻 주요 기능
