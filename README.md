@@ -47,10 +47,10 @@
     
 <br>
 
-## 🛠️ 인프라 설계도
+## 🛠️ 시스템 아키텍처
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a0352dd0-5074-49bc-9ebb-458396f03726" height="80%" width="80%" alt="sa">
+  <img src="https://github.com/user-attachments/assets/e2c614e9-28b3-4d37-9e2c-8fabeeb2864d" height="90%" width="90%" alt="sa">
 </p>
 <br>
 
@@ -62,7 +62,7 @@
 <details>
   <summary> 대기열 시퀀스 다이어그램</summary> 
   
-![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/1442b0f7-35dc-448a-a051-33d648bb9236)
+![sa](https://github.com/user-attachments/assets/e47eeb78-a193-4369-bc71-4f412c8ae30a)
 
 </details>
 
