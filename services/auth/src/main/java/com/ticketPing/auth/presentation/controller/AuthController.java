@@ -1,10 +1,10 @@
 package com.ticketPing.auth.presentation.controller;
 
 import com.ticketPing.auth.application.dto.LoginResponse;
-import com.ticketPing.auth.application.dto.UserCacheDto;
+import auth.UserCacheDto;
 import com.ticketPing.auth.application.service.AuthService;
-import com.ticketPing.auth.presentation.cases.AuthSuccessCase;
-import com.ticketPing.auth.presentation.request.AuthLoginRequest;
+import com.ticketPing.auth.presentation.request.LoginRequest;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,18 +19,21 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "사용자 로그인")
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody @Valid final AuthLoginRequest authLoginRequest) {
-        LoginResponse loginResponse = authService.login(authLoginRequest);
+    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody @Valid final LoginRequest loginRequest) {
+        LoginResponse loginResponse = authService.login(loginRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(AuthSuccessCase.SUCCESS_LOGIN, loginResponse));
+                .body(CommonResponse.success(loginResponse));
     }
 
+    @Operation(summary = "토큰 검증")
     @GetMapping("/validate")
     public ResponseEntity<UserCacheDto> validateToken(String token) {
         UserCacheDto response = authService.validateToken(token);
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body(response);
     }
 

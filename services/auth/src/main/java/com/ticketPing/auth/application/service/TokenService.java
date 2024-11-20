@@ -1,6 +1,7 @@
-package com.ticketPing.auth.infrastructure.security;
+package com.ticketPing.auth.application.service;
 
-import com.ticketPing.auth.presentation.cases.AuthErrorCase;
+import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.application.service.enums.Role;
 import exception.ApplicationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -12,14 +13,14 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
+public class TokenService {
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_EXPIRATION = 60 * 60 * 1000L;
+    private static final long TOKEN_EXPIRATION = 60 * 60 * 1000L;
 
-    private Key secretKey;
+    private final Key secretKey;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
+    public TokenService(@Value("${jwt.secret}") String secret) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
     }
@@ -36,10 +37,9 @@ public class JwtUtil {
                         .compact();
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-            return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
         } catch (ExpiredJwtException e) {
@@ -47,11 +47,16 @@ public class JwtUtil {
         } catch (UnsupportedJwtException e) {
             throw new ApplicationException(AuthErrorCase.UNSUPPORTED_AUTHENTICATION);
         } catch (IllegalArgumentException e) {
-            throw new ApplicationException(AuthErrorCase.ILLEGAL_CLAIM);
+            throw new ApplicationException(AuthErrorCase.WRONG_TYPE_TOKEN);
         }
     }
 
     public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
+    }
+
+    public Claims extractClaims(String jwtToken) {
+        validateToken(jwtToken);
+        return getClaimsFromToken(jwtToken);
     }
 }

@@ -1,4 +1,4 @@
-package com.ticketPing.auth.presentation.cases;
+package com.ticketPing.auth.exception;
 
 public class LoginErrorMessage {
     public static final String EMAIL_REQUIRED = "Email is required";

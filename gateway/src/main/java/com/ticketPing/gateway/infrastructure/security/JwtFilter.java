@@ -1,13 +1,9 @@
 package com.ticketPing.gateway.infrastructure.security;
 
-import caching.repository.RedisRepository;
-import com.ticketPing.gateway.application.dto.UserCache;
-import com.ticketPing.gateway.exception.ApplicationException;
-import com.ticketPing.gateway.infrastructure.utils.ResponseWriter;
-import com.ticketPing.gateway.presentation.cases.SecurityErrorCase;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import auth.UserCacheDto;
+import com.ticketPing.gateway.infrastructure.client.AuthClient;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,23 +14,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.security.Key;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter implements ServerSecurityContextRepository {
-    private Key secretKey;
 
-    private RedisRepository redisRepository;
-
-    public JwtFilter(@Value("${jwt.secret}") String secret, RedisRepository redisRepository, ResponseWriter responseWriter) {
-        byte[] bytes = Base64.getDecoder().decode(secret);
-        this.secretKey = Keys.hmacShaKeyFor(bytes);
-        this.redisRepository = redisRepository;
-    }
+    @Lazy
+    private final AuthClient authClient;
 
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext context) {
@@ -47,19 +35,15 @@ public class JwtFilter implements ServerSecurityContextRepository {
 
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
-                Claims claims = getClaims(token);
-                String userId = claims.getSubject();
-
-                UserCache userCache = Optional.ofNullable(
-                        redisRepository.getValueAsClass(userId, UserCache.class)
-                ).orElseThrow(() -> new RuntimeException("캐시 없음"));
+                UserCacheDto userCache = authClient.validateToken(token).getBody();
 
                 Collection<GrantedAuthority> roleCollection = List.of(userCache::role);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, roleCollection);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(userCache.userId(), null, roleCollection);
 
                 exchange.mutate()
                         .request(r -> r.headers(headers -> {
-                            headers.add("X_User_Id", userId);
+                            headers.add("X_User_Id", String.valueOf(userCache.userId()));
                             headers.add("X_User_Role", userCache.role());
                         }))
                         .build();
@@ -69,20 +53,6 @@ public class JwtFilter implements ServerSecurityContextRepository {
             }
 
             return Mono.empty();
-    }
-
-    public Claims getClaims(String token) {
-        try {
-            return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new ApplicationException(SecurityErrorCase.INVALID_TOKEN);
-        } catch (ExpiredJwtException e) {
-            throw new ApplicationException(SecurityErrorCase.EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new ApplicationException(SecurityErrorCase.UNSUPPORTED_AUTHENTICATION);
-        } catch (IllegalArgumentException e) {
-            throw new ApplicationException(SecurityErrorCase.ILLEGAL_CLAIM);
-        }
     }
 
 }
