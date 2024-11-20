@@ -29,7 +29,9 @@ public class Order extends BaseEntity {
     private UUID scheduleId;
     private UUID companyId;
     private UUID performanceId;
+    private UUID paymentId;
     private String performanceName;
+    // paymentId, amount
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_seat_id")

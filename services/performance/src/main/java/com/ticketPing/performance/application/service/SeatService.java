@@ -14,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
+import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
+
 @Service
 @RequiredArgsConstructor
 public class SeatService {
@@ -48,7 +51,7 @@ public class SeatService {
 
     @Transactional
     public List<SeatResponse> getAllScheduleSeats(UUID scheduleId) {
-        Set<String> ids = redisRepository.getKeys("seat:" + scheduleId + ":*");
+        Set<String> ids = redisRepository.getKeys(SEAT_CACHE.getValue() + scheduleId + ":*");
         if(ids.isEmpty()) {
             throw new ApplicationException(SeatExceptionCase.SEAT_CACHE_NOT_FOUND);
         }
@@ -65,14 +68,14 @@ public class SeatService {
             availableSeats += seats.stream().filter(s -> !s.getSeatState()).count();
 
             // 좌석 캐싱
-            String prefix = "{Seat}:seat:" + schedule.getId() + ":";
+            String prefix = SEAT_CACHE.getValue() + schedule.getId() + ":";
             Map<String, Object> seatMap = new HashMap<>();
             seats.forEach(seat -> {seatMap.put(prefix+seat.getId(), SeatResponse.of(seat));});
             redisRepository.setValues(seatMap);
         }
 
         // counter 생성
-        redisRepository.setValue("{PERFORMANCE}:AvailableSeats:" + performanceId, String.valueOf(availableSeats));
+        redisRepository.setValue(AVAILABLE_SEATS.getValue() + performanceId, availableSeats);
     }
 
     @Transactional

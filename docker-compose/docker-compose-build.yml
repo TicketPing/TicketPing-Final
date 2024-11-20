@@ -3,48 +3,48 @@ version: '3.8'
 services:
   eureka-server:
     build:
-      context: ./eureka-server
+      context: ../eureka-server
       dockerfile: Dockerfile
     image: ticketping/eureka-server
 
   gateway-server:
     build:
-      context: ./gateway
+      context: ../gateway
       dockerfile: Dockerfile
     image: ticketping/gateway-server
 
   auth-server:
     build:
-      context: ./services/auth
+      context: ../services/auth
       dockerfile: Dockerfile
     image: ticketping/auth-server
 
   user-server:
     build:
-      context: ./services/user
+      context: ../services/user
       dockerfile: Dockerfile
     image: ticketping/user-server
 
   performance-server:
     build:
-      context: ./services/performance
+      context: ../services/performance
       dockerfile: Dockerfile
     image: ticketping/performance-server
 
   order-server:
     build:
-      context: ./services/order
+      context: ../services/order
       dockerfile: Dockerfile
     image: ticketping/order-server
 
   payment-server:
     build:
-      context: ./services/payment
+      context: ../services/payment
       dockerfile: Dockerfile
     image: ticketping/payment-server
 
   queue-manage-server:
     build:
-      context: ./services/queue-manage
+      context: ../services/queue-manage
       dockerfile: Dockerfile
     image: ticketping/queue-manage-server
