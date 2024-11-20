@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.UUID;
 import caching.repository.RedisRepository;
 
+import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
+import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
 import static com.ticketPing.order.exception.OrderExceptionCase.*;
 
 @Service
@@ -36,9 +38,9 @@ public class OrderService {
     private final RedisLuaService redisLuaService;
     private final PerformanceClient performanceClient;
 
-    private final static String SEAT_PREFIX = "{Seat}:seat:";
+    private final static String SEAT_PREFIX = SEAT_CACHE.getValue();
     private final static String TTL_PREFIX = "{Seat}:seat_ttl:";
-    private final static String SEAT_LOCK_CACHE_EXPIRE_SECONDS = "30";
+    private final static String SEAT_LOCK_CACHE_EXPIRE_SECONDS = "300";
 
     @Transactional
     public OrderResponse createOrder(OrderCreateDto orderCreateRequestDto, UUID userId) {
@@ -108,10 +110,10 @@ public class OrderService {
         String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
         redisRepository.deleteKey(ttlKey);
 
-        String counterKey = "AvailableSeats:" + performanceId;
+        String counterKey = AVAILABLE_SEATS.getValue() + performanceId;
         redisRepository.decrement(counterKey);
 
-        publishOrderCompletedEvent(orderId, performanceId);
+        publishOrderCompletedEvent(order.getUserId(), performanceId);
     }
 
     @Transactional(readOnly = true)

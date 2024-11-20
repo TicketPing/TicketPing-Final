@@ -17,7 +17,9 @@ docker compose -f docker-compose-redis.yml up -d
 sleep 5
 
 echo "5. Building Gradle project..."
+cd ..
 ./gradlew build -x test
+cd docker-compose
 
 echo "6. Building Docker images..."
 docker compose -f docker-compose-build.yml build

@@ -12,3 +12,6 @@ docker compose -f docker-compose-redis.yml down
 
 echo "5. Closing application services..."
 docker compose down
+
+echo "6. Remove unusing docker volume"
+docker volume ls -qf dangling=true | xargs -r docker volume rm

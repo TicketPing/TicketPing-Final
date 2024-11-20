@@ -39,6 +39,6 @@ out/
 application-private.yml
 application**local.yml
 
-.env
+docker-compose/.env
 
 docker-compose-test.yml
