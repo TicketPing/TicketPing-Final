@@ -314,9 +314,10 @@
         <td>
           - 대기열 서비스 개발 <br>
           - 결제 서비스 개발 <br>
-          - 예매 API 요청 선처리 필터 개발 (게이트웨이) <br>
+          - 게이트웨이 예매 API 선처리 필터 개발 <br>
           - 공통 모듈 관리 <br>
-          - Redis 클러스터 구축 <br>
+          - Redis 설정, 클러스터 구축 <br>
+          - Kafka 설정 <br>
         </td>
         <td align="center"><a href="https://github.com/rivertw777">GitHub</a></td>
     </tr>
@@ -326,7 +327,7 @@
           - 회원, 인증 서비스 개발 <br>
           - 공연 서비스 개발 <br>
           - 주문 서비스 개발 <br>
-          - 게이트웨이 개발 <br>
+          - 게이트웨이 JWT 인증 필터 개발 <br>
           - 모니터링 시스템 구축 <br>
         </td>
         <td align="center"><a href="https://github.com/mii2026">GitHub</a></td>
