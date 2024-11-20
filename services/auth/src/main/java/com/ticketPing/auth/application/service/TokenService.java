@@ -16,23 +16,38 @@ import java.util.Date;
 public class TokenService {
     public static final String AUTHORIZATION_KEY = "auth";
     public static final String BEARER_PREFIX = "Bearer ";
-    private static final long TOKEN_EXPIRATION = 60 * 60 * 1000L;
 
     private final Key secretKey;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 
-    public TokenService(@Value("${jwt.secret}") String secret) {
+    public TokenService(@Value("${jwt.secret}") String secret,
+                        @Value("${jwt.accessToken.expiration}") long accessTokenExpiration,
+                        @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
+        this.accessTokenExpiration = accessTokenExpiration;
+        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
-    public String createToken(String userId, Role role) {
+    public String createAccessToken(String userId, Role role) {
         Date now = new Date();
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(userId)
                         .claim(AUTHORIZATION_KEY, role)
-                        .setExpiration(new Date(now.getTime() + TOKEN_EXPIRATION))
                         .setIssuedAt(new Date(now.getTime()))
+                        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
+                        .signWith(this.secretKey, SignatureAlgorithm.HS256)
+                        .compact();
+    }
+
+    public String createRefreshToken(String userId) {
+        Date now = new Date();
+        return Jwts.builder()
+                        .setSubject(userId)
+                        .setIssuedAt(new Date(now.getTime()))
+                        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }

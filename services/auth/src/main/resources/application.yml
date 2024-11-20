@@ -13,3 +13,7 @@ server:
 
 jwt:
   secret: ${JWT_SECRET_KEY}
+  accessToken:
+    expiration: 600000  # 10분
+  refreshToken:
+    expiration: 604800000  # 7일
