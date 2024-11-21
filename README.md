@@ -133,11 +133,10 @@
 
 <aside>
   
-### 👨‍👩‍👧‍👦 대기열
-
 <details>
-    <summary> View  </summary> 
-
+    <summary><h3>👨‍👩‍👧‍👦 대기열</h3></summary> 
+<br>  
+  
 ![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/a2f5074b-441b-457f-b674-38419f20d2d3)
 
 </details>
@@ -146,10 +145,9 @@
 
 <aside>
 
-### 🎫 예매 
-
 <details>
-    <summary> View  </summary> 
+    <summary><h3>🎫 예매</h3></summary> 
+<br>  
 
 ![ticketping_sa-예매,결제 시퀀스 drawio](https://github.com/user-attachments/assets/a91e25c2-7191-4fb1-b94d-cacdb7074e39)
 
