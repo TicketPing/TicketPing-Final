@@ -4,15 +4,17 @@ import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.application.service.ScheduleService;
 import com.ticketPing.performance.application.service.SeatService;
-import com.ticketPing.performance.presentation.cases.success.ScheduleSuccessCase;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import response.CommonResponse;
 
 import java.util.List;
 import java.util.UUID;
-import response.CommonResponse;
 
 @RestController
 @RequestMapping("/api/v1/schedules")
@@ -27,7 +29,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.getSchedule(scheduleId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(ScheduleSuccessCase.SCHEDULE_SUCCESS, scheduleResponse));
+                .body(CommonResponse.success(scheduleResponse));
     }
 
     @Operation(summary = "스케줄 전체 좌석 조회")
@@ -36,6 +38,6 @@ public class ScheduleController {
         List<SeatResponse> seatResponses = seatService.getAllScheduleSeats(scheduleId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(ScheduleSuccessCase.GET_SCHEDULE_SEATS, seatResponses));
+                .body(CommonResponse.success(seatResponses));
     }
 }

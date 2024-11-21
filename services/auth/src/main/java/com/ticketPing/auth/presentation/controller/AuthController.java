@@ -5,7 +5,6 @@ import auth.UserCacheDto;
 import com.ticketPing.auth.application.service.AuthService;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 검증")
     @PostMapping("/validate")
-    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@Parameter(hidden = true) @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestParam("token") String token) {
         UserCacheDto response = authService.validateToken(token);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,7 +39,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<LoginResponse>> getUser(@Parameter(hidden = true) @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<CommonResponse<LoginResponse>> getUser(@RequestHeader("Authorization") String token) {
         LoginResponse loginResponse = authService.refreshAccessToken(token);
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -19,25 +19,19 @@ public abstract class BaseEntity {
     @Column
     private LocalDateTime createdAt;
 
-    @CreatedBy
-    @Column
-    private String createdBy;
-
     @LastModifiedDate
     @Column
     private LocalDateTime updatedAt;
-
-    @LastModifiedBy
-    @Column
-    private String updatedBy;
 
     @Column
     private LocalDateTime deletedAt;
 
     @Column
-    private String deletedBy;
-
-    @Column
     private Boolean isDeleted = false;
+
+    public void delete() {
+        isDeleted = true;
+        deletedAt = LocalDateTime.now();
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.ticketPing.order.infrastructure.service;
 
-import com.ticketPing.order.exception.OrderExceptionCase;
+import com.ticketPing.order.common.exception.OrderExceptionCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
