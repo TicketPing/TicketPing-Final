@@ -1,6 +1,6 @@
 package com.ticketPing.auth.application.service;
 
-import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.common.exception.AuthErrorCase;
 import com.ticketPing.auth.application.service.enums.Role;
 import exception.ApplicationException;
 import io.jsonwebtoken.*;

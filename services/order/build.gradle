@@ -37,7 +37,7 @@ dependencies {
 	// Common Module
 	implementation project(':common:core')
 	implementation project(':common:dtos')
-	implementation project(':common:jpa')
+	implementation project(':common:rdb')
 	implementation project(':common:caching')
 	implementation project(':common:messaging')
 	implementation project(':common:monitoring')

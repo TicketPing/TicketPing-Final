@@ -1,6 +1,6 @@
 package com.ticketPing.queue_manage.common.exception;
 
-import cases.ErrorCase;
+import exception.ErrorCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

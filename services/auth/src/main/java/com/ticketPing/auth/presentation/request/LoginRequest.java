@@ -1,6 +1,5 @@
 package com.ticketPing.auth.presentation.request;
 
-import com.ticketPing.auth.exception.LoginErrorMessage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 

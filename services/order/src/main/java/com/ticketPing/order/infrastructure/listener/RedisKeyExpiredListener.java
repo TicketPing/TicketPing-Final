@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
-import static com.ticketPing.order.exception.OrderExceptionCase.INVALID_TTL_NAME;
-import static com.ticketPing.order.exception.OrderExceptionCase.NOT_FOUND_ORDER_ID_IN_TTL;
+import static com.ticketPing.order.common.exception.OrderExceptionCase.INVALID_TTL_NAME;
+import static com.ticketPing.order.common.exception.OrderExceptionCase.NOT_FOUND_ORDER_ID_IN_TTL;
 
 @Slf4j
 @Component

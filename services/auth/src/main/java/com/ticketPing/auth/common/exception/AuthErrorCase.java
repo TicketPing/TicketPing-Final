@@ -1,6 +1,6 @@
-package com.ticketPing.auth.exception;
+package com.ticketPing.auth.common.exception;
 
-import cases.ErrorCase;
+import exception.ErrorCase;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

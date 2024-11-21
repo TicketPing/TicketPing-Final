@@ -3,7 +3,7 @@ package com.ticketPing.user.application.service;
 import com.ticketPing.user.application.dto.UserResponse;
 import com.ticketPing.user.domain.entity.User;
 import com.ticketPing.user.domain.repository.UserRepository;
-import com.ticketPing.user.presentation.cases.UserErrorCase;
+import com.ticketPing.user.common.exception.UserErrorCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
