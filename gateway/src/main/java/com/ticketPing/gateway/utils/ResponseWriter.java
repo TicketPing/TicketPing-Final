@@ -1,8 +1,8 @@
-package com.ticketPing.gateway.infrastructure.utils;
+package com.ticketPing.gateway.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ticketPing.gateway.presentation.response.CustomErrorResponse;
-import com.ticketPing.gateway.presentation.cases.FilterErrorCase;
+import com.ticketPing.gateway.exception.FilterErrorCase;
+import com.ticketPing.gateway.dto.CustomErrorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.MediaType;

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum RedisKeyPrefix {
+
     // 대기열
     WAITING_QUEUE("{Queue}:WaitingQueue:"),
     WORKING_QUEUE("{Queue}:WorkingQueue:"),

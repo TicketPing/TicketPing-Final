@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.infrastructure.enums;
+package com.ticketPing.gateway.config.filter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +8,10 @@ import org.springframework.http.HttpMethod;
 @RequiredArgsConstructor
 public enum APIType {
 
-    // TODO: 결제 서비스 API 추가
     ENTER_WAITING_QUEUE("/api/v1/waiting-queue", HttpMethod.POST),
     GET_QUEUE_INFO("/api/v1/waiting-queue", HttpMethod.GET),
-    ORDER_PERFORMANCE_SEATS("/api/v1/orders", HttpMethod.POST);
+    CREATE_ORDER("/api/v1/orders", HttpMethod.POST),
+    REQUEST_PAYMENT("/api/v1/payments", HttpMethod.POST);
 
     private final String path;
     private final HttpMethod method;

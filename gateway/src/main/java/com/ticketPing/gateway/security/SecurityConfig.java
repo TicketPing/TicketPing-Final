@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.infrastructure.security;
+package com.ticketPing.gateway.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ public class SecurityConfig {
                         .pathMatchers(HttpMethod.GET, "/api/v1/schedules/{scheduleId}").permitAll()
                         .pathMatchers("/actuator/prometheus").permitAll()
                         .pathMatchers("/swagger-ui/**", "/v3/api-docs/**", "/webjars/**").permitAll()
-                        .anyExchange().permitAll()
+                        .anyExchange().authenticated()
                 )
                 .build();
     }
