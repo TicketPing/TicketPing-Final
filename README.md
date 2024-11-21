@@ -57,7 +57,6 @@
     <summary><h3>⚙️ 기술 스택</h3></summary> 
   
 <br>  
-<br>  
 <div align="center">
 <table style="width: 100%; margin: auto; text-align: center;">
     <tr>
@@ -131,6 +130,14 @@
 <br>
 
 ## 💻 시퀀스 다이어그램
+
+### 🧑 유저 플로우
+
+<div align="center">
+<br>  
+  
+![ticketping_sa-유저 플로우 drawio](https://github.com/user-attachments/assets/56de8102-d730-48a0-ae61-de2c844f807d)
+</div>
 
 <aside>
   
