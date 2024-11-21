@@ -129,7 +129,7 @@
 
 <br>
 
-## 💻 시퀀스 다이어그램
+## 📃 다이어그램
 
 ### 🧑 유저 플로우
 
@@ -142,7 +142,7 @@
 <aside>
   
 <details>
-    <summary><h3>👨‍👩‍👧‍👦 대기열 시퀀스</h3></summary> 
+    <summary><h3>👨‍👩‍👧‍👦 대기열 시퀀스 다이어그램</h3></summary> 
 <br>  
   
 ![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/a2f5074b-441b-457f-b674-38419f20d2d3)
@@ -154,7 +154,19 @@
 <aside>
 
 <details>
-    <summary><h3>🎫 예매 시퀀스</h3></summary> 
+    <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
+<br>  
+
+![ticketping_sa-예매,결제 시퀀스 drawio](https://github.com/user-attachments/assets/a91e25c2-7191-4fb1-b94d-cacdb7074e39)
+
+</details>
+
+</aside>
+
+<aside>
+
+<details>
+    <summary><h3>✏️ ERD</h3></summary> 
 <br>  
 
 ![ticketping_sa-예매,결제 시퀀스 drawio](https://github.com/user-attachments/assets/a91e25c2-7191-4fb1-b94d-cacdb7074e39)
