@@ -163,17 +163,14 @@
 
 ## 🔧 기술적 의사결정
 
+- [🎟️ 대기열 시스템 구상하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%9F%EF%B8%8F-%EB%8C%80%EA%B8%B0%EC%97%B4-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EA%B5%AC%EC%83%81%ED%95%98%EA%B8%B0)
 
-| 서비스 | 요구사항 | 기술 | 선택 이유 |
-| --- | --- | --- | --- |
-| 대기열 서비스 | 대기열 진입  요청 | Redis Sorted Set | 빠른 연산 속도와 사용자 요청을 Atomic하게 순서대로 처리 가능하기 때문에  |
-| 대기열 서비스 | 작업열 토큰  만료 이벤트 처리 | Redis Keyspace Notifications | 잡 스케줄러의 불필요한 자원 소모를 막기 위하여 |
-| 공연 서비스 | 공연 전체 좌석 조회 | Redis String | 전체 좌석 상태 조회의 경우 트래픽이 몰릴 경우 DB에 부하를 줄 수 있음 → redis에 캐싱해 DB 부하 방지 및 조회 속도 개선 |
-| 예매 서비스 | 좌석 결제 과정 동안 좌석 선점  | Redis String | 좌석을 선택하고 결제하기 창에 들어가면 Redis에 캐싱된 공연 좌석을 예매 불가 상태로 변경 |
-| 예매 서비스 | 좌석 선점 후 일정 기간 내 결제하지 않으면 선점 만료 | Redis String (TTL) <br> Redis Keyspace Notifications | Redis는 TTL이 있는 String을 만들고 Redis Keyspace Notifications를 통해 String이 만료되면 알림을 받을 수 있음 |
-| 결제 서비스 | 결제 데이터 처리 | Stripe (PG) 연동 | 개인의 민감 정보는 DB에서 취급하지 않고 Stripe에 역할을 이전하여 결제에 필요한 최소한의 데이터만 저장하여 민감 정보 유출의 위험도를 낮춤. |
-| 결제 서비스 | 결제 성공 시 예매 서비스에서 예매 상태를 `예매 완료`로 변경. | Kafka | - 비동기 통신 <br> 대규모 트래픽 상황의 경우 동기로 처리할 경우 처리 속도가 느려질 수 밖에 없기 때문에 kafka로 이벤트 핸들링하여 처리 속도 향상 |
+- [🎬 스케줄러로 작업열 토큰의 만료 이벤트 처리하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%AC-%EC%8A%A4%EC%BC%80%EC%A4%84%EB%9F%AC%EB%A1%9C-%EC%9E%91%EC%97%85%EC%97%B4-%ED%86%A0%ED%81%B0%EC%9D%98-%EB%A7%8C%EB%A3%8C-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0)
 
+- [👁️‍🗨️ Redis Keyspace Notifications로 작업열 토큰의 만료 이벤트 처리하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%91%81%EF%B8%8F%E2%80%8D%F0%9F%97%A8%EF%B8%8F-Redis-Keyspace-Notifications%EB%A1%9C-%EC%9E%91%EC%97%85%EC%97%B4-%ED%86%A0%ED%81%B0%EC%9D%98-%EB%A7%8C%EB%A3%8C-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0)  
+  
+- [💬 Redis Cluster 적용하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%92%AC-Redis-Cluster-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
+  
 <br>
 
 ## ⚽️ 트러블슈팅
@@ -181,7 +178,8 @@
 - [🎁 Lua Script를 활용한 대기열 진입 동시성 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%81-Lua-Script%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EB%8C%80%EA%B8%B0%EC%97%B4-%EC%A7%84%EC%9E%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
 - [🖍️ Redis @class로 인해 다른 서버에서 캐시를 읽지 못하는 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%96%8D%EF%B8%8F-Redis-@class%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EB%8B%A4%EB%A5%B8-%EC%84%9C%EB%B2%84%EC%97%90%EC%84%9C-%EC%BA%90%EC%8B%9C%EB%A5%BC-%EC%9D%BD%EC%A7%80-%EB%AA%BB%ED%95%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)  
-  <br>
+
+<br>
   
 ## 🙋🏻 CONTRIBUTORS
 <div align="center">
