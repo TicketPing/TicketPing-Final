@@ -178,87 +178,9 @@
 
 ## ⚽️ 트러블슈팅
 
-  <details>
-    <summary> [대기열] 대기열 진입 동시성 문제 </summary> 
-    
-  - 문제: 작업열 최대 크기 이상의 토큰이 저장되는 문제
-        
-        (기댓값: 100, 결과값: 208)
-        
-    <img width="422" alt="대기열트러블슈팅1" src="https://github.com/user-attachments/assets/0a0fd99c-2c40-4003-bcbd-3428bd346fde">
-        
-    
-- 원인:  작업열의 토큰 카운터 값을 기반으로 분기 처리하는 부분에서, 여러 스레드가 동시에 조건을 만족하게 되어 max size이상의 토큰이 저장됨.
-    
-    
-        public GeneralQueueTokenResponse enterWaitingQueue(String userId, String performanceId) {
-                // 작업열 인원 여유 확인
-                AvailableSlots availableSlots = workingQueueRepository.countAvailableSlots(CountAvailableSlotsCommand.create(performanceId));
-                if (availableSlots.isLimited()) {
-                    return getWaitingTokenResponse(userId, performanceId);
-                }
-                return getWorkingTokenResponse(userId, performanceId);
-            }
-        
-    
+- [🎁 Lua Script를 활용한 대기열 진입 동시성 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%81-Lua-Script%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EB%8C%80%EA%B8%B0%EC%97%B4-%EC%A7%84%EC%9E%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
-- 해결: Redis의 연산들을 하나의 트랙잭션으로 묶어서 수행 가능한 Lua Script로 변경하여 해결
-    
-    <img width="424" alt="대기열트러블슈팅2" src="https://github.com/user-attachments/assets/d6fddd5e-fc1f-47ba-89c1-d6cc5ad66921">
-        
-  
-  </details>  
-
-  <details>
-    <summary>[좌석 캐싱] Redis @class로 인해 다른 서버에서 캐시를 읽지 못하는 문제 해결</summary>
-    
-  - 문제
-        - Redis에 좌석 정보 값을 저장할 때 @class가 함께 저장되어 다른 서비스에서 읽어오지 못하는 문제가 발생함
-  - 원인
-        - RedisConfiguration을 만들 때, `GenericJackson2JsonRedisSerializer()` 를 사용하면 @class 정보가 함께 저장
-        
-    ![좌석캐싱트러블슈팅1](https://github.com/user-attachments/assets/763ec8ae-5e17-4838-af19-2109a9890871)
-        
-        
-        @Bean
-        public RedisTemplate<String, Object> redisTemplate() {
-            RedisTemplate<String, Object> template = new RedisTemplate<>();
-            template.setConnectionFactory(redisConnectionFactory());
-        
-            template.setKeySerializer(new GenericJackson2JsonRedisSerializer());
-            template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        
-            return template;
-        }
-        
-        
-  - 해결
-        - RedisConfiguration 생성시 Serializer에 @class를 저장하지 않도록 설정하여 해결
-        
-    ![좌석캐싱트러블슈팅2](https://github.com/user-attachments/assets/f6633e12-cea9-4ffb-8e01-a554c3f53440)
-        
-        
-        @Bean
-        public RedisTemplate<String, Object> redisTemplate() {
-            RedisTemplate<String, Object> template = new RedisTemplate<>();
-            template.setConnectionFactory(redisConnectionFactory());
-        
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.deactivateDefaultTyping(); // @class 제거
-        
-            // Jackson2JsonRedisSerializer 설정
-            Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
-        
-            template.setKeySerializer(new StringRedisSerializer());
-            template.setValueSerializer(serializer);
-            template.setHashKeySerializer(new StringRedisSerializer());
-            template.setHashValueSerializer(serializer);
-        
-            return template;
-        }
-        
-  </details>
-
+- [🖍️ Redis @class로 인해 다른 서버에서 캐시를 읽지 못하는 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%96%8D%EF%B8%8F-Redis-@class%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EB%8B%A4%EB%A5%B8-%EC%84%9C%EB%B2%84%EC%97%90%EC%84%9C-%EC%BA%90%EC%8B%9C%EB%A5%BC-%EC%9D%BD%EC%A7%80-%EB%AA%BB%ED%95%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)  
   <br>
   
 ## 🙋🏻 CONTRIBUTORS
