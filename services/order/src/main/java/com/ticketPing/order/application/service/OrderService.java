@@ -25,7 +25,7 @@ import caching.repository.RedisRepository;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
 import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
-import static com.ticketPing.order.exception.OrderExceptionCase.*;
+import static com.ticketPing.order.common.exception.OrderExceptionCase.*;
 
 @Service
 @RequiredArgsConstructor

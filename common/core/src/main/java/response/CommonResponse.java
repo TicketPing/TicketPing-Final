@@ -1,8 +1,7 @@
 package response;
 
 
-import cases.ErrorCase;
-import cases.SuccessCase;
+import exception.ErrorCase;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,24 +17,14 @@ public class CommonResponse<T> {
     private String message;
     private T data;
 
-    public static <T> CommonResponse<T> success(SuccessCase successCase, T data) {
-        return CommonResponse.<T>builder()
-            .status(successCase.getHttpStatus())
-            .message(successCase.getMessage())
-            .data(data)
-            .build();
-    }
-
-    public static <T> CommonResponse<T> success(SuccessCase successCase) {
-        return CommonResponse.<T>builder()
-            .status(successCase.getHttpStatus())
-            .message(successCase.getMessage())
-            .build();
-    }
-
     public static <T> CommonResponse<T> success(T data) {
         return CommonResponse.<T>builder()
                 .data(data)
+                .build();
+    }
+
+    public static CommonResponse<Object> success() {
+        return CommonResponse.builder()
                 .build();
     }
 

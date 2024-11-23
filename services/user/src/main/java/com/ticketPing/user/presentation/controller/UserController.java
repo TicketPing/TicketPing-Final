@@ -2,7 +2,6 @@ package com.ticketPing.user.presentation.controller;
 
 import com.ticketPing.user.application.dto.UserResponse;
 import com.ticketPing.user.application.service.UserService;
-import com.ticketPing.user.presentation.cases.UserSuccessCase;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ public class UserController {
         UserResponse userResponse = userService.createUser(request);
         return ResponseEntity
                 .status(201)
-                .body(CommonResponse.success(UserSuccessCase.SUCCESS_CREATE_USER, userResponse));
+                .body(CommonResponse.success(userResponse));
     }
 
     @Operation(summary = "로그인 사용자 정보 확인")
@@ -37,7 +36,7 @@ public class UserController {
         UserResponse userResponse = userService.getUserByEmailAndPassword(request);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(UserSuccessCase.SUCCESS_GET_USER, userResponse));
+                .body(CommonResponse.success(userResponse));
     }
 
     @Operation(summary = "사용자 정보 확인")
@@ -46,6 +45,6 @@ public class UserController {
         UserResponse userResponse = userService.getUser(userId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(UserSuccessCase.SUCCESS_GET_USER, userResponse));
+                .body(CommonResponse.success(userResponse));
     }
 }

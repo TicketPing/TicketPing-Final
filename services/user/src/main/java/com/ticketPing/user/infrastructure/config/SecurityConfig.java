@@ -1,4 +1,4 @@
-package com.ticketPing.user.security;
+package com.ticketPing.user.infrastructure.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
