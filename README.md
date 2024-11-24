@@ -105,19 +105,17 @@
 
 </aside>
 
-<!--
 <aside>
 
 <details>
     <summary><h3>✏️ ERD</h3></summary> 
 <br>  
 
-![ticketping_sa-예매,결제 시퀀스 drawio](https://github.com/user-attachments/assets/a91e25c2-7191-4fb1-b94d-cacdb7074e39)
+![ticketping-erd](https://github.com/user-attachments/assets/4604f251-4e39-4856-8d67-853d29622a86)
 
 </details>
 
 </aside>
--->
 
 <br>
 
