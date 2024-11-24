@@ -93,19 +93,19 @@
 
 </aside>
 
-<!--
 <aside>
 
 <details>
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매,결제 시퀀스 drawio](https://github.com/user-attachments/assets/a91e25c2-7191-4fb1-b94d-cacdb7074e39)
+![ticketping_sa-예매 시퀀스 drawio (3)](https://github.com/user-attachments/assets/b4dc568b-82ed-4041-9524-442d98dcee9d)
 
 </details>
 
 </aside>
 
+<!--
 <aside>
 
 <details>
