@@ -170,7 +170,9 @@
 - [👁️‍🗨️ Redis Keyspace Notifications로 작업열 토큰의 만료 이벤트 처리하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%91%81%EF%B8%8F%E2%80%8D%F0%9F%97%A8%EF%B8%8F-Redis-Keyspace-Notifications%EB%A1%9C-%EC%9E%91%EC%97%85%EC%97%B4-%ED%86%A0%ED%81%B0%EC%9D%98-%EB%A7%8C%EB%A3%8C-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0)  
   
 - [💬 Redis Cluster 적용하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%92%AC-Redis-Cluster-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
-  
+
+- [😏 Kafka Producer 설정하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%98%8F-Kafka-Producer-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
+
 <br>
 
 ## ⚽️ 트러블슈팅
