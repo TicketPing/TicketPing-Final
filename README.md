@@ -37,11 +37,8 @@
   <img src="https://github.com/user-attachments/assets/e2c614e9-28b3-4d37-9e2c-8fabeeb2864d" height="90%" width="90%" alt="sa">
 </p>
 
-<details>
-    <summary><h3>⚙️ 기술 스택</h3></summary> 
-  
-<br>  
-<div align="center">
+## ⚙️ 기술 스택
+<div align="center"> 
 <table style="width: 100%; margin: auto; text-align: center;">
     <tr>
         <th style="text-align: center;">카테고리</th>
@@ -49,69 +46,30 @@
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Backend</strong></td>
-        <td style="text-align: center;">Java 17</td>
+        <td style="text-align: center;"> <img src="https://img.shields.io/badge/java 17-007396"/> <img src="https://img.shields.io/badge/Spring Boot 3.3.4-6DB33F?logo=spring-boot&logoColor=white"/> </td>
     </tr>
     <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Spring Boot 3.3.4</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">MVC, WebFlux</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Cloud, Security</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Spring Data JPA</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"><strong>DB</strong></td>
-        <td style="text-align: center;">PostgreSQL</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Redis</td>
+        <td style="text-align: center;"><strong>Database</strong></td>
+        <td style="text-align: center;"> <img src="https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white"/> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?logo=redis&logoColor=white"/> </td>
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Messaging</strong></td>
-        <td style="text-align: center;">Kafka</td>
+        <td style="text-align: center;"> <img src="https://img.shields.io/badge/Apache_Kafka-231F20?logo=apache-kafka&logoColor=white"/> </td>
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Monitoring</strong></td>
-        <td style="text-align: center;">Prometheus</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Grafana</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Loki</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"></td>
-        <td style="text-align: center;">Zipkin</td>
+        <td style="text-align: center;"><img src="https://img.shields.io/badge/Grafana-F2F4F9?logo=grafana&logoColor=orange&labelColor=F2F4F9"/> <img src="https://img.shields.io/badge/Prometheus-000000?logo=prometheus&labelColor=000000"/> <img src="https://img.shields.io/badge/Loki-F44B21"/> <img src="https://img.shields.io/badge/Zipkin-FE7A16"/> <img src="https://img.shields.io/badge/Discord-%235865F2.svg?logo=discord&logoColor=white"/> </td>
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Infra</strong></td>
-        <td style="text-align: center;">Docker</td>
+        <td style="text-align: center;"> <img src="https://img.shields.io/badge/docker-%230db7ed.svg?logo=docker&logoColor=white"/> </td>
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Test</strong></td>
-        <td style="text-align: center;">JMeter</td>
-    </tr>
-    <tr>
-        <td style="text-align: center;"><strong>Channel</strong></td>
-        <td style="text-align: center;">Discord</td>
+        <td style="text-align: center;"> <img src="https://img.shields.io/badge/Jmeter-543DE0"/> </td>
     </tr>
 </table>
 </div>
-</details>
-
-<br>
 
 ## 📃 다이어그램
 
