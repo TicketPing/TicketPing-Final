@@ -99,7 +99,7 @@
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매 시퀀스 drawio (3)](https://github.com/user-attachments/assets/b4dc568b-82ed-4041-9524-442d98dcee9d)
+![ticketping_sa-예매 시퀀스 drawio (5)](https://github.com/user-attachments/assets/6b2e8f0b-1219-4f4c-aaa6-4757e87b34f6)
 
 </details>
 
