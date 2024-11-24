@@ -1,6 +1,6 @@
-package com.ticketPing.gateway.infrastructure.config;
+package com.ticketPing.gateway.config;
 
-import com.ticketPing.gateway.infrastructure.config.filter.QueueCheckFilter;
+import com.ticketPing.gateway.config.filter.QueueCheckFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -26,10 +26,14 @@ public class RouteConfig {
                         "/api/v1/performances/**", "/api/v1/schedules/**", "/api/v1/seats/**")
                         .uri("lb://performance"))
                 .route("order-service", r -> r.path("/api/v1/orders/**")
+                        .filters(f -> f.filter(queueCheckFilter::filter))
                         .uri("lb://order"))
                 .route("payment-service", r -> r.path("/api/v1/payments/**")
+                        .filters(f -> f.filter(queueCheckFilter::filter))
                         .uri("lb://payment"))
-                .route("queue-manage-service", r -> r.path("/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
+                .route("queue-manage-service", r -> r.path(
+                        "/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
+                        .filters(f -> f.filter(queueCheckFilter::filter))
                         .uri("lb://queue-manage"))
 
                 // Swagger Routing

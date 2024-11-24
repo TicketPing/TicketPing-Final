@@ -21,8 +21,10 @@ public class PaymentController {
 
     @Operation(summary = "PG사 결제 요청")
     @PostMapping
-    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(@Valid @RequestHeader("X-USER-ID") UUID userId,
-                                                                          @Valid @RequestParam("orderId") UUID orderId) {
+    public ResponseEntity<CommonResponse<PaymentResponse>> requestPayment(
+            @Valid @RequestHeader("X-USER-ID") UUID userId,
+            @Valid @RequestParam("performanceId") UUID performanceId,
+            @Valid @RequestParam("orderId") UUID orderId) {
         return ResponseEntity
                 .status(201)
                 .body(success(paymentApplicationService.requestPayment(userId, orderId)));
@@ -30,7 +32,8 @@ public class PaymentController {
 
     @Operation(summary = "PG사 결제 상태 확인")
     @GetMapping("/{paymentId}")
-    public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(@Valid @PathVariable("paymentId") UUID paymentId) {
+    public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(
+            @Valid @PathVariable("paymentId") UUID paymentId) {
         return ResponseEntity
                 .status(200)
                 .body(success(paymentApplicationService.checkPaymentStatus(paymentId)));

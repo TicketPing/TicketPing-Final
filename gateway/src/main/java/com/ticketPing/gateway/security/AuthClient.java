@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.infrastructure.client;
+package com.ticketPing.gateway.security;
 
 import auth.UserCacheDto;
 import org.springframework.cloud.openfeign.FeignClient;
