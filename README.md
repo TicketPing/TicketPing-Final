@@ -143,7 +143,7 @@
 
 - [🎁 Lua Script를 활용한 대기열 진입 동시성 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%81-Lua-Script%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EB%8C%80%EA%B8%B0%EC%97%B4-%EC%A7%84%EC%9E%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
-- [🗣️ Redis Cluster 적용 이후 Lua Script 실행 오류 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%97%A3%EF%B8%8F-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EC%A0%81%EC%9A%A9-%EC%9D%B4%ED%9B%84-Lua-Script-%EC%8B%A4%ED%96%89-%EC%98%A4%EB%A5%98-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+- [🗣️ Redis Cluster 적용 이후 Lua Script 실행 오류 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%97%A3%EF%B8%8F-Redis-Cluster-%EC%A0%81%EC%9A%A9-%EC%9D%B4%ED%9B%84-Lua-Script-%EC%8B%A4%ED%96%89-%EC%98%A4%EB%A5%98-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
 - [🖍️ Redis @class로 인해 다른 서버에서 캐시를 읽지 못하는 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%96%8D%EF%B8%8F-Redis-@class%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EB%8B%A4%EB%A5%B8-%EC%84%9C%EB%B2%84%EC%97%90%EC%84%9C-%EC%BA%90%EC%8B%9C%EB%A5%BC-%EC%9D%BD%EC%A7%80-%EB%AA%BB%ED%95%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)  
 
