@@ -58,7 +58,7 @@
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Monitoring</strong></td>
-        <td style="text-align: center;"><img src="https://img.shields.io/badge/Grafana-F2F4F9?logo=grafana&logoColor=orange&labelColor=F2F4F9"/> <img src="https://img.shields.io/badge/Prometheus-000000?logo=prometheus&labelColor=000000"/> <img src="https://img.shields.io/badge/Loki-F44B21"/> <img src="https://img.shields.io/badge/Zipkin-FE7A16"/> <img src="https://img.shields.io/badge/Discord-%235865F2.svg?logo=discord&logoColor=white"/> </td>
+        <td style="text-align: center;"><img src="https://img.shields.io/badge/Grafana-F2F4F9?logo=grafana&logoColor=orange&labelColor=F2F4F9"/> <img src="https://img.shields.io/badge/Prometheus-000000?logo=prometheus&labelColor=000000"/> <img src="https://img.shields.io/badge/Loki-F44B21"/> <img src="https://img.shields.io/badge/Zipkin-FE7A16"/> </td>
     </tr>
     <tr>
         <td style="text-align: center;"><strong>Infra</strong></td>
@@ -67,6 +67,10 @@
     <tr>
         <td style="text-align: center;"><strong>Test</strong></td>
         <td style="text-align: center;"> <img src="https://img.shields.io/badge/Jmeter-543DE0"/> </td>
+    </tr>
+    <tr>
+      <td style="text-align: center;"><strong>Channel</strong></td>
+      <td style="text-align: center;"> <img src="https://img.shields.io/badge/Discord-%235865F2.svg?logo=discord&logoColor=white"/> </td>
     </tr>
 </table>
 </div>
@@ -99,7 +103,7 @@
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매 시퀀스 drawio (5)](https://github.com/user-attachments/assets/6b2e8f0b-1219-4f4c-aaa6-4757e87b34f6)
+![ticketping_sa-예매 시퀀스 drawio (6)](https://github.com/user-attachments/assets/339a32a1-1c52-45dc-b605-6125262b3891)
 
 </details>
 
