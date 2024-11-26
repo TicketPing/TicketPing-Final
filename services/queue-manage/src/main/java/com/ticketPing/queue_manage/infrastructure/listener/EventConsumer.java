@@ -7,6 +7,7 @@ import com.ticketPing.queue_manage.application.service.WorkingQueueService;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import messaging.utils.EventLogger;
 import messaging.utils.EventSerializer;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -44,7 +45,7 @@ public class EventConsumer {
     }
 
     private Mono<Void> handleOrderCompletedEvent(ReceiverRecord<String, String> record) {
-        log.info("Received message from topic {}: {} (offset: {})", record.topic(), record.value(), record.offset());
+        EventLogger.logReceivedMessage(record);
         OrderCompletedEvent event = EventSerializer.deserialize(record.value(), OrderCompletedEvent.class);
         String tokenValue = generateTokenValue(event.userId(), event.performanceId());
 
