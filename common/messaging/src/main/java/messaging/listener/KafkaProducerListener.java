@@ -12,13 +12,13 @@ public class KafkaProducerListener implements ProducerListener<String, String>  
     @Override
     public void onSuccess(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata) {
         ProducerListener.super.onSuccess(producerRecord, recordMetadata);
-        EventLogger.logSentMessageOnSuccess(producerRecord, recordMetadata);
+        EventLogger.logMessageSendSuccess(producerRecord, recordMetadata);
     }
 
     @Override
     public void onError(ProducerRecord<String, String> producerRecord, RecordMetadata recordMetadata, Exception exception) {
         ProducerListener.super.onError(producerRecord, recordMetadata, exception);
-        EventLogger.logSentMessageOnError(producerRecord, exception);
+        EventLogger.logMessageSendError(producerRecord, exception);
     }
 
 }

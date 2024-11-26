@@ -5,3 +5,7 @@ spring:
       group-id: ${spring.application.name}-group
       properties:
         spring.json.trusted.packages: '*'
+
+logging:
+  level:
+    org.springframework.kafka.listener.KafkaMessageListenerContainer: OFF
