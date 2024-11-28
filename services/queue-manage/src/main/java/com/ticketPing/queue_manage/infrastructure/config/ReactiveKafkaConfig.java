@@ -32,7 +32,7 @@ public class ReactiveKafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
-        // 초기 오프셋 위치 설정
+        // 초기 오프셋 읽기 위치 설정
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         // 수동 커밋
