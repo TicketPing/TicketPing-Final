@@ -1,6 +1,6 @@
-package com.ticketPing.gateway.config;
+package com.ticketPing.gateway.infrastructure.config;
 
-import com.ticketPing.gateway.config.filter.QueueCheckFilter;
+import com.ticketPing.gateway.infrastructure.filter.QueueCheckFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;

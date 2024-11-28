@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.dto;
+package com.ticketPing.gateway.common.dto;
 
 import org.springframework.http.HttpStatus;
 

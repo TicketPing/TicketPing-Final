@@ -1,6 +1,6 @@
-package com.ticketPing.gateway.exception;
+package com.ticketPing.gateway.common.exception;
 
-import cases.ErrorCase;
+import exception.ErrorCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

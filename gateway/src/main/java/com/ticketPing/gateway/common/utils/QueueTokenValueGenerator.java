@@ -1,7 +1,7 @@
-package com.ticketPing.gateway.utils;
+package com.ticketPing.gateway.common.utils;
 
 import static caching.enums.RedisKeyPrefix.TOKEN_VALUE;
-import static com.ticketPing.gateway.utils.ConfigHolder.tokenValueSecretKey;
+import static com.ticketPing.gateway.common.utils.ConfigHolder.tokenValueSecretKey;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
