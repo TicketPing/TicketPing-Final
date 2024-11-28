@@ -165,7 +165,7 @@
           - 게이트웨이 예매 API 선처리 필터 개발 <br>
           - 공통 모듈 관리 <br>
           - Redis 클러스터 구축 <br>
-          - Kafka Producer, Consumer 설정 <br>
+          - Kafka 설정, 클러스터 구축 <br>
         </td>
         <td align="center"><a href="https://github.com/rivertw777">GitHub</a></td>
     </tr>
