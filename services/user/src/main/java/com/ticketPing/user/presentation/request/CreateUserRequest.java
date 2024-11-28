@@ -1,6 +1,5 @@
 package com.ticketPing.user.presentation.request;
 
-import com.ticketPing.user.presentation.cases.UserInfoErrorMessage;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

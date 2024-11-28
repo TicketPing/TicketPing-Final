@@ -6,7 +6,7 @@ import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.model.entity.Seat;
 import com.ticketPing.performance.domain.repository.SeatRepository;
-import com.ticketPing.performance.presentation.cases.exception.SeatExceptionCase;
+import com.ticketPing.performance.common.exception.SeatExceptionCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

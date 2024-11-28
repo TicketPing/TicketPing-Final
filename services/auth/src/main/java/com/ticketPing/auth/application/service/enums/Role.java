@@ -1,6 +1,6 @@
 package com.ticketPing.auth.application.service.enums;
 
-import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.common.exception.AuthErrorCase;
 import exception.ApplicationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

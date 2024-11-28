@@ -5,7 +5,7 @@ import caching.repository.RedisRepository;
 import com.ticketPing.auth.application.client.UserClient;
 import com.ticketPing.auth.application.dto.LoginResponse;
 import com.ticketPing.auth.application.service.enums.Role;
-import com.ticketPing.auth.exception.AuthErrorCase;
+import com.ticketPing.auth.common.exception.AuthErrorCase;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import exception.ApplicationException;
 import io.jsonwebtoken.Claims;

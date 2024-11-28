@@ -3,14 +3,13 @@ package com.ticketPing.performance.presentation.controller;
 import com.ticketPing.performance.application.dtos.OrderInfoResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.application.service.SeatService;
-import com.ticketPing.performance.presentation.cases.success.SeatSuccessCase;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.CommonResponse;
 
 import java.util.UUID;
-import response.CommonResponse;
 
 @RestController
 @RequestMapping("/api/v1/seats")
@@ -24,7 +23,7 @@ public class SeatController {
         SeatResponse seatResponse = seatService.getSeat(seatId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(SeatSuccessCase.SUCCESS_SEAT, seatResponse));
+                .body(CommonResponse.success(seatResponse));
     }
 
     @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
@@ -33,7 +32,7 @@ public class SeatController {
         OrderInfoResponse orderInfoResponse = seatService.getOrderInfo(seatId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(SeatSuccessCase.SUCCESS_SEAT_ORDERINFO, orderInfoResponse));
+                .body(CommonResponse.success(orderInfoResponse));
     }
 
     @Operation(summary = "좌석 상태 수정 (order 서비스에서 호출용)")
@@ -43,6 +42,6 @@ public class SeatController {
         SeatResponse seatResponse = seatService.updateSeatState(seatId, seatState);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(SeatSuccessCase.SUCCESS_UPDATE_SEAT_STATE, seatResponse));
+                .body(CommonResponse.success(seatResponse));
     }
 }

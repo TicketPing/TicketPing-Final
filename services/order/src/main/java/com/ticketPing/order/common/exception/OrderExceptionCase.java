@@ -1,13 +1,10 @@
-package com.ticketPing.order.exception;
+package com.ticketPing.order.common.exception;
 
 
-import cases.ErrorCase;
-import exception.ApplicationException;
+import exception.ErrorCase;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-
-import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor

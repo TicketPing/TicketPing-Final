@@ -7,18 +7,16 @@ import com.ticketPing.performance.application.service.ScheduleService;
 import com.ticketPing.performance.application.service.SeatService;
 import com.ticketPing.performance.domain.model.entity.Performance;
 import com.ticketPing.performance.domain.model.entity.Schedule;
-import com.ticketPing.performance.presentation.cases.success.PerformanceSuccessCase;
-import com.ticketPing.performance.presentation.cases.success.ScheduleSuccessCase;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.CommonResponse;
 
 import java.util.List;
 import java.util.UUID;
-import response.CommonResponse;
 
 @RestController
 @RequestMapping("/api/v1/performances")
@@ -34,7 +32,7 @@ public class PerformanceController {
         PerformanceResponse performanceResponse = performanceService.getPerformance(performanceId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(PerformanceSuccessCase.PERFORMANCE_DETAIL_SUCCESS, performanceResponse));
+                .body(CommonResponse.success(performanceResponse));
     }
 
     @Operation(summary = "공연 목록 조회")
@@ -43,7 +41,7 @@ public class PerformanceController {
         Page<PerformanceResponse> performanceResponses = performanceService.getAllPerformances(pageable);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(PerformanceSuccessCase.PERFORMANCE_LIST_SUCCESS, performanceResponses));
+                .body(CommonResponse.success(performanceResponses));
     }
 
     @Operation(summary = "공연 스케줄 목록 조회")
@@ -53,7 +51,7 @@ public class PerformanceController {
         Page<ScheduleResponse> scheduleResponses = scheduleService.getSchedulesByPerformance(performance, pageable);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(PerformanceSuccessCase.SCHEDULE_LIST_SUCCESS, scheduleResponses));
+                .body(CommonResponse.success(scheduleResponses));
     }
 
     @Operation(summary = "공연 전체 좌석 캐싱 생성")
@@ -64,7 +62,7 @@ public class PerformanceController {
         seatService.createSeatsCache(schedules, performanceId);
         return ResponseEntity
                 .status(201)
-                .body(CommonResponse.success(ScheduleSuccessCase.SCHEDULE_SEATS_CACHED));
+                .body(CommonResponse.success());
     }
 }
 
