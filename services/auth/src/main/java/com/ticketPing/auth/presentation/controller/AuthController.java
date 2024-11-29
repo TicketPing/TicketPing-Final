@@ -30,7 +30,7 @@ public class AuthController {
 
     @Operation(summary = "토큰 검증")
     @PostMapping("/validate")
-    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestParam("token") String token) {
+    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestHeader("Authorization") String token) {
         UserCacheDto response = authService.validateToken(token);
         return ResponseEntity
                 .status(HttpStatus.OK)

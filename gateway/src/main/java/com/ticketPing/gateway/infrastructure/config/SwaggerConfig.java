@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.config;
+package com.ticketPing.gateway.infrastructure.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

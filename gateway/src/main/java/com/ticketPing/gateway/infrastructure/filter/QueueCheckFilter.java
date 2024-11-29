@@ -1,10 +1,11 @@
-package com.ticketPing.gateway.config.filter;
+package com.ticketPing.gateway.infrastructure.filter;
 
-import static com.ticketPing.gateway.exception.FilterErrorCase.PERFORMANCE_SOLD_OUT;
-import static com.ticketPing.gateway.exception.FilterErrorCase.TOO_MANY_WAITING_USERS;
-import static com.ticketPing.gateway.exception.FilterErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
+import static com.ticketPing.gateway.common.exception.FilterErrorCase.PERFORMANCE_SOLD_OUT;
+import static com.ticketPing.gateway.common.exception.FilterErrorCase.TOO_MANY_WAITING_USERS;
+import static com.ticketPing.gateway.common.exception.FilterErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
 
-import com.ticketPing.gateway.utils.ResponseWriter;
+import com.ticketPing.gateway.application.service.QueueCheckService;
+import com.ticketPing.gateway.common.utils.ResponseWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

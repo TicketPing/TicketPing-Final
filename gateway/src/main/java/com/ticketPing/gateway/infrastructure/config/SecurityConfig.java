@@ -1,6 +1,8 @@
-package com.ticketPing.gateway.security;
+package com.ticketPing.gateway.infrastructure.config;
 
+import com.ticketPing.gateway.infrastructure.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -8,6 +10,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 @EnableWebFluxSecurity
@@ -23,7 +26,7 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .securityContextRepository(jwtFilter)
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/v1/auth/login").permitAll()
+                        .pathMatchers("/api/v1/auth/**").permitAll()
                         .pathMatchers("/api/v1/users/signup").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/v1/performances/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/v1/schedules/{scheduleId}").permitAll()
@@ -33,5 +36,4 @@ public class SecurityConfig {
                 )
                 .build();
     }
-
 }

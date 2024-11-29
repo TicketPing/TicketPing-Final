@@ -1,8 +1,8 @@
-package com.ticketPing.gateway.config.filter;
+package com.ticketPing.gateway.application.service;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
 import static caching.enums.RedisKeyPrefix.WAITING_QUEUE;
-import static com.ticketPing.gateway.utils.QueueTokenValueGenerator.generateTokenValue;
+import static com.ticketPing.gateway.common.utils.QueueTokenValueGenerator.generateTokenValue;
 
 import caching.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;

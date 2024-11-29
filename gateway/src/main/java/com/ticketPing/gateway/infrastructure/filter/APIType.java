@@ -1,4 +1,4 @@
-package com.ticketPing.gateway.config.filter;
+package com.ticketPing.gateway.infrastructure.filter;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
