@@ -9,6 +9,8 @@ import com.ticketPing.gateway.common.utils.ResponseWriter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -26,7 +28,17 @@ public class QueueCheckFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         logRequestDetails(exchange);
 
-        // TODO Security Context에서 userId 꺼내오기
+
+        ReactiveSecurityContextHolder.getContext()
+                .map(context -> {
+                    Authentication authentication = context.getAuthentication();
+                    String userId = authentication.getName();
+                    // 로직 수행
+                    System.out.println(authentication);
+                    System.out.println(userId);
+                    return null;
+                });
+
         String userId = "userId";
         String performanceId = exchange.getRequest().getQueryParams().getFirst(PERFORMANCE_ID_PARAM);
         APIType api = APIType.findByRequest(exchange.getRequest().getURI().getPath(), exchange.getRequest().getMethod().name());

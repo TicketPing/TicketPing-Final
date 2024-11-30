@@ -5,7 +5,7 @@ import com.ticketPing.payment.application.dto.PaymentResponse;
 import com.ticketPing.payment.domain.model.entity.Payment;
 import com.ticketPing.payment.domain.service.PaymentDomainService;
 import messaging.events.PaymentCompletedEvent;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import messaging.events.PaymentCreatedEvent;
@@ -53,6 +53,12 @@ public class PaymentApplicationService {
     private void publishPaymentCompletedEvent(Payment payment) {
         val event = PaymentCompletedEvent.create(payment.getOrderId());
         eventApplicationService.publishPaymentCompletedEvent(event);
+    }
+
+    @Transactional(readOnly = true)
+    public PaymentResponse getPayment(UUID paymentId) {
+        Payment payment = paymentDomainService.findPayment(paymentId);
+        return PaymentResponse.from(payment);
     }
 
 }

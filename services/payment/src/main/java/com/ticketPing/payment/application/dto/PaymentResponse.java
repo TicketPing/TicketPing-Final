@@ -10,9 +10,6 @@ public record PaymentResponse(
         UUID userId,
         String status,
         UUID orderId,
-        UUID performanceId,
-        UUID performanceScheduleId,
-        UUID seatId,
         Long amount,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
