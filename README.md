@@ -34,7 +34,7 @@
 ## 🛠️ 시스템 아키텍처
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/e2c614e9-28b3-4d37-9e2c-8fabeeb2864d" height="90%" width="90%" alt="sa">
+  <img src="https://github.com/user-attachments/assets/b41f7204-d28e-428d-b55c-844b5f5ee51b" height="90%" width="90%" alt="sa">
 </p>
 
 ## ⚙️ 기술 스택
@@ -136,6 +136,8 @@
 - [😏 Kafka Producer 설정하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%98%8F-Kafka-Producer-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
 
 - [🤥 Kafka Consumer 설정하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%A4%A5-Kafka-Consumer-%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0)
+
+- [🥶 Kafka Cluster 적용하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%A5%B6-Kafka-Cluster-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
 
 <br>
 
