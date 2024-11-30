@@ -1,5 +1,6 @@
 package payment;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record PaymentResponse(
@@ -7,9 +8,8 @@ public record PaymentResponse(
         UUID userId,
         String status,
         UUID orderId,
-        String performanceName,
-        UUID performanceScheduleId,
         Long amount,
-        UUID seatId
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

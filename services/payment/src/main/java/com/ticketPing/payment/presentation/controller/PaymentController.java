@@ -31,12 +31,21 @@ public class PaymentController {
     }
 
     @Operation(summary = "PG사 결제 상태 확인")
-    @GetMapping("/{paymentId}")
+    @GetMapping("/{paymentId}/status")
     public ResponseEntity<CommonResponse<PaymentResponse>> checkPaymentStatus(
             @Valid @PathVariable("paymentId") UUID paymentId) {
         return ResponseEntity
                 .status(200)
                 .body(success(paymentApplicationService.checkPaymentStatus(paymentId)));
+    }
+
+    @Operation(summary = "결제 단일 조회 (Feign)")
+    @GetMapping("/{paymentId}")
+    public ResponseEntity<CommonResponse<PaymentResponse>> getPayment(
+            @Valid @PathVariable("paymentId") UUID paymentId) {
+        return ResponseEntity
+                .status(200)
+                .body(success(paymentApplicationService.getPayment(paymentId)));
     }
 
 }
