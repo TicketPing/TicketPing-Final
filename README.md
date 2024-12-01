@@ -34,7 +34,7 @@
 ## 🛠️ 시스템 아키텍처
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b41f7204-d28e-428d-b55c-844b5f5ee51b" height="90%" width="90%" alt="sa">
+  <img src="https://github.com/user-attachments/assets/02e9519b-1488-4aa7-ad06-036e99700c2e" height="90%" width="90%" alt="sa">
 </p>
 
 ## ⚙️ 기술 스택
