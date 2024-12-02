@@ -1,15 +1,14 @@
 package com.ticketPing.gateway.infrastructure.filter;
 
-import static com.ticketPing.gateway.common.exception.FilterErrorCase.PERFORMANCE_SOLD_OUT;
-import static com.ticketPing.gateway.common.exception.FilterErrorCase.TOO_MANY_WAITING_USERS;
-import static com.ticketPing.gateway.common.exception.FilterErrorCase.WORKING_QUEUE_TOKEN_NOT_FOUND;
+import static com.ticketPing.gateway.common.exception.FilterErrorCase.PERFORMANCE_ID_NOT_FOUND;
+import static com.ticketPing.gateway.common.exception.FilterErrorCase.USER_ID_NOT_FOUND;
 
 import com.ticketPing.gateway.application.service.QueueCheckService;
-import com.ticketPing.gateway.common.utils.ResponseWriter;
+import exception.ApplicationException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -23,74 +22,55 @@ public class QueueCheckFilter {
     private static final String PERFORMANCE_ID_PARAM = "performanceId";
 
     private final QueueCheckService queueCheckService;
-    private final ResponseWriter responseWriter;
 
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        logRequestDetails(exchange);
-
-
-        ReactiveSecurityContextHolder.getContext()
-                .map(context -> {
-                    Authentication authentication = context.getAuthentication();
-                    String userId = authentication.getName();
-                    // 로직 수행
-                    System.out.println(authentication);
-                    System.out.println(userId);
-                    return null;
-                });
-
-        String userId = "userId";
-        String performanceId = exchange.getRequest().getQueryParams().getFirst(PERFORMANCE_ID_PARAM);
-        APIType api = APIType.findByRequest(exchange.getRequest().getURI().getPath(), exchange.getRequest().getMethod().name());
-
-        if (api == null) {
-            return chain.filter(exchange);
-        }
-        return handleApiRequest(api, exchange, chain, userId, performanceId);
+        return Mono.zip(getPerformanceIdFromQueryParams(exchange), getUserIdFromAuthentication())
+                .doOnSuccess(tuple -> log.info("공연 ID: {}, 유저 ID: {}", tuple.getT1(), tuple.getT2()))
+                .flatMap(tuple -> handleApiRequest(exchange, chain, tuple.getT1(), tuple.getT2()));
     }
 
-    private void logRequestDetails(ServerWebExchange exchange) {
-        log.info("요청 API 경로: {}, HTTP 메서드: {}",
-                exchange.getRequest().getURI().getPath(),
-                exchange.getRequest().getMethod().name());
+    private Mono<String> getUserIdFromAuthentication() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(context -> context.getAuthentication().getName())
+                .switchIfEmpty(Mono.error(new ApplicationException(USER_ID_NOT_FOUND)));
     }
 
-    private Mono<Void> handleApiRequest(APIType api, ServerWebExchange exchange, GatewayFilterChain chain, String userId, String performanceId) {
-        return switch (api) {
-            case ENTER_WAITING_QUEUE -> handleEnterWaitingQueueAPI(exchange, chain, performanceId);
-            case GET_QUEUE_INFO -> handleGetQueueTokenAPI(exchange, chain, performanceId);
-            case CREATE_ORDER, REQUEST_PAYMENT -> handleReservationAPI(exchange, chain, userId, performanceId);
-        };
+    private Mono<String> getPerformanceIdFromQueryParams(ServerWebExchange exchange) {
+        return Optional.ofNullable(exchange.getRequest().getQueryParams().getFirst(PERFORMANCE_ID_PARAM))
+                .map(Mono::just)
+                .orElseGet(() -> Mono.error(new ApplicationException(PERFORMANCE_ID_NOT_FOUND)));
     }
 
-    // 대기열 진입 API
+    private Mono<Void> handleApiRequest(ServerWebExchange exchange, GatewayFilterChain chain, String performanceId, String userId) {
+        String path = exchange.getRequest().getURI().getPath();
+        String method = exchange.getRequest().getMethod().name();
+
+        return APIType.findByRequest(path, method)
+                .doOnSuccess(api -> log.info("API 타입: {}", api))
+                .flatMap(api ->
+                        switch (api) {
+                            case ENTER_WAITING_QUEUE -> handleEnterWaitingQueueAPI(exchange, chain, performanceId);
+                            case GET_QUEUE_INFO -> handleGetQueueTokenAPI(exchange, chain, performanceId);
+                            case CREATE_ORDER, REQUEST_PAYMENT -> handleReservationAPI(exchange, chain, userId, performanceId);
+                        })
+                .switchIfEmpty(chain.filter(exchange));
+    }
+
     private Mono<Void> handleEnterWaitingQueueAPI(ServerWebExchange exchange, GatewayFilterChain chain, String performanceId) {
-        if (queueCheckService.checkPerformanceSoldOut(performanceId)) {
-            return responseWriter.setErrorResponse(exchange, PERFORMANCE_SOLD_OUT);
-        }
-        if (queueCheckService.checkTooManyWaitingUsers(performanceId)) {
-            return responseWriter.setErrorResponse(exchange, TOO_MANY_WAITING_USERS);
-        }
-        return chain.filter(exchange);
+        return queueCheckService.checkIsPerformanceSoldOut(performanceId)
+                .then(queueCheckService.checkHasTooManyWaitingUsers(performanceId))
+                .then(chain.filter(exchange));
     }
 
-    // 대기열 상태 조회 API
     private Mono<Void> handleGetQueueTokenAPI(ServerWebExchange exchange, GatewayFilterChain chain, String performanceId) {
-        if (queueCheckService.checkPerformanceSoldOut(performanceId)) {
-            return responseWriter.setErrorResponse(exchange, PERFORMANCE_SOLD_OUT);
-        }
-        return chain.filter(exchange);
+        return queueCheckService.checkIsPerformanceSoldOut(performanceId)
+                .then(chain.filter(exchange));
     }
 
-    // 예매 API
     private Mono<Void> handleReservationAPI(ServerWebExchange exchange, GatewayFilterChain chain, String userId, String performanceId) {
-        if (queueCheckService.checkPerformanceSoldOut(performanceId)) {
-            return responseWriter.setErrorResponse(exchange, PERFORMANCE_SOLD_OUT);
-        }
-        if (!queueCheckService.checkUserAvailable(userId, performanceId)) {
-            return responseWriter.setErrorResponse(exchange, WORKING_QUEUE_TOKEN_NOT_FOUND);
-        }
-        return chain.filter(exchange);
+        return queueCheckService.checkIsPerformanceSoldOut(performanceId)
+                .then(queueCheckService.checkIsUserAvailable(userId, performanceId))
+                .then(chain.filter(exchange));
     }
 
 }

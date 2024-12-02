@@ -10,10 +10,6 @@ services:
   gateway-server:
     container_name: gateway-server
     image: ticketping/gateway-server:latest
-    env_file:
-      - .env
-    environment:
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
     ports:
       - "10001:10001"
     depends_on:

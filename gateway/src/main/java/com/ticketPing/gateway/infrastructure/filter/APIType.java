@@ -3,6 +3,8 @@ package com.ticketPing.gateway.infrastructure.filter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Getter
 @RequiredArgsConstructor
@@ -16,13 +18,11 @@ public enum APIType {
     private final String path;
     private final HttpMethod method;
 
-    public static APIType findByRequest(String requestPath, String httpMethod) {
-        for (APIType api : APIType.values()) {
-            if (api.matches(requestPath, httpMethod)) {
-                return api;
-            }
-        }
-        return null;
+    public static Mono<APIType> findByRequest(String requestPath, String httpMethod) {
+        return Flux.fromArray(APIType.values())
+                .filter(api -> api.matches(requestPath, httpMethod))
+                .next()
+                .switchIfEmpty(Mono.empty());
     }
 
     private boolean matches(String requestPath, String httpMethod) {
