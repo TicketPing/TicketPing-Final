@@ -13,7 +13,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class RedisRepository {
 
-
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
@@ -52,18 +51,6 @@ public class RedisRepository {
 
     public void decrement(String key) {
         redisTemplate.opsForValue().decrement(key);
-    }
-
-    public Object getValue(String key) {
-        return redisTemplate.opsForValue().get(key);
-    }
-
-    public Long getSortedSetSize(String key) {
-        return redisTemplate.opsForZSet().size(key);
-    }
-
-    public Boolean hasKey(String key) {
-        return redisTemplate.hasKey(key);
     }
 
 }
