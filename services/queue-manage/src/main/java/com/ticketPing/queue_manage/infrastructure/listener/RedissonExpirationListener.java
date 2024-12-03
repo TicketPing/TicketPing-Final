@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
+import org.redisson.api.listener.MessageListener;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RedisExpirationListener implements MessageListener {
+public class RedissonExpirationListener implements MessageListener<String> {
 
     private final static String LEADER_KEY_PREFIX = "LeaderKey:";
 
@@ -24,17 +23,15 @@ public class RedisExpirationListener implements MessageListener {
     private final WorkingQueueService workingQueueService;
 
     @Override
-    public void onMessage(final Message message, final byte[] pattern) {
-        String tokenValue = message.toString();
-
+    public void onMessage(CharSequence channel, String expiredKey) {
         // 작업열 토큰 확인
-        if (tokenValue.startsWith(TOKEN_VALUE.getValue())) {
-            log.info("WorkingQueueToken has expired: {}", tokenValue);
+        if (expiredKey.startsWith(TOKEN_VALUE.getValue())) {
+            log.info("WorkingQueueToken has expired: {}", expiredKey);
 
-            String leaderKey = LEADER_KEY_PREFIX + tokenValue;
+            String leaderKey = LEADER_KEY_PREFIX + expiredKey;
             RLock leaderLock = redissonClient.getLock(leaderKey);
 
-            tryToLeader(tokenValue, leaderLock);
+            tryToLeader(expiredKey, leaderLock);
         }
     }
 
