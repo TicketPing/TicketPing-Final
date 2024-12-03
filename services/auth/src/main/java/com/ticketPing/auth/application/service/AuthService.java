@@ -1,118 +1,83 @@
 package com.ticketPing.auth.application.service;
 
 import auth.UserCacheDto;
-import caching.repository.RedisRepository;
 import com.ticketPing.auth.application.client.UserClient;
-import com.ticketPing.auth.application.dto.LoginResponse;
-import com.ticketPing.auth.application.service.enums.Role;
-import com.ticketPing.auth.common.exception.AuthErrorCase;
+import com.ticketPing.auth.application.dto.TokenResponse;
+import com.ticketPing.auth.common.enums.Role;
+import com.ticketPing.auth.infrastructure.jwt.JwtTokenProvider;
 import com.ticketPing.auth.presentation.request.LoginRequest;
-import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import user.UserLookupRequest;
 import user.UserResponse;
 
-import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
 
+import static com.ticketPing.auth.common.constants.AuthConstants.BEARER_PREFIX;
+
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
-    private final TokenService tokenService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenCacheService refreshTokenCacheService;
     private final UserClient userClient;
-    private final RedisRepository redisRepository;
-    private final long refreshTokenExpiration;
 
-    public AuthService(TokenService tokenService, UserClient userClient, RedisRepository redisRepository,
-                       @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
-        this.tokenService = tokenService;
-        this.userClient = userClient;
-        this.redisRepository = redisRepository;
-        this.refreshTokenExpiration = refreshTokenExpiration;
+    public TokenResponse login(LoginRequest loginRequest) {
+        UUID userId = authenticateUser(loginRequest);
+        String accessToken = generateAndCacheTokens(userId, Role.USER);
+        return TokenResponse.of(accessToken);
     }
 
-    public LoginResponse login(LoginRequest loginRequest) {
-        UserLookupRequest request = new UserLookupRequest(loginRequest.email(), loginRequest.password());
-        UserResponse userResponse = userClient.getUserByEmailAndPassword(request).getData();
-
-        String accessToken = tokenService.createAccessToken(String.valueOf(userResponse.userId()), Role.USER);
-        createRefreshToken(String.valueOf(userResponse.userId()));
-
-        return new LoginResponse(accessToken);
+    public UserCacheDto validateToken(String authHeader) {
+        String accessToken = jwtTokenProvider.parseToken(authHeader);
+        Claims claims = jwtTokenProvider.validateAndExtractClaims(accessToken);
+        return extractUserFromClaims(claims);
     }
 
-    private void createRefreshToken(String userId) {
-        String refreshToken = tokenService.createRefreshToken(userId);
-        String key = "user:" + userId + ":refresh_token";
-        redisRepository.setValueWithTTL(key , refreshToken, Duration.ofMillis(refreshTokenExpiration));
-    }
+    public TokenResponse refreshAccessToken(String authHeader) {
+        Claims claims = extractClaimsFromExpiredToken(authHeader);
+        UUID userId = jwtTokenProvider.getUserId(claims);
+        Role userRole = jwtTokenProvider.getUserRole(claims);
 
-    public LoginResponse refreshAccessToken(String token) {
-        String accessToken = extractAccessToken(token);
-        Claims claims;
-        try {
-            claims = tokenService.getClaimsFromToken(accessToken);
-        } catch (ExpiredJwtException e) {
-            claims = e.getClaims();
-        }
-
-        String userId = String.valueOf(parseUserId(claims));
         validateRefreshToken(userId);
 
-        String newAccessToken = tokenService.createAccessToken(userId, parseUserRole((claims)));
-
-        return new LoginResponse(newAccessToken);
+        String newAccessToken = BEARER_PREFIX + jwtTokenProvider.createAccessToken(userId, userRole);
+        return TokenResponse.of(newAccessToken);
     }
 
-    private void validateRefreshToken(String userId) {
-        String key = "user:" + userId + ":refresh_token";
-        String refreshToken = Optional.ofNullable(redisRepository.getValueAsClass(key, String.class))
-                .orElseThrow(() -> new ApplicationException(AuthErrorCase.REFRESH_TOKEN_NOT_FOUND));
-        tokenService.validateToken(refreshToken);
+    private UUID authenticateUser(LoginRequest loginRequest) {
+        UserLookupRequest request = new UserLookupRequest(loginRequest.email(), loginRequest.password());
+        UserResponse userResponse = userClient.getUserByEmailAndPassword(request).getData();
+        return userResponse.userId();
     }
 
-    public UserCacheDto validateToken(String token) {
-        String accessToken = extractAccessToken(token);
-        Claims claims = tokenService.extractClaims(accessToken);
+    private String generateAndCacheTokens(UUID userId, Role role) {
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+        refreshTokenCacheService.saveRefreshToken(userId, refreshToken);
+        return BEARER_PREFIX + jwtTokenProvider.createAccessToken(userId, role);
+    }
 
-        UUID userId = parseUserId(claims);
-        Role role = parseUserRole((claims));
+    private Claims extractClaimsFromExpiredToken(String authHeader) {
+        String accessToken = jwtTokenProvider.parseToken(authHeader);
+        try {
+            return jwtTokenProvider.validateAndExtractClaims(accessToken);
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
 
-        validateUser(userId, role);
+    private void validateRefreshToken(UUID userId) {
+        String refreshToken = refreshTokenCacheService.getRefreshToken(userId);
+        jwtTokenProvider.validateToken(refreshToken);
+    }
 
+    private UserCacheDto extractUserFromClaims(Claims claims) {
+        UUID userId = jwtTokenProvider.getUserId(claims);
+        Role role = jwtTokenProvider.getUserRole(claims);
         return new UserCacheDto(userId, role.getValue());
-    }
-
-    private String extractAccessToken(String token) {
-        if (token == null || !token.startsWith("Bearer "))
-            throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
-        return  token.substring(7);
-    }
-
-    private UUID parseUserId(Claims claims) {
-        try {
-            return UUID.fromString(claims.getSubject());
-        } catch (IllegalArgumentException e) {
-            throw new ApplicationException(AuthErrorCase.INVALID_USER_ID);
-        }
-    }
-
-    private Role parseUserRole(Claims claims) {
-        try {
-            return Role.valueOf(claims.get("auth", String.class));
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new ApplicationException(AuthErrorCase.INVALID_ROLE);
-        }
-    }
-
-    private void validateUser(UUID userId, Role role) {
-        if(role.equals(Role.USER)) {
-            userClient.getUser(userId).getData();
-        } else {
-            throw new ApplicationException(AuthErrorCase.INVALID_ROLE);
-        }
     }
 }

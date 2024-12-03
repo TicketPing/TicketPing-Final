@@ -14,7 +14,4 @@ import user.UserResponse;
 public interface UserFeignClient extends UserClient {
     @GetMapping("/api/v1/users/login")
     CommonResponse<UserResponse> getUserByEmailAndPassword(@RequestBody UserLookupRequest userLookupRequest);
-
-    @GetMapping("/api/v1/users/{userId}")
-    CommonResponse<UserResponse> getUser(@RequestParam("userId") UUID userId);
 }

@@ -8,6 +8,4 @@ import user.UserResponse;
 
 public interface UserClient {
     CommonResponse<UserResponse> getUserByEmailAndPassword(UserLookupRequest userLookupRequest);
-
-    CommonResponse<UserResponse> getUser(UUID userId);
 }
