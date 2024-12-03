@@ -8,8 +8,9 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
 import java.util.Collections;
+
+import static com.ticketPing.auth.common.constants.AuthConstants.AUTHORIZATION_HEADER;
 
 @Configuration
 public class SwaggerConfig {
@@ -21,15 +22,15 @@ public class SwaggerConfig {
                                 .version("1.0"))
                         .components(
                                 new Components()
-                                        .addSecuritySchemes("Authorization", new SecurityScheme()
-                                                .name("Authorization")
+                                        .addSecuritySchemes(AUTHORIZATION_HEADER, new SecurityScheme()
+                                                .name(AUTHORIZATION_HEADER)
                                                 .type(SecurityScheme.Type.APIKEY)
                                                 .in(SecurityScheme.In.HEADER)
                                                 .bearerFormat("JWT")
                                         )
                         )
                         .security(Collections.singletonList(
-                                new SecurityRequirement().addList("Authorization")
+                                new SecurityRequirement().addList(AUTHORIZATION_HEADER)
                         ));
         }
 }

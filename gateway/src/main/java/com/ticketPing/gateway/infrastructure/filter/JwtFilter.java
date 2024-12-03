@@ -1,7 +1,6 @@
 package com.ticketPing.gateway.infrastructure.filter;
 
 import com.ticketPing.gateway.application.client.AuthClient;
-import com.ticketPing.gateway.infrastructure.client.AuthWebClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,20 +33,20 @@ public class JwtFilter implements ServerSecurityContextRepository {
 
         if (authHeader != null) {
             return authClient.validateToken(authHeader)
-                    .flatMap(response -> {
-                        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(response.role()));
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(
-                                response.userId(), null, authorities
-                        );
+                .flatMap(response -> {
+                    List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(response.role()));
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            response.userId(), null, authorities
+                    );
 
-                        exchange.mutate()
-                                .request(r -> r.headers(headers -> {
-                                    headers.add("X_User_Id", String.valueOf(response.userId()));
-                                    headers.add("X_User_Role", response.role());
-                                }))
-                                .build();
+                    exchange.mutate()
+                            .request(r -> r.headers(headers -> {
+                                headers.add("X_USER_ID", String.valueOf(response.userId()));
+                                headers.add("X_USER_ROLE", response.role());
+                            }))
+                            .build();
 
-                        return Mono.just(new SecurityContextImpl(authentication));
+                    return Mono.just(new SecurityContextImpl(authentication));
                     });
         }
 

@@ -1,4 +1,4 @@
-package com.ticketPing.auth.application.service.enums;
+package com.ticketPing.auth.common.enums;
 
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import exception.ApplicationException;

@@ -1,7 +1,7 @@
 package com.ticketPing.auth.presentation.controller;
 
-import com.ticketPing.auth.application.dto.LoginResponse;
 import auth.UserCacheDto;
+import com.ticketPing.auth.application.dto.TokenResponse;
 import com.ticketPing.auth.application.service.AuthService;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.CommonResponse;
 
+import java.util.UUID;
+
+import static com.ticketPing.auth.common.constants.AuthConstants.AUTHORIZATION_HEADER;
+
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -21,17 +26,17 @@ public class AuthController {
 
     @Operation(summary = "사용자 로그인")
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<LoginResponse>> login(@RequestBody @Valid final LoginRequest loginRequest) {
-        LoginResponse loginResponse = authService.login(loginRequest);
+    public ResponseEntity<CommonResponse<TokenResponse>> login(@RequestBody @Valid final LoginRequest loginRequest) {
+        TokenResponse response = authService.login(loginRequest);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(loginResponse));
+                .body(CommonResponse.success(response));
     }
 
     @Operation(summary = "토큰 검증")
     @PostMapping("/validate")
-    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestHeader("Authorization") String token) {
-        UserCacheDto response = authService.validateToken(token);
+    public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestHeader(AUTHORIZATION_HEADER) String authHeader) {
+        UserCacheDto response = authService.validateToken(authHeader);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(CommonResponse.success(response));
@@ -39,11 +44,21 @@ public class AuthController {
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<LoginResponse>> getUser(@RequestHeader("Authorization") String token) {
-        LoginResponse loginResponse = authService.refreshAccessToken(token);
+    public ResponseEntity<CommonResponse<TokenResponse>> refreshAccessToken(@RequestHeader(AUTHORIZATION_HEADER) String authHeader) {
+        TokenResponse response = authService.refreshAccessToken(authHeader);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(loginResponse));
+                .body(CommonResponse.success(response));
     }
+
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Object>> logout(@RequestHeader("X_USER_ID") UUID userId) {
+        authService.logout(userId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success());
+    }
+
 
 }
