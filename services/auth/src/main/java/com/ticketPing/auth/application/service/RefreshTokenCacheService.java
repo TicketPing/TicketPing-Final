@@ -30,6 +30,11 @@ public class RefreshTokenCacheService {
                 .orElseThrow(() -> new ApplicationException(AuthErrorCase.REFRESH_TOKEN_NOT_FOUND));
     }
 
+    public void deleteRefreshToken(UUID userId) {
+        String key = generateKey(userId);
+        redisRepository.deleteKey(key);
+    }
+
     private String generateKey(UUID userId) {
         return String.format("auth:refreshToken:user:%s", userId);
     }

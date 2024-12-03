@@ -49,6 +49,10 @@ public class AuthService {
         return TokenResponse.of(newAccessToken);
     }
 
+    public void logout(UUID userId) {
+        refreshTokenCacheService.deleteRefreshToken(userId);
+    }
+
     private UUID authenticateUser(LoginRequest loginRequest) {
         UserLookupRequest request = new UserLookupRequest(loginRequest.email(), loginRequest.password());
         UserResponse userResponse = userClient.getUserByEmailAndPassword(request).getData();

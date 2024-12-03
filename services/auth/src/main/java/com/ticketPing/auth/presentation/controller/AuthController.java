@@ -51,4 +51,14 @@ public class AuthController {
                 .body(CommonResponse.success(response));
     }
 
+    @Operation(summary = "로그아웃")
+    @PostMapping("/logout")
+    public ResponseEntity<CommonResponse<Object>> logout(@RequestHeader("X_USER_ID") UUID userId) {
+        authService.logout(userId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonResponse.success());
+    }
+
+
 }
