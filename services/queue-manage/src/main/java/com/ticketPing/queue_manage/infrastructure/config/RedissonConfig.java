@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.api.RedissonReactiveClient;
+import org.redisson.client.codec.StringCodec;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import caching.config.RedisClusterProperties;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,6 +21,8 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
+        config.setCodec(StringCodec.INSTANCE);
+
         ClusterServersConfig csc = config.useClusterServers()
                 .setScanInterval(2000)
                 .setConnectTimeout(100)

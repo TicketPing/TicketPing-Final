@@ -12,7 +12,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class RedisMessageListenerConfig {
 
-    @Bean(name = "redisMessageExpirationExecutor")
+    @Bean(name = "redisMessageTaskExecutor")
     public Executor redisMessageTaskExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(2);
@@ -21,10 +21,11 @@ public class RedisMessageListenerConfig {
     }
 
     @Bean
-    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory, RedisKeyExpiredListener redisExpirationListener) {
+    public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+                                                   RedisKeyExpiredListener redisKeyExpiredListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(redisExpirationListener, new ChannelTopic("__keyevent@0__:expired"));
+        container.addMessageListener(redisKeyExpiredListener, new ChannelTopic("__keyevent@0__:expired"));
         container.setTaskExecutor(redisMessageTaskExecutor());
         return container;
     }

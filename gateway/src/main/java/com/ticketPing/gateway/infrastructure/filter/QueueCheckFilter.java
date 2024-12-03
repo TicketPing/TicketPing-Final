@@ -24,7 +24,10 @@ public class QueueCheckFilter {
     private final QueueCheckService queueCheckService;
 
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return Mono.zip(getPerformanceIdFromQueryParams(exchange), getUserIdFromAuthentication())
+        return Mono.zip(
+                        getPerformanceIdFromQueryParams(exchange),
+                        getUserIdFromAuthentication()
+                )
                 .doOnSuccess(tuple -> log.info("공연 ID: {}, 유저 ID: {}", tuple.getT1(), tuple.getT2()))
                 .flatMap(tuple -> handleApiRequest(exchange, chain, tuple.getT1(), tuple.getT2()));
     }

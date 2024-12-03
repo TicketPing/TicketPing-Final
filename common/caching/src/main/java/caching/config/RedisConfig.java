@@ -21,6 +21,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,7 +29,17 @@ public class RedisConfig {
 
     private final RedisClusterProperties redisClusterProperties;
 
-    private RedisClusterConfiguration createClusterConfiguration() {
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return createConnectionFactory();
+    }
+
+    @Bean
+    public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
+        return createConnectionFactory();
+    }
+
+    private LettuceConnectionFactory createConnectionFactory() {
         final List<RedisNode> redisNodes = redisClusterProperties.getNodes().stream()
                 .map(node -> new RedisNode(node.split(":")[0], Integer.parseInt(node.split(":")[1])))
                 .toList();
@@ -38,10 +49,6 @@ public class RedisConfig {
         clusterConfiguration.setClusterNodes(redisNodes);
         clusterConfiguration.setMaxRedirects(redisClusterProperties.getMaxRedirects());
 
-        return clusterConfiguration;
-    }
-
-    private LettuceClientConfiguration createLettuceClientConfiguration() {
         // Socket 옵션
         SocketOptions socketOptions = SocketOptions.builder()
                 .connectTimeout(Duration.ofMillis(100L))
@@ -62,15 +69,12 @@ public class RedisConfig {
                 .build();
 
         // Lettuce Client 설정
-        return LettuceClientConfiguration.builder()
+        LettuceClientConfiguration clientConfiguration = LettuceClientConfiguration.builder()
                 .clientOptions(clientOptions)
                 .commandTimeout(Duration.ofMillis(3000L))
                 .build();
-    }
 
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(createClusterConfiguration(), createLettuceClientConfiguration());
+        return new LettuceConnectionFactory(clusterConfiguration, clientConfiguration);
     }
 
     @Bean
@@ -94,27 +98,21 @@ public class RedisConfig {
     }
 
     @Bean
-    public ReactiveRedisConnectionFactory reactiveRedisConnectionFactory() {
-        return new LettuceConnectionFactory(createClusterConfiguration(), createLettuceClientConfiguration());
-    }
-
-    @Bean
-    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory) {
+    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
+            @Qualifier("reactiveRedisConnectionFactory") ReactiveRedisConnectionFactory connectionFactory) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.deactivateDefaultTyping(); // @class 제거
 
-        // JSON Serializer
-        Jackson2JsonRedisSerializer<Object> serializer =
-                new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
+        // Jackson2JsonRedisSerializer 설정
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(objectMapper, Object.class);
 
-        // Serialization context
-        RedisSerializationContext<String, Object> serializationContext =
-                RedisSerializationContext.<String, Object>newSerializationContext()
-                        .key(new StringRedisSerializer())
-                        .value(serializer)
-                        .hashKey(new StringRedisSerializer())
-                        .hashValue(serializer)
-                        .build();
+        // Serialization context 생성
+        RedisSerializationContext<String, Object> serializationContext = RedisSerializationContext
+                .<String, Object>newSerializationContext(new StringRedisSerializer())
+                .value(serializer)
+                .hashKey(new StringRedisSerializer())
+                .hashValue(serializer)
+                .build();
 
         return new ReactiveRedisTemplate<>(connectionFactory, serializationContext);
     }
