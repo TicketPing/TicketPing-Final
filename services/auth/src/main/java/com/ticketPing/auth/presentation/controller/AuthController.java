@@ -5,6 +5,8 @@ import com.ticketPing.auth.application.dto.TokenResponse;
 import com.ticketPing.auth.application.service.AuthService;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,39 +28,41 @@ public class AuthController {
 
     @Operation(summary = "사용자 로그인")
     @PostMapping("/login")
-    public ResponseEntity<CommonResponse<TokenResponse>> login(@RequestBody @Valid final LoginRequest loginRequest) {
-        TokenResponse response = authService.login(loginRequest);
+    public ResponseEntity<CommonResponse<TokenResponse>> login(@RequestBody @Valid final LoginRequest loginRequest,
+                                                               HttpServletResponse response) {
+        TokenResponse tokenResponse = authService.login(loginRequest, response);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(response));
+                .body(CommonResponse.success(tokenResponse));
     }
 
     @Operation(summary = "토큰 검증")
     @PostMapping("/validate")
     public ResponseEntity<CommonResponse<UserCacheDto>> validateToken(@RequestHeader(AUTHORIZATION_HEADER) String authHeader) {
-        UserCacheDto response = authService.validateToken(authHeader);
+        UserCacheDto userCacheDto = authService.validateToken(authHeader);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(response));
+                .body(CommonResponse.success(userCacheDto));
     }
 
     @Operation(summary = "토큰 재발급")
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResponse<TokenResponse>> refreshAccessToken(@RequestHeader(AUTHORIZATION_HEADER) String authHeader) {
-        TokenResponse response = authService.refreshAccessToken(authHeader);
+    public ResponseEntity<CommonResponse<TokenResponse>> refreshAccessToken(@RequestHeader(AUTHORIZATION_HEADER) String authHeader,
+                                                                            HttpServletRequest request, HttpServletResponse response) {
+        TokenResponse tokenResponse = authService.refreshAccessToken(authHeader, request, response);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.success(response));
+                .body(CommonResponse.success(tokenResponse));
     }
 
     @Operation(summary = "로그아웃")
     @PostMapping("/logout")
-    public ResponseEntity<CommonResponse<Object>> logout(@RequestHeader("X_USER_ID") UUID userId) {
-        authService.logout(userId);
+    public ResponseEntity<CommonResponse<Object>> logout(@RequestHeader("X_USER_ID") UUID userId,
+                                                         HttpServletResponse response) {
+        authService.logout(userId, response);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(CommonResponse.success());
     }
-
 
 }

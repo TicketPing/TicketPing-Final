@@ -59,11 +59,6 @@ public class JwtTokenProvider {
         return authHeader.substring(7);
     }
 
-    public Claims validateAndExtractClaims(String token) {
-        validateToken(token);
-        return getClaimsFromToken(token);
-    }
-
     public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
@@ -74,7 +69,7 @@ public class JwtTokenProvider {
         }
     }
 
-    private Claims getClaimsFromToken(String token) {
+    public Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     }
 
