@@ -1,5 +1,6 @@
 package com.ticketPing.queue_manage.infrastructure.config;
 
+import caching.config.RedisClusterProperties;
 import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -7,9 +8,11 @@ import org.redisson.api.RedissonReactiveClient;
 import org.redisson.client.codec.StringCodec;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@EnableConfigurationProperties(RedisClusterProperties.class)
 @Configuration
 @RequiredArgsConstructor
 public class RedissonConfig {
