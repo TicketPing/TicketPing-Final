@@ -53,7 +53,7 @@ public class QueueCheckFilter {
                 .flatMap(api ->
                         switch (api) {
                             case ENTER_WAITING_QUEUE -> handleEnterWaitingQueueAPI(exchange, chain, performanceId);
-                            case GET_QUEUE_INFO -> handleGetQueueTokenAPI(exchange, chain, performanceId);
+                            case GET_QUEUE_INFO -> handleGetQueueInfoAPI(exchange, chain, performanceId);
                             case CREATE_ORDER, REQUEST_PAYMENT -> handleReservationAPI(exchange, chain, userId, performanceId);
                         })
                 .switchIfEmpty(chain.filter(exchange));
@@ -65,7 +65,7 @@ public class QueueCheckFilter {
                 .then(chain.filter(exchange));
     }
 
-    private Mono<Void> handleGetQueueTokenAPI(ServerWebExchange exchange, GatewayFilterChain chain, String performanceId) {
+    private Mono<Void> handleGetQueueInfoAPI(ServerWebExchange exchange, GatewayFilterChain chain, String performanceId) {
         return queueCheckService.checkIsPerformanceSoldOut(performanceId)
                 .then(chain.filter(exchange));
     }
