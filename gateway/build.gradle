@@ -24,8 +24,8 @@ ext {
 dependencies {
 	// Common Module
 	implementation project(':common:core')
-	implementation project(':common:caching')
 	implementation project(':common:dtos')
+	implementation project(':common:caching')
 	implementation project(':common:monitoring')
 
 	// Cloud
