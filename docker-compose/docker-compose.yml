@@ -6,12 +6,27 @@ services:
     image: ticketping/eureka-server:latest
     ports:
       - "10000:10000"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
 
   gateway-server:
     container_name: gateway-server
     image: ticketping/gateway-server:latest
     ports:
       - "10001:10001"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - REDIS_NODE_1=${REDIS_NODE_1}
+      - REDIS_NODE_2=${REDIS_NODE_2}
+      - REDIS_NODE_3=${REDIS_NODE_3}
+      - REDIS_NODE_4=${REDIS_NODE_4}
+      - REDIS_NODE_5=${REDIS_NODE_5}
+      - REDIS_NODE_6=${REDIS_NODE_6}
+      - ZIPKIN=${ZIPKIN}
     depends_on:
       auth-server:
         condition: service_started
@@ -29,12 +44,20 @@ services:
   auth-server:
     container_name: auth-server
     image: ticketping/auth-server:latest
+    ports:
+      - "10010:10010"
     env_file:
       - .env
     environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - REDIS_NODE_1=${REDIS_NODE_1}
+      - REDIS_NODE_2=${REDIS_NODE_2}
+      - REDIS_NODE_3=${REDIS_NODE_3}
+      - REDIS_NODE_4=${REDIS_NODE_4}
+      - REDIS_NODE_5=${REDIS_NODE_5}
+      - REDIS_NODE_6=${REDIS_NODE_6}
+      - ZIPKIN=${ZIPKIN}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-    ports:
-      - "10010:10010"
     depends_on:
       eureka-server:
         condition: service_started
@@ -44,6 +67,14 @@ services:
     image: ticketping/user-server:latest
     ports:
       - "10011:10011"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - USER_POSTGRES_URL=${USER_POSTGRES_URL}
+      - USER_POSTGRES_USERNAME=${USER_POSTGRES_USERNAME}
+      - USER_POSTGRES_PASSWORD=${USER_POSTGRES_PASSWORD}
+      - ZIPKIN=${ZIPKIN}
     depends_on:
       eureka-server:
         condition: service_started
@@ -53,6 +84,20 @@ services:
     image: ticketping/performance-server:latest
     ports:
       - "10012:10012"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - PERFORMANCE_POSTGRES_URL=${PERFORMANCE_POSTGRES_URL}
+      - PERFORMANCE_POSTGRES_USERNAME=${PERFORMANCE_POSTGRES_USERNAME}
+      - PERFORMANCE_POSTGRES_PASSWORD=${PERFORMANCE_POSTGRES_PASSWORD}
+      - REDIS_NODE_1=${REDIS_NODE_1}
+      - REDIS_NODE_2=${REDIS_NODE_2}
+      - REDIS_NODE_3=${REDIS_NODE_3}
+      - REDIS_NODE_4=${REDIS_NODE_4}
+      - REDIS_NODE_5=${REDIS_NODE_5}
+      - REDIS_NODE_6=${REDIS_NODE_6}
+      - ZIPKIN=${ZIPKIN}
     depends_on:
       eureka-server:
         condition: service_started
@@ -62,6 +107,23 @@ services:
     image: ticketping/order-server:latest
     ports:
       - "10013:10013"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - ORDER_POSTGRES_URL=${ORDER_POSTGRES_URL}
+      - ORDER_POSTGRES_USERNAME=${ORDER_POSTGRES_USERNAME}
+      - ORDER_POSTGRES_PASSWORD=${ORDER_POSTGRES_PASSWORD}
+      - REDIS_NODE_1=${REDIS_NODE_1}
+      - REDIS_NODE_2=${REDIS_NODE_2}
+      - REDIS_NODE_3=${REDIS_NODE_3}
+      - REDIS_NODE_4=${REDIS_NODE_4}
+      - REDIS_NODE_5=${REDIS_NODE_5}
+      - REDIS_NODE_6=${REDIS_NODE_6}
+      - KAFKA_BROKER_1=${KAFKA_BROKER_1}
+      - KAFKA_BROKER_2=${KAFKA_BROKER_2}
+      - KAFKA_BROKER_3=${KAFKA_BROKER_3}
+      - ZIPKIN=${ZIPKIN}
     depends_on:
       eureka-server:
         condition: service_started
@@ -71,6 +133,17 @@ services:
     image: ticketping/payment-server:latest
     ports:
       - "10014:10014"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - PAYMENT_POSTGRES_URL=${PAYMENT_POSTGRES_URL}
+      - PAYMENT_POSTGRES_USERNAME=${PAYMENT_POSTGRES_USERNAME}
+      - PAYMENT_POSTGRES_PASSWORD=${PAYMENT_POSTGRES_PASSWORD}
+      - KAFKA_BROKER_1=${KAFKA_BROKER_1}
+      - KAFKA_BROKER_2=${KAFKA_BROKER_2}
+      - KAFKA_BROKER_3=${KAFKA_BROKER_3}
+      - ZIPKIN=${ZIPKIN}
     depends_on:
       eureka-server:
         condition: service_started
@@ -80,6 +153,23 @@ services:
     image: ticketping/queue-manage-server:latest
     ports:
       - "10015:10015"
+    env_file:
+      - .env
+    environment:
+      - EUREKA_SERVER=${EUREKA_SERVER}
+      - REDIS_NODE_1=${REDIS_NODE_1}
+      - REDIS_NODE_2=${REDIS_NODE_2}
+      - REDIS_NODE_3=${REDIS_NODE_3}
+      - REDIS_NODE_4=${REDIS_NODE_4}
+      - REDIS_NODE_5=${REDIS_NODE_5}
+      - REDIS_NODE_6=${REDIS_NODE_6}
+      - KAFKA_BROKER_1=${KAFKA_BROKER_1}
+      - KAFKA_BROKER_2=${KAFKA_BROKER_2}
+      - KAFKA_BROKER_3=${KAFKA_BROKER_3}
+      - ZIPKIN=${ZIPKIN}
+      - USER_TOKEN_SECRET_KEY=${USER_TOKEN_SECRET_KEY}
+      - WORKING_QUEUE_MAX_SIZE=${WORKING_QUEUE_MAX_SIZE}
+      - WORKING_QUEUE_TOKEN_TTL=${WORKING_QUEUE_TOKEN_TTL}
     depends_on:
       eureka-server:
         condition: service_started

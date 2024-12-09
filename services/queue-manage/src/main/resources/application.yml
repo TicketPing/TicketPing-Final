@@ -13,8 +13,8 @@ server:
   port: 10015
 
 token-value:
-  secret-key: secret-key
+  secret-key: ${USER_TOKEN_SECRET_KEY}
 
 working-queue:
-  max-size: 1000
-  token-ttl: 30
+  max-size: ${WORKING_QUEUE_MAX_SIZE}
+  token-ttl: ${WORKING_QUEUE_TOKEN_TTL}
