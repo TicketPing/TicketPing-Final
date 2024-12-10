@@ -1,6 +1,7 @@
 package com.ticketPing.user.domain.repository;
 
-import com.ticketPing.user.domain.entity.User;
+
+import com.ticketPing.user.domain.model.entity.User;
 
 import java.util.Optional;
 import java.util.UUID;

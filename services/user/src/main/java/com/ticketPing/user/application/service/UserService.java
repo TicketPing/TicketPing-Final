@@ -1,7 +1,7 @@
 package com.ticketPing.user.application.service;
 
 import com.ticketPing.user.application.dto.UserResponse;
-import com.ticketPing.user.domain.entity.User;
+import com.ticketPing.user.domain.model.entity.User;
 import com.ticketPing.user.domain.repository.UserRepository;
 import com.ticketPing.user.common.exception.UserErrorCase;
 import exception.ApplicationException;
