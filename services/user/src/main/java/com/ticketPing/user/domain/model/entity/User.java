@@ -1,6 +1,7 @@
-package com.ticketPing.user.domain.entity;
+package com.ticketPing.user.domain.model.entity;
 
 import audit.BaseEntity;
+import com.ticketPing.user.domain.model.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 import com.ticketPing.user.presentation.request.CreateUserRequest;
