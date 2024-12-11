@@ -3,6 +3,7 @@ package com.ticketPing.gateway.infrastructure.config;
 import com.ticketPing.gateway.infrastructure.filter.QueueCheckFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.GatewayFilterSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,23 +18,26 @@ public class RouteConfig {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
 
-                // API Routing
+                // API Routing with Circuit Breaker
                 .route("auth-service", r -> r.path("/api/v1/auth/**")
+                        .filters(f -> addCircuitBreaker(f, "authServiceCircuitBreaker", "default"))
                         .uri("lb://auth"))
                 .route("user-service", r -> r.path("/api/v1/users/**")
+                        .filters(f -> addCircuitBreaker(f, "userServiceCircuitBreaker", "default"))
                         .uri("lb://user"))
-                .route("performance-service", r -> r.path(
-                        "/api/v1/performances/**", "/api/v1/schedules/**", "/api/v1/seats/**")
+                .route("performance-service", r -> r.path("/api/v1/performances/**", "/api/v1/schedules/**", "/api/v1/seats/**")
+                        .filters(f -> addCircuitBreaker(f, "performanceServiceCircuitBreaker", "default"))
                         .uri("lb://performance"))
                 .route("order-service", r -> r.path("/api/v1/orders/**")
-                        .filters(f -> f.filter(queueCheckFilter::filter))
+                        .filters(f -> addCircuitBreaker(f, "orderServiceCircuitBreaker", "default"))
                         .uri("lb://order"))
                 .route("payment-service", r -> r.path("/api/v1/payments/**")
-                        .filters(f -> f.filter(queueCheckFilter::filter))
+                        .filters(f -> addCircuitBreaker(f, "paymentServiceCircuitBreaker", "default"))
                         .uri("lb://payment"))
-                .route("queue-manage-service", r -> r.path(
-                        "/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
-                        .filters(f -> f.filter(queueCheckFilter::filter))
+                .route("queue-manage-service", r -> r.path("/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
+                        .filters(f -> f.filter(queueCheckFilter::filter)
+                                .circuitBreaker(c -> c.setName("queueManageCircuitBreaker")
+                                        .setFallbackUri("forward:/fallback/default")))
                         .uri("lb://queue-manage"))
 
                 // Swagger Routing
@@ -57,6 +61,12 @@ public class RouteConfig {
                         .uri("lb://queue-manage"))
 
                 .build();
+    }
+
+    private GatewayFilterSpec addCircuitBreaker(
+            GatewayFilterSpec filterSpec, String circuitBreakerName, String fallbackMethod) {
+        return filterSpec.circuitBreaker(c -> c.setName(circuitBreakerName)
+                .setFallbackUri("forward:/fallback/" + fallbackMethod));
     }
 
 }
