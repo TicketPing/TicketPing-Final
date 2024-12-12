@@ -55,10 +55,6 @@ dependencies {
 	// Test
 	testImplementation 'io.projectreactor:reactor-test:3.4.10'
 	testImplementation 'org.springframework.kafka:spring-kafka-test:2.8.0'
-
-	// Gatling
-	testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.12.0'
-	testImplementation 'io.gatling:gatling-test-framework:3.12.0'
 }
 
 tasks.named('test') {
