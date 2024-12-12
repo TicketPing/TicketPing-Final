@@ -3,9 +3,9 @@ spring:
     name: order
 
   datasource:
-    url: jdbc:postgresql://order-db:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${ORDER_POSTGRES_URL}
+    username: ${ORDER_POSTGRES_USERNAME}
+    password: ${ORDER_POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   config:

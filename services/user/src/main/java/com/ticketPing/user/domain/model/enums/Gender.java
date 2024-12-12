@@ -1,4 +1,4 @@
-package com.ticketPing.user.domain.entity;
+package com.ticketPing.user.domain.model.enums;
 
 import com.ticketPing.user.common.exception.UserErrorCase;
 import exception.ApplicationException;
