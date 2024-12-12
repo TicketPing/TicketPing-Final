@@ -1,7 +1,13 @@
 apiVersion: 1
 
 providers:
-  - name: ticketping-dashboard
+  - name: spring-boot-dashboard
+    folder: TicketPing
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards
+
+  - name: grafana-dashboard
     folder: TicketPing
     type: file
     options:
