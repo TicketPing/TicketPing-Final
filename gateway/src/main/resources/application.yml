@@ -27,6 +27,10 @@ resilience4j:
         slowCallDurationThreshold: 10s
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 3
+        record-exceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.cloud.gateway.support.NotFoundException
+          - io.netty.channel.AbstractChannel$AnnotatedConnectException
     instances:
       authServiceCircuitBreaker:
         baseConfig: default
