@@ -75,6 +75,83 @@
 </table>
 </div>
 
+<br>
+
+## 👨‍👩‍👧‍👦 10,000명을 안정적으로 수용할 수 있는 대기열 시스템 검증
+
+### 테스트 환경
+<br>
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/dd8d2714-52cb-4bf0-92c4-c0ee104470e6" height="70%" width="70%" alt="test">
+</div>
+
+<details>
+    <summary><h4>인스턴스 스펙</h4></summary> 
+    <div align="center">
+    <table style="width: 100%; margin: auto; text-align: center; border-collapse: collapse;">
+    <tr>
+        <th style="text-align: center; border: 1px solid black;">인스턴스</th>
+        <th style="text-align: center; border: 1px solid black;">스펙</th>
+    </tr>
+    <tr>
+        <td style="text-align: center; border: 1px solid black;"><strong>Server</strong></td>
+        <td style="text-align: center; border: 1px solid black;"><strong>t2.2xlarge (8 vCPU, 32 GB memory)</strong></td>
+    </tr>
+    <tr>
+        <td style="text-align: center; border: 1px solid black;"><strong>Test</strong></td>
+        <td style="text-align: center; border: 1px solid black;"><strong>t2.medium (2 vCPU, 4 GB memory)</strong></td>
+    </tr>
+    <tr>
+        <td style="text-align: center; border: 1px solid black;"><strong>Monitoring</strong></td>
+        <td style="text-align: center; border: 1px solid black;"><strong>t2.medium (2 vCPU, 4 GB memory)</strong></td>
+    </tr>
+    <tr>
+        <td style="text-align: center; border: 1px solid black;"><strong>Redis OSS</strong></td>
+        <td style="text-align: center; border: 1px solid black;"><strong>cache.r7g.large (13.07 GB memory)</strong></td>
+    </tr>
+    </table>
+    </div>
+</details>
+
+### MVC VS WebFlux
+`10,000`명의 동시 대기열 진입 이후 15분간 3초 주기의 Polling을 통해 대기열 상태 조회를 실시하였습니다.
+
+<br>
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/68c0e381-f238-43f8-ae24-158382a91e8c)
+![image](https://github.com/user-attachments/assets/552153ed-6b1a-423d-9d2f-36f53759fa4b)
+</div>
+
+동일 환경에서 테스트한 결과 WebFlux가 MVC에 비해 약 10% 정도 짧은 응답 시간을 갖고, 
+
+CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있었습니다.
+
+이미 Lua Script를 통한 성능 최적화가 이루어진 상태에서도 `WebFlux`가 `MVC`에 비해 더 적은 리소스를 사용하여도
+
+대량의 트래픽을 빠르게 처리함을 확인할 수 있었습니다.
+<br> 
+
+<details>
+    <summary><h4>결과 상세</h4></summary> 
+    <ul>
+        <li>
+            <h2>MVC</h2>
+            <img src="https://github.com/user-attachments/assets/318073b3-cb86-4871-bc21-ea7b4e319cf8" alt="mvc result" style="max-width: 100%; height: auto;">
+            <img src="https://github.com/user-attachments/assets/d63be685-863c-451c-bb73-f9ecc86b24a5" alt="mvc cpu" style="max-width: 100%; height: auto;">
+            <img src="https://github.com/user-attachments/assets/5c6a90cc-18ba-4cdc-8d07-b15c43bd9b7e" alt="mvc load" style="max-width: 100%; height: auto;">
+        </li>
+        <li>
+            <h2>WebFlux</h2>
+            <img src="https://github.com/user-attachments/assets/6c93c553-9789-49ac-ac7e-c374bf524842" alt="wf result" style="max-width: 100%; height: auto;">
+            <img src="https://github.com/user-attachments/assets/0ee46ed3-8400-49c2-ad17-466cd7b1bb91" alt="wf cpu" style="max-width: 100%; height: auto;">
+            <img src="https://github.com/user-attachments/assets/361909fe-4c7c-48d0-b11c-b9b57d1a74db" alt="wf load" style="max-width: 100%; height: auto;">
+        </li>
+    </ul>
+</details>
+
 ## 📃 다이어그램
 
 ### 🧑 유저 플로우
