@@ -168,7 +168,7 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     <summary><h3>👨‍👩‍👧‍👦 대기열 시퀀스 다이어그램</h3></summary> 
 <br>  
   
-![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/a2f5074b-441b-457f-b674-38419f20d2d3)
+![ticketping_sa-페이지-8 drawio](https://github.com/user-attachments/assets/9ddde4a6-3d2c-48f4-b08c-536a1d6df269)
 
 </details>
 
