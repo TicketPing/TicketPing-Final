@@ -8,9 +8,6 @@ import com.ticketPing.queue_manage.domain.model.WaitingQueueToken;
 import com.ticketPing.queue_manage.domain.model.WorkingQueueToken;
 import com.ticketPing.queue_manage.domain.model.enums.TokenStatus;
 import com.ticketPing.queue_manage.domain.repository.WaitingQueueRepository;
-import com.ticketPing.queue_manage.infrastructure.repository.script.DeleteFirstTokenScript;
-import com.ticketPing.queue_manage.infrastructure.repository.script.GetRankAndSizeScript;
-import com.ticketPing.queue_manage.infrastructure.repository.script.SaveTokenScript;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;
@@ -19,13 +16,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
-    private final SaveTokenScript saveTokenScript;
-    private final GetRankAndSizeScript getRankAndSizeScript;
-    private final DeleteFirstTokenScript deleteFirstTokenScript;
+    private final LuaScriptRepository luaScriptRepository;
 
     @Override
     public Mono<QueueToken> insertWaitingQueueToken(InsertWaitingQueueTokenCommand command) {
-        return saveTokenScript.saveToken(command)
+        return luaScriptRepository.saveToken(command)
                 .flatMap(tokenStatus -> createToken(
                         tokenStatus,
                         command.getUserId(),
@@ -41,7 +36,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     @Override
     public Mono<WaitingQueueToken> findWaitingQueueToken(FindWaitingQueueTokenCommand command) {
-        return getRankAndSizeScript.getRankAndSize(command.getQueueName(), command.getTokenValue())
+        return luaScriptRepository.getRankAndSize(command)
                 .map(tuple -> WaitingQueueToken.withPosition(
                         command.getUserId(),
                         command.getPerformanceId(),
@@ -53,7 +48,7 @@ public class WaitingQueueRepositoryImpl implements WaitingQueueRepository {
 
     @Override
     public Mono<WaitingQueueToken> deleteFirstWaitingQueueToken(DeleteFirstWaitingQueueTokenCommand command) {
-        return deleteFirstTokenScript.deleteFirstToken(command)
+        return luaScriptRepository.deleteFirstToken(command)
                 .map(tokenValue -> WaitingQueueToken.valueOf(command.getPerformanceId(), tokenValue));
     }
 
