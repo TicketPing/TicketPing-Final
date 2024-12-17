@@ -27,6 +27,8 @@ services:
       - REDIS_NODE_5=${REDIS_NODE_5}
       - REDIS_NODE_6=${REDIS_NODE_6}
       - ZIPKIN=${ZIPKIN}
+      - FRONTEND_APP_URL=${FRONTEND_APP_URL}
+      - USER_TOKEN_SECRET_KEY=${USER_TOKEN_SECRET_KEY}
     depends_on:
       auth-server:
         condition: service_started
