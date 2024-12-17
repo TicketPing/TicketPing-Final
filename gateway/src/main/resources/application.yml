@@ -2,6 +2,21 @@ spring:
   application:
     name: gateway
 
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allow-credentials: true
+            allowed-origins: ${FRONTEND_APP_URL}
+            allowed-headers: "*"
+            allowed-methods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+
   config:
     import:
       - "classpath:application-eureka.yml"
@@ -12,7 +27,7 @@ server:
   port: 10001
 
 token-value:
-  secret-key: secret-key
+  secret-key: ${USER_TOKEN_SECRET_KEY}
 
 resilience4j:
   circuitbreaker:
