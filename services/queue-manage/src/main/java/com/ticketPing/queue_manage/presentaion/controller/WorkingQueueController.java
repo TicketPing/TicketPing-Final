@@ -24,7 +24,7 @@ public class WorkingQueueController {
     @Operation(summary = "작업열 토큰 조회")
     @GetMapping
     public Mono<ResponseEntity<CommonResponse<GeneralQueueTokenResponse>>> getWorkingQueueToken(
-            @Valid @RequestHeader("X-USER-ID") String userId,
+            @Valid @RequestHeader("X_USER_ID") String userId,
             @Valid @RequestParam("performanceId") String performanceId) {
         return workingQueueService.getWorkingQueueToken(userId, performanceId)
                 .map(CommonResponse::success)
