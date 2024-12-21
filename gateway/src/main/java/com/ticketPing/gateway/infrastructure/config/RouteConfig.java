@@ -36,7 +36,7 @@ public class RouteConfig {
                         .uri("lb://payment"))
                 .route("queue-manage-service", r -> r.path("/api/v1/waiting-queue/**", "/api/v1/working-queue/**")
                         .filters(f -> f.filter(queueCheckFilter::filter)
-                                .circuitBreaker(c -> c.setName("queueManageCircuitBreaker")
+                                .circuitBreaker(c -> c.setName("queueManageServiceCircuitBreaker")
                                         .setFallbackUri("forward:/fallback/default")))
                         .uri("lb://queue-manage"))
 

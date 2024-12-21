@@ -57,5 +57,5 @@ resilience4j:
         baseConfig: default
       paymentServiceCircuitBreaker:
         baseConfig: default
-      queueManageCircuitBreaker:
+      queueManageServiceCircuitBreaker:
         baseConfig: default

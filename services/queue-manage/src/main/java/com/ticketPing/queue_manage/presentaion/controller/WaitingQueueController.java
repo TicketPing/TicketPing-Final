@@ -25,7 +25,7 @@ public class WaitingQueueController {
     @Operation(summary = "대기열 진입")
     @PostMapping
     public Mono<ResponseEntity<CommonResponse<GeneralQueueTokenResponse>>> enterWaitingQueue(
-            @Valid @RequestHeader("X-USER-ID") String userId,
+            @Valid @RequestHeader("X_USER_ID") String userId,
             @Valid @RequestParam("performanceId") String performanceId) {
         return waitingQueueService.enterWaitingQueue(userId, performanceId)
                 .map(CommonResponse::success)
@@ -35,7 +35,7 @@ public class WaitingQueueController {
     @Operation(summary = "대기열 상태 조회")
     @GetMapping
     public Mono<ResponseEntity<CommonResponse<GeneralQueueTokenResponse>>> getQueueInfo(
-            @Valid @RequestHeader("X-USER-ID") String userId,
+            @Valid @RequestHeader("X_USER_ID") String userId,
             @Valid @RequestParam("performanceId") String performanceId) {
         return waitingQueueService.getQueueInfo(userId, performanceId)
                 .map(CommonResponse::success)
