@@ -23,21 +23,16 @@ public class Schedule extends BaseEntity {
     private LocalDateTime startTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performance_hall_id")
-    private PerformanceHall performanceHall;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "performance_id")
+    @JoinColumn(name = "performance_id", nullable = false)
     private Performance performance;
 
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Seat> seats;
 
-    public static Schedule createTestData(LocalDateTime startTime, PerformanceHall performanceHall, Performance performance) {
+    public static Schedule createTestData(LocalDateTime startTime, Performance performance) {
         return Schedule.builder()
                 .startTime(startTime)
                 .performance(performance)
-                .performanceHall(performanceHall)
                 .seats(new ArrayList<>())
                 .build();
     }
