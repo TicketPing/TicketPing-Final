@@ -95,6 +95,7 @@ public class DataInitializer implements CommandLineRunner {
         createSeats(schedule1);
         createSeats(schedule2);
 
+        // 스케줄1 좌석 캐싱
         seatService.createSeatsCache(List.of(schedule1), performance1.getId());
     }
 
