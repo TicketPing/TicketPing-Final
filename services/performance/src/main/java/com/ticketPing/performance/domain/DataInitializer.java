@@ -1,5 +1,6 @@
 package com.ticketPing.performance.domain;
 
+import com.ticketPing.performance.application.service.SeatService;
 import com.ticketPing.performance.domain.model.entity.*;
 import com.ticketPing.performance.domain.repository.PerformanceHallRepository;
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -20,6 +22,7 @@ public class DataInitializer implements CommandLineRunner {
     private final PerformanceRepository performanceRepository;
     private final PerformanceHallRepository performanceHallRepository;
     private final SeatRepository seatRepository;
+    private final SeatService seatService;
 
     @Override
     @Transactional
@@ -70,27 +73,30 @@ public class DataInitializer implements CommandLineRunner {
         performance2.addSchedule(schedule2);
 
         // 좌석 가격 더미 데이터 생성
-        SeatCost seatCost1 = SeatCost.createTestData("S석", 120000, performance1);
+        SeatCost seatCost1 = SeatCost.createTestData("S", 120000, performance1);
         performance1.addSeatCost(seatCost1);
 
-        SeatCost seatCost2 = SeatCost.createTestData("A석", 90000, performance1);
+        SeatCost seatCost2 = SeatCost.createTestData("A", 90000, performance1);
         performance1.addSeatCost(seatCost2);
 
-        SeatCost seatCost3 = SeatCost.createTestData("B석", 60000, performance1);
+        SeatCost seatCost3 = SeatCost.createTestData("B", 60000, performance1);
         performance1.addSeatCost(seatCost3);
 
-        SeatCost seatCost4 = SeatCost.createTestData("S석", 150000, performance2);
+        SeatCost seatCost4 = SeatCost.createTestData("S", 150000, performance2);
         performance2.addSeatCost(seatCost4);
 
-        SeatCost seatCost5 = SeatCost.createTestData("A석", 110000, performance2);
+        SeatCost seatCost5 = SeatCost.createTestData("A", 110000, performance2);
         performance2.addSeatCost(seatCost5);
 
-        SeatCost seatCost6 = SeatCost.createTestData("B석", 80000, performance2);
+        SeatCost seatCost6 = SeatCost.createTestData("B", 80000, performance2);
         performance2.addSeatCost(seatCost6);
 
         // 좌석 더미 데이터 생성
         createSeats(schedule1);
         createSeats(schedule2);
+
+        // 스케줄1 좌석 캐싱
+        seatService.createSeatsCache(List.of(schedule1), performance1.getId());
     }
 
     private void createSeats(Schedule schedule) {
