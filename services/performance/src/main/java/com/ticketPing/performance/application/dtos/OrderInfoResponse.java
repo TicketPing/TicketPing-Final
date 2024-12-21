@@ -16,7 +16,7 @@ public record OrderInfoResponse(
         Integer row,
         Integer col,
         Boolean seatState,
-        String seatRate,
+        String seatGrade,
         Integer cost,
         UUID scheduleId,
         LocalDateTime startTime,
@@ -29,15 +29,15 @@ public record OrderInfoResponse(
 ) {
     public static OrderInfoResponse of(Seat seat) {
         Schedule schedule = seat.getSchedule();
-        PerformanceHall performanceHall = schedule.getPerformanceHall();
         Performance performance = schedule.getPerformance();
+        PerformanceHall performanceHall = performance.getPerformanceHall();
 
         return OrderInfoResponse.builder()
                 .seatId(seat.getId())
                 .row(seat.getRow())
                 .col(seat.getCol())
                 .seatState(seat.getSeatState())
-                .seatRate(seat.getSeatCost().getSeatRate().getValue())
+                .seatGrade(seat.getSeatCost().getSeatGrade())
                 .cost(seat.getSeatCost().getCost())
                 .scheduleId(schedule.getId())
                 .startTime(schedule.getStartTime())

@@ -1,18 +1,14 @@
 package com.ticketPing.performance.application.dtos;
 
 import com.ticketPing.performance.domain.model.entity.Performance;
-import com.ticketPing.performance.domain.model.entity.SeatCost;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 @Builder(access = AccessLevel.PRIVATE)
-public record PerformanceResponse(
+public record PerformanceListResponse(
         UUID id,
         String name,
         String posterUrl,
@@ -23,11 +19,10 @@ public record PerformanceResponse(
         LocalDate endDate,
         int grade,
         UUID companyId,
-        String performanceHallName,
-        List<SeatCostResponse> seatCostResponses
+        String performanceHallName
 ){
-    public static PerformanceResponse of(Performance performance) {
-        return PerformanceResponse.builder()
+    public static PerformanceListResponse of(Performance performance) {
+        return PerformanceListResponse.builder()
                 .id(performance.getId())
                 .name(performance.getName())
                 .posterUrl(performance.getPosterUrl())
@@ -39,10 +34,6 @@ public record PerformanceResponse(
                 .grade(performance.getGrade())
                 .companyId(performance.getCompanyId())
                 .performanceHallName(performance.getPerformanceHall().getName())
-                .seatCostResponses(performance.getSeatCosts().stream()
-                        .map(SeatCostResponse::of)
-                        .collect(Collectors.toList())
-                )
                 .build();
     }
 }

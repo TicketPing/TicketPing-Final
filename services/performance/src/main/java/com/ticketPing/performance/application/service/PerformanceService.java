@@ -1,5 +1,6 @@
 package com.ticketPing.performance.application.service;
 
+import com.ticketPing.performance.application.dtos.PerformanceListResponse;
 import com.ticketPing.performance.application.dtos.PerformanceResponse;
 import com.ticketPing.performance.domain.model.entity.Performance;
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
@@ -29,9 +30,9 @@ public class PerformanceService {
     }
 
     @Transactional
-    public Page<PerformanceResponse> getAllPerformances(Pageable pageable) {
+    public Page<PerformanceListResponse> getAllPerformances(Pageable pageable) {
         Page<Performance> performances = performanceRepository.findAll(pageable);
-        return performances.map(PerformanceResponse::of);
+        return performances.map(PerformanceListResponse::of);
     }
 
     @Transactional

@@ -25,7 +25,6 @@ public interface SeatJpaRepository extends SeatRepository, JpaRepository<Seat, U
             "join fetch s.seatCost sc " +
             "join fetch s.schedule sd " +
             "join fetch sd.performance p " +
-            "join fetch sd.performanceHall ph " +
             "where s.id=:seatId")
     Optional<Seat> findByIdJoinAll(UUID seatId);
 }

@@ -1,5 +1,6 @@
 package com.ticketPing.performance.presentation.controller;
 
+import com.ticketPing.performance.application.dtos.PerformanceListResponse;
 import com.ticketPing.performance.application.dtos.PerformanceResponse;
 import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.service.PerformanceService;
@@ -37,11 +38,11 @@ public class PerformanceController {
 
     @Operation(summary = "공연 목록 조회")
     @GetMapping
-    public ResponseEntity<CommonResponse<Page<PerformanceResponse>>> getAllPerformances(Pageable pageable) {
-        Page<PerformanceResponse> performanceResponses = performanceService.getAllPerformances(pageable);
+    public ResponseEntity<CommonResponse<Page<PerformanceListResponse>>> getAllPerformances(Pageable pageable) {
+        Page<PerformanceListResponse> response = performanceService.getAllPerformances(pageable);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(performanceResponses));
+                .body(CommonResponse.success(response));
     }
 
     @Operation(summary = "공연 스케줄 목록 조회")

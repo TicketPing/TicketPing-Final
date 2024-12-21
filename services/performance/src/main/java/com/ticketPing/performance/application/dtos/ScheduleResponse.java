@@ -9,16 +9,12 @@ import java.util.UUID;
 @Builder(access = AccessLevel.PRIVATE)
 public record ScheduleResponse (
         UUID id,
-        LocalDateTime startTime,
-        UUID performanceHallId,
-        UUID performanceId
+        LocalDateTime startTime
 ){
     public static ScheduleResponse of(Schedule schedule) {
         return ScheduleResponse.builder()
             .id(schedule.getId())
             .startTime(schedule.getStartTime())
-            .performanceHallId(schedule.getPerformanceHall().getId())
-            .performanceId(schedule.getPerformance().getId())
             .build();
     }
 }

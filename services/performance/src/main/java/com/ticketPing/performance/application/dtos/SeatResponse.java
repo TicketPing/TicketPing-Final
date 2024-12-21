@@ -11,7 +11,7 @@ public record SeatResponse (
     UUID seatId,
     Integer row,
     Integer col,
-    Boolean seatState,
+    Boolean seatGrade,
     String seatRate,
     Integer cost
 ) {
@@ -20,8 +20,8 @@ public record SeatResponse (
                 .seatId(seat.getId())
                 .row(seat.getRow())
                 .col(seat.getCol())
-                .seatState(seat.getSeatState())
-                .seatRate(seat.getSeatCost().getSeatRate().getValue())
+                .seatGrade(seat.getSeatState())
+                .seatRate(seat.getSeatCost().getSeatGrade())
                 .cost(seat.getSeatCost().getCost())
                 .build();
     }
