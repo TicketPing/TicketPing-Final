@@ -8,7 +8,7 @@ spring:
         cors-configurations:
           '[/**]':
             allow-credentials: true
-            allowed-origins: ${FRONTEND_APP_URL}
+            allowed-origins: ${client.url}
             allowed-headers: "*"
             allowed-methods:
               - PUT
@@ -25,6 +25,9 @@ spring:
 
 server:
   port: 10001
+
+client:
+  url: ${FRONTEND_APP_URL}
 
 token-value:
   secret-key: ${USER_TOKEN_SECRET_KEY}
