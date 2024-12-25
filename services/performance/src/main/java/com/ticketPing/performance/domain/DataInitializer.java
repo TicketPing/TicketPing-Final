@@ -2,6 +2,7 @@ package com.ticketPing.performance.domain;
 
 import com.ticketPing.performance.application.service.SeatService;
 import com.ticketPing.performance.domain.model.entity.*;
+import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.PerformanceHallRepository;
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
 import com.ticketPing.performance.domain.repository.SeatRepository;
@@ -28,6 +29,11 @@ public class DataInitializer implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
         if (performanceHallRepository.count() > 0) {
+            Performance performance = performanceRepository.findByName("햄릿");
+            if(performance != null) {
+                List<Schedule> schedules = performance.getSchedules();
+                seatService.createSeatsCache(schedules, performance.getId());
+            }
             return;
         }
 
@@ -43,9 +49,9 @@ public class DataInitializer implements CommandLineRunner {
                 "햄릿",
                 "https://fastly.picsum.photos/id/53/250/400.jpg?hmac=XvJLere1krZjwF7Vy_J4hZpWHL9R-Ic6Hup4lQb62Yw",
                 120,
-                LocalDateTime.now().minusDays(10),
+                LocalDateTime.now().minusDays(5),
                 LocalDateTime.now().plusDays(10),
-                LocalDate.now().minusDays(5),
+                LocalDate.now().plusDays(5),
                 LocalDate.now().plusDays(10),
                 19,
                 UUID.randomUUID(),
@@ -58,7 +64,7 @@ public class DataInitializer implements CommandLineRunner {
                 120,
                 LocalDateTime.now().plusDays(5),
                 LocalDateTime.now().plusDays(15),
-                LocalDate.now().plusDays(10),
+                LocalDate.now().plusDays(15),
                 LocalDate.now().plusDays(15),
                 12,
                 UUID.randomUUID(),
@@ -66,10 +72,13 @@ public class DataInitializer implements CommandLineRunner {
         performance2 = performanceRepository.save(performance2);
 
         // 공연 일정 더미 데이터 생성
-        Schedule schedule1 = Schedule.createTestData(LocalDateTime.now().plusDays(5), performance1);
+        Schedule schedule1 = Schedule.createTestData(LocalDate.now().plusDays(5), performance1);
         performance1.addSchedule(schedule1);
 
-        Schedule schedule2 = Schedule.createTestData(LocalDateTime.now().plusDays(10), performance2);
+        Schedule schedule2 = Schedule.createTestData(LocalDate.now().plusDays(10), performance1);
+        performance1.addSchedule(schedule2);
+
+        Schedule schedule3 = Schedule.createTestData(LocalDate.now().plusDays(15), performance2);
         performance2.addSchedule(schedule2);
 
         // 좌석 가격 더미 데이터 생성
@@ -106,7 +115,7 @@ public class DataInitializer implements CommandLineRunner {
         for (int row = 1; row <= performanceHall.getRows(); row++) {
             for (int column = 1; column <= performanceHall.getColumns(); column++) {
                 SeatCost seatCost = determineSeatCost(performance, row, performanceHall.getRows());
-                Seat seat = Seat.createTestData(row, column, false, seatCost, schedule);
+                Seat seat = Seat.createTestData(row, column, SeatStatus.AVAILABLE, seatCost, schedule);
                 seatRepository.save(seat);
             }
         }

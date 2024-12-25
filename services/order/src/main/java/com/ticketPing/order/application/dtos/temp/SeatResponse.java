@@ -1,5 +1,6 @@
 package com.ticketPing.order.application.dtos.temp;
 
+import com.ticketPing.order.application.enums.SeatStatus;
 import lombok.Data;
 
 import java.util.UUID;
@@ -9,12 +10,12 @@ public class SeatResponse {
     UUID seatId;
     Integer row;
     Integer col;
-    Boolean seatState;
+    String seatState;
     String seatRate;
     Integer cost;
 
-    public void updateSeatState(Boolean seatState) {
-        this.seatState = seatState;
+    public void updateSeatState(SeatStatus seatState) {
+        this.seatState = seatState.getValue();
     }
 }
 

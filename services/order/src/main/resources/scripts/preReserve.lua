@@ -5,16 +5,16 @@ end
 
 local seatObj = cjson.decode(seatData)
 
-if seatObj.seatState then
+if seatObj.seatStatus ~= "AVAILABLE" then
     return "SEAT_ALREADY_TAKEN"
 end
 
-seatObj.seatState = true
+seatObj.seatStatus = "HELD"
 redis.call("SET", KEYS[1], cjson.encode(seatObj))
 
 local newKey = KEYS[2]
 local ttl = tonumber(ARGV[1])
-redis.call("SET", newKey, "true")
+redis.call("SET", newKey, "HELD")
 redis.call("EXPIRE", newKey, ttl)
 
 return "SUCCESS"

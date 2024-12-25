@@ -24,7 +24,7 @@ public class OrderController {
     @PostMapping
     public CommonResponse<OrderResponse> createOrder(@RequestBody OrderCreateDto requestDto,
                                                      @RequestParam("performanceId") UUID performanceId,
-                                                     @RequestHeader("X_User_Id") UUID userId) {
+                                                     @RequestHeader("X_USER_ID") UUID userId) {
         OrderResponse orderResponse = orderService.createOrder(requestDto, userId);
         return CommonResponse.success(orderResponse);
     }

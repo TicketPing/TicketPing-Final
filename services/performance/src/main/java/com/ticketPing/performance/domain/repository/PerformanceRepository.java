@@ -13,4 +13,6 @@ public interface PerformanceRepository {
     Optional<Performance> findById(UUID id);
 
     Page<Performance> findAll(Pageable pageable);
+
+    Performance findByName(String name);
 }
