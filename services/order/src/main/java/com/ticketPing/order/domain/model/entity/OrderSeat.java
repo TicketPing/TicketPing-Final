@@ -27,17 +27,17 @@ public class OrderSeat extends BaseEntity {
     private UUID seatId;
     private int row;
     private int col;
-    private String seatRate;
+    private String seatGrade;
     private int cost;
 
     @OneToOne(mappedBy = "orderSeat")
     private Order order;
 
-    public static OrderSeat create(UUID seatId, int row, int col, String seatRate, int cost) {
+    public static OrderSeat create(UUID seatId, int row, int col, String seatGrade, int cost) {
         return OrderSeat.builder()
             .seatId(seatId)
             .col(col)
-            .seatRate(seatRate)
+            .seatGrade(seatGrade)
             .cost(cost)
             .row(row)
             .build();

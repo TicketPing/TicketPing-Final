@@ -5,6 +5,7 @@ import com.ticketPing.performance.application.dtos.OrderInfoResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.model.entity.Seat;
+import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.SeatRepository;
 import com.ticketPing.performance.common.exception.SeatExceptionCase;
 import exception.ApplicationException;
@@ -21,7 +22,7 @@ import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
 @RequiredArgsConstructor
 public class SeatService {
     private final SeatRepository seatRepository;
-    private final RedisRepository redisRepository;  // TODO: 상위 서비스 만들어서 불러오기
+    private final RedisRepository redisRepository;
 
     @Transactional(readOnly = true)
     public SeatResponse getSeat(UUID id) {
@@ -32,7 +33,7 @@ public class SeatService {
     @Transactional
     public SeatResponse updateSeatState(UUID seatId, Boolean seatState) {
         Seat seat = findSeatByIdJoinSeatCost(seatId);
-        seat.updateSeatState(seatState);
+        seat.reserveSeat();
         return SeatResponse.of(seat);
     }
 
@@ -65,7 +66,9 @@ public class SeatService {
         for(Schedule schedule : schedules) {
             List<Seat> seats = findSeatsByScheduleJoinSeatCost(schedule);
 
-            availableSeats += seats.stream().filter(s -> !s.getSeatState()).count();
+            availableSeats += seats.stream()
+                    .filter(s -> s.getSeatStatus() == SeatStatus.AVAILABLE)
+                    .count();
 
             // 좌석 캐싱
             String prefix = SEAT_CACHE.getValue() + schedule.getId() + ":";

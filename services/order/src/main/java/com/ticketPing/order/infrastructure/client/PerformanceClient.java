@@ -1,9 +1,9 @@
 package com.ticketPing.order.infrastructure.client;
 
 
-import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.temp.SeatResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import performance.OrderInfoResponse;
 import response.CommonResponse;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;

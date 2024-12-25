@@ -33,7 +33,7 @@ public record OrderResponse(
             .orderStatus(order.getOrderStatus().toString())
             .reservationDate(order.getReservationDate())
             .scheduleId(order.getScheduleId())
-            .seatGrade(order.getOrderSeat().getSeatRate())
+            .seatGrade(order.getOrderSeat().getSeatGrade())
             .build();
     }
 }

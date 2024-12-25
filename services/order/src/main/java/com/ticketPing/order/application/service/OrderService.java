@@ -3,7 +3,6 @@ package com.ticketPing.order.application.service;
 import com.ticketPing.order.application.dtos.OrderInfoForPaymentResponse;
 import com.ticketPing.order.infrastructure.service.RedisLuaService;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
-import com.ticketPing.order.application.dtos.OrderInfoResponse;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
@@ -22,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import caching.repository.RedisRepository;
+import performance.OrderInfoResponse;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
 import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
@@ -63,7 +63,7 @@ public class OrderService {
         Order order = Order.create(userId, orderData.companyId(), orderData.performanceId(), orderData.performanceName(), LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
         Order savedOrder = orderRepository.save(order);
 
-        OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatRate(), orderData.cost());
+        OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatGrade(), orderData.cost());
         savedOrder.updateOrderSeat(orderSeat);
 
         return savedOrder;

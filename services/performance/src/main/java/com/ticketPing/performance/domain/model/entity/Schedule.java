@@ -4,7 +4,7 @@ import audit.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class Schedule extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "schedule_id")
     private UUID id;
-    private LocalDateTime startTime;
+    private LocalDate startDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id", nullable = false)
@@ -29,9 +29,9 @@ public class Schedule extends BaseEntity {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY)
     private List<Seat> seats;
 
-    public static Schedule createTestData(LocalDateTime startTime, Performance performance) {
+    public static Schedule createTestData(LocalDate startDate, Performance performance) {
         return Schedule.builder()
-                .startTime(startTime)
+                .startDate(startDate)
                 .performance(performance)
                 .seats(new ArrayList<>())
                 .build();

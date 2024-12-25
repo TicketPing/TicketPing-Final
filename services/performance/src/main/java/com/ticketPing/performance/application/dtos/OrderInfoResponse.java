@@ -7,7 +7,7 @@ import com.ticketPing.performance.domain.model.entity.Seat;
 import lombok.AccessLevel;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Builder(access = AccessLevel.PRIVATE)
@@ -15,11 +15,10 @@ public record OrderInfoResponse(
         UUID seatId,
         Integer row,
         Integer col,
-        Boolean seatState,
         String seatGrade,
         Integer cost,
         UUID scheduleId,
-        LocalDateTime startTime,
+        LocalDate startDate,
         UUID performanceHallId,
         String performanceHallName,
         UUID performanceId,
@@ -36,11 +35,10 @@ public record OrderInfoResponse(
                 .seatId(seat.getId())
                 .row(seat.getRow())
                 .col(seat.getCol())
-                .seatState(seat.getSeatState())
                 .seatGrade(seat.getSeatCost().getSeatGrade())
                 .cost(seat.getSeatCost().getCost())
                 .scheduleId(schedule.getId())
-                .startTime(schedule.getStartTime())
+                .startDate(schedule.getStartDate())
                 .performanceHallId(performanceHall.getId())
                 .performanceHallName(performanceHall.getName())
                 .performanceId(performance.getId())
