@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,10 @@ public class JwtFilter implements ServerSecurityContextRepository {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if (authHeader != null) {
-            return authClient.validateToken(authHeader)
+            return Mono.empty();
+        }
+
+        return authClient.validateToken(authHeader)
                 .flatMap(response -> {
                     List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(response.role()));
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -46,11 +50,9 @@ public class JwtFilter implements ServerSecurityContextRepository {
                             }))
                             .build();
 
-                    return Mono.just(new SecurityContextImpl(authentication));
-                    });
-        }
-
-        return Mono.empty();
+                    return Mono.just((SecurityContext) new SecurityContextImpl(authentication));
+                })
+                .onErrorResume(WebClientResponseException.Unauthorized.class, e -> Mono.empty());
     }
 
 }
