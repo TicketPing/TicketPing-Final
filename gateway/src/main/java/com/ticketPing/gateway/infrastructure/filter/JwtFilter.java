@@ -32,7 +32,7 @@ public class JwtFilter implements ServerSecurityContextRepository {
     public Mono<SecurityContext> load(ServerWebExchange exchange) {
         String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        if (authHeader != null) {
+        if (authHeader == null) {
             return Mono.empty();
         }
 
