@@ -19,6 +19,6 @@ public enum SeatStatus {
     public static SeatStatus getSeatStatus(final String value) {
         return Arrays.stream(SeatStatus.values())
         .filter(t -> t.getValue().equals(value))
-        .findAny().orElseThrow(() -> new ApplicationException(SeatExceptionCase.INVALID_SEAT_STATUA));
+        .findAny().orElseThrow(() -> new ApplicationException(SeatExceptionCase.INVALID_SEAT_STATUS));
         }
 }
