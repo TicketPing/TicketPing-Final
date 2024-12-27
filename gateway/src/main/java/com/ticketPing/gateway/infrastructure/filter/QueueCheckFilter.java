@@ -27,7 +27,7 @@ public class QueueCheckFilter {
         String path = exchange.getRequest().getURI().getPath();
         String method = exchange.getRequest().getMethod().name();
 
-        return APIType.findByRequest(path, method)
+        return ApiType.findByRequest(path, method)
                 .doOnSuccess(api -> log.info("API 타입: {}", api))
                 .flatMap(api ->
                         switch (api) {

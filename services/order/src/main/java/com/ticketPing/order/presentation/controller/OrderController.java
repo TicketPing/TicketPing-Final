@@ -38,7 +38,7 @@ public class OrderController {
     @Operation(summary = "주문 정보 검증")
     @PostMapping("/{orderId}/validate")
     public CommonResponse<OrderResponse> validateOrder(@RequestHeader("X_USER_ID") UUID userId,
-                                                                @PathVariable("orderId") UUID orderId) {
+                                                       @PathVariable("orderId") UUID orderId) {
         OrderResponse orderResponse = orderService.validateOrder(orderId, userId);
         return CommonResponse.success(orderResponse);
     }

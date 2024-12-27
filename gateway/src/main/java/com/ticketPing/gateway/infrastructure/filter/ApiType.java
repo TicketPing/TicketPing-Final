@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 @Getter
 @RequiredArgsConstructor
-public enum APIType {
+public enum ApiType {
 
     ENTER_WAITING_QUEUE("/api/v1/waiting-queue", HttpMethod.POST),
     GET_QUEUE_INFO("/api/v1/waiting-queue", HttpMethod.GET),
@@ -17,15 +17,15 @@ public enum APIType {
     private final String path;
     private final HttpMethod method;
 
-    public static Mono<APIType> findByRequest(String requestPath, String httpMethod) {
-        return Flux.fromArray(APIType.values())
+    public static Mono<ApiType> findByRequest(String requestPath, String httpMethod) {
+        return Flux.fromArray(ApiType.values())
                 .filter(api -> api.matches(requestPath, httpMethod))
                 .next()
                 .switchIfEmpty(Mono.empty());
     }
 
     private boolean matches(String requestPath, String httpMethod) {
-        return requestPath.startsWith(this.path) && this.method.name().equals(httpMethod);
+        return requestPath.equals(this.path) && this.method.name().equals(httpMethod);
     }
 
 }
