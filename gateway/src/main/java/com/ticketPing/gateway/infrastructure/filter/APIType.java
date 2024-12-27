@@ -12,8 +12,7 @@ public enum APIType {
 
     ENTER_WAITING_QUEUE("/api/v1/waiting-queue", HttpMethod.POST),
     GET_QUEUE_INFO("/api/v1/waiting-queue", HttpMethod.GET),
-    CREATE_ORDER("/api/v1/orders", HttpMethod.POST),
-    REQUEST_PAYMENT("/api/v1/payments", HttpMethod.POST);
+    CREATE_ORDER("/api/v1/orders", HttpMethod.POST);
 
     private final String path;
     private final HttpMethod method;

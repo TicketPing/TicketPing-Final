@@ -1,6 +1,5 @@
 package com.ticketPing.order.presentation.controller;
 
-import com.ticketPing.order.application.dtos.OrderInfoForPaymentResponse;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.application.service.OrderService;
@@ -36,10 +35,12 @@ public class OrderController {
         return CommonResponse.success(userReservationDto);
     }
 
-    @Operation(summary = "주문 정보 조회 (결제 서버용)")
-    @GetMapping("/{orderId}")
-    public OrderInfoForPaymentResponse getOrderInfoForPayment(@PathVariable("orderId") UUID orderId,
-                                                              @RequestParam("userId") UUID userId) {
-        return orderService.getOrderInfoForPayment(orderId, userId);
+    @Operation(summary = "주문 정보 검증")
+    @PostMapping("/{orderId}/validate")
+    public CommonResponse<OrderResponse> validateOrder(@RequestHeader("X_USER_ID") UUID userId,
+                                                                @PathVariable("orderId") UUID orderId) {
+        OrderResponse orderResponse = orderService.validateOrder(orderId, userId);
+        return CommonResponse.success(orderResponse);
     }
+
 }

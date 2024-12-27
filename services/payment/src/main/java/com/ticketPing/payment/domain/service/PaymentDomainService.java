@@ -7,7 +7,7 @@ import com.ticketPing.payment.domain.repository.PaymentRepository;
 import exception.ApplicationException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import order.OrderInfoForPaymentResponse;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,15 +16,9 @@ public class PaymentDomainService {
 
     private final PaymentRepository paymentRepository;
 
-    public Payment createPayment(UUID userId, OrderInfoForPaymentResponse orderInfo) {
-        Payment payment = Payment.create(userId, orderInfo);
+    public Payment createPayment(UUID userId, JSONObject responseData) {
+        Payment payment = Payment.create(userId, responseData);
         paymentRepository.save(payment);
-        return payment;
-    }
-
-    public Payment completePayment(UUID paymentId) {
-        Payment payment = findPayment(paymentId);
-        payment.complete();
         return payment;
     }
 

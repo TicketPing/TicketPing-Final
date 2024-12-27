@@ -146,6 +146,8 @@ services:
       - KAFKA_BROKER_2=${KAFKA_BROKER_2}
       - KAFKA_BROKER_3=${KAFKA_BROKER_3}
       - ZIPKIN=${ZIPKIN}
+      - TOSS_PAYMENT_WIDGET_SECRET_KEY=${TOSS_PAYMENT_WIDGET_SECRET_KEY}
+      - TOSS_PAYMENT_CONFIRM_URL=${TOSS_PAYMENT_CONFIRM_URL}
     depends_on:
       eureka-server:
         condition: service_started
