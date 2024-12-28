@@ -1,6 +1,5 @@
 package com.ticketPing.order.application.service;
 
-import com.ticketPing.order.application.dtos.OrderInfoForPaymentResponse;
 import com.ticketPing.order.infrastructure.service.RedisLuaService;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderResponse;
@@ -70,10 +69,13 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderInfoForPaymentResponse getOrderInfoForPayment(UUID orderId, UUID userId) {
+    public OrderResponse validateOrder(UUID orderId, UUID userId) {
         Order order = findOrderById(orderId);
         validateDuplicateOrder(order, userId);
-        return OrderInfoForPaymentResponse.from(order);
+
+        // TODO 좌석 선점 TTL 갱신
+
+        return OrderResponse.from(order);
     }
 
     public void validateDuplicateOrder(Order order, UUID userId) {
@@ -97,7 +99,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateOrderStatus(UUID orderId) {
+    public void updateOrderStatus(UUID orderId, UUID paymentId) {
         Order order = findOrderById(orderId);
         order.complete();
 
