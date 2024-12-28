@@ -34,14 +34,4 @@ public class SeatController {
                 .status(200)
                 .body(CommonResponse.success(orderInfoResponse));
     }
-
-    @Operation(summary = "좌석 상태 수정 (order 서비스에서 호출용)")
-    @PutMapping("/{seatId}")
-    public ResponseEntity<CommonResponse<SeatResponse>> updateSeatState(@PathVariable("seatId") UUID seatId,
-                                                                        @RequestParam("seatState") Boolean seatState) {
-        SeatResponse seatResponse = seatService.updateSeatState(seatId, seatState);
-        return ResponseEntity
-                .status(200)
-                .body(CommonResponse.success(seatResponse));
-    }
 }
