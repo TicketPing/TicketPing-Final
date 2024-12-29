@@ -1,13 +1,13 @@
 package com.ticketPing.performance.application.dtos;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.ticketPing.performance.domain.model.entity.Seat;
+import com.ticketPing.performance.domain.model.entity.SeatCache;
 import lombok.AccessLevel;
 import lombok.Builder;
 
 import java.util.UUID;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
+
 @Builder(access = AccessLevel.PRIVATE)
 public record SeatResponse (
         UUID seatId,
@@ -25,6 +25,17 @@ public record SeatResponse (
                 .seatStatus(seat.getSeatStatus().getValue())
                 .seatGrade(seat.getSeatCost().getSeatGrade())
                 .cost(seat.getSeatCost().getCost())
+                .build();
+    }
+
+    public static SeatResponse of(SeatCache seatCache) {
+        return SeatResponse.builder()
+                .seatId(seatCache.getId())
+                .row(seatCache.getRow())
+                .col(seatCache.getCol())
+                .seatStatus(seatCache.getSeatStatus())
+                .seatGrade(seatCache.getSeatGrade())
+                .cost(seatCache.getCost())
                 .build();
     }
 }

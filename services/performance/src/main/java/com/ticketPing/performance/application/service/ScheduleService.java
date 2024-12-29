@@ -4,6 +4,7 @@ import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.common.exception.ScheduleExceptionCase;
 import com.ticketPing.performance.domain.model.entity.Schedule;
+import com.ticketPing.performance.domain.model.entity.SeatCache;
 import com.ticketPing.performance.domain.repository.ScheduleRepository;
 import com.ticketPing.performance.infrastructure.service.CacheService;
 import exception.ApplicationException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -26,7 +28,8 @@ public class ScheduleService {
     }
 
     public List<SeatResponse> getAllScheduleSeats(UUID scheduleId) {
-        return cacheService.getSeatsFromCache(scheduleId);
+        Map<String, SeatCache> seatMap = cacheService.getSeatsFromCache(scheduleId);
+        return seatMap.values().stream().map(SeatResponse::of).toList();
     }
 
     private Schedule findScheduleById(UUID id) {

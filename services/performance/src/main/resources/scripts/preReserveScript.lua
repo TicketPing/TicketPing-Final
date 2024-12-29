@@ -1,7 +1,8 @@
 local hashKey  = KEYS[1]
 local ttlKey = KEYS[2]
-local seatId = ARGV[1]
-local ttl = tonumber(ARGV[2])
+local seatId = "\"" .. ARGV[1] .. "\""
+local userId = ARGV[2]
+local ttl = tonumber(ARGV[3])
 
 local seatData = redis.call("HGET", hashKey, seatId)
 
@@ -17,6 +18,7 @@ if seatObj.seatStatus ~= "AVAILABLE" then
 end
 
 seatObj.seatStatus = "HELD"
+seatObj.userId = userId
 redis.call("HSET", hashKey, seatId, cjson.encode(seatObj))
 
 redis.call("SET", ttlKey, "HELD")

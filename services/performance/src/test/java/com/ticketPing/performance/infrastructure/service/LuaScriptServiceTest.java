@@ -2,7 +2,6 @@ package com.ticketPing.performance.infrastructure.service;
 
 import exception.ApplicationException;
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -24,6 +23,7 @@ public class LuaScriptServiceTest {
     public void testPreReserveSeatConcurrency() throws InterruptedException {
         UUID scheduleId = UUID.fromString("8fb9facb-2a07-47f7-aed6-05f5e7928b3e");
         UUID seatId = UUID.fromString("59f33c13-7aa7-49be-9caa-767972ec12b9");
+        UUID userId = UUID.randomUUID();
 
         ExecutorService executor = Executors.newFixedThreadPool(5);
         CountDownLatch latch = new CountDownLatch(5);
@@ -32,7 +32,7 @@ public class LuaScriptServiceTest {
         for (int i = 0; i < 5; i++) {
             executor.submit(() -> {
                 try {
-                    luaScriptService.preReserveSeat(scheduleId, seatId);
+                    luaScriptService.preReserveSeat(scheduleId, seatId,  userId);
                     if (successCount.incrementAndGet() == 1) {
                         System.out.println("예약 성공!");
                     }

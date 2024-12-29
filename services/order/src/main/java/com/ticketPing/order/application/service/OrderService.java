@@ -1,11 +1,10 @@
 package com.ticketPing.order.application.service;
 
-import com.ticketPing.order.presentation.request.OrderCreateDto;
+import com.ticketPing.order.application.client.PerformanceClient;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
-import com.ticketPing.order.infrastructure.client.PerformanceClient;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
 import messaging.events.OrderCompletedEvent;
 import exception.ApplicationException;
@@ -15,11 +14,10 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import caching.repository.RedisRepository;
-import performance.OrderInfoResponse;
+import performance.OrderSeatResponse;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
 import static com.ticketPing.order.common.exception.OrderExceptionCase.*;
@@ -37,23 +35,10 @@ public class OrderService {
     private final static String TTL_PREFIX = "{Seat}:seat_ttl:";
 
     @Transactional
-    public OrderResponse createOrder(OrderCreateDto orderCreateRequestDto, UUID userId) {
-        UUID seatId = orderCreateRequestDto.seatId();
-        Order order = saveOrderWithOrderSeat(seatId, userId);
+    public OrderResponse createOrder(UUID scheduleId, UUID seatId, UUID userId) {
+        OrderSeatResponse orderData = performanceClient.getOrderInfo(userId, scheduleId, seatId).getBody().getData();
+        Order order = saveOrderWithOrderSeat(userId, orderData);
         return OrderResponse.from(order);
-    }
-
-    @Transactional
-    public Order saveOrderWithOrderSeat(UUID seatId, UUID userId) {
-        OrderInfoResponse orderData = performanceClient.getOrderInfo(seatId.toString()).getBody().getData();
-
-        Order order = Order.create(userId, orderData.companyId(), orderData.performanceId(), orderData.performanceName(), LocalDateTime.now(), OrderStatus.PENDING, orderData.scheduleId());
-        Order savedOrder = orderRepository.save(order);
-
-        OrderSeat orderSeat = OrderSeat.create(orderData.seatId(), orderData.row(), orderData.col(), orderData.seatGrade(), orderData.cost());
-        savedOrder.updateOrderSeat(orderSeat);
-
-        return savedOrder;
     }
 
     @Transactional(readOnly = true)
@@ -64,21 +49,6 @@ public class OrderService {
         // TODO 좌석 선점 TTL 갱신
 
         return OrderResponse.from(order);
-    }
-
-    public void validateDuplicateOrder(Order order, UUID userId) {
-        UUID seatId = order.getOrderSeat().getSeatId();
-        UUID scheduleId = order.getScheduleId();
-
-        List<Order> duplicateOrders = orderRepository.findByScheduleIdAndOrderSeatSeatId(seatId, scheduleId)
-                .stream()
-                .filter(o -> !o.getUserId().equals(userId) &&
-                        (o.getOrderStatus().equals(OrderStatus.PENDING) ||
-                        o.getOrderStatus().equals(OrderStatus.COMPLETED)))
-                .toList();
-
-        if(!duplicateOrders.isEmpty())
-            throw new ApplicationException(SEAT_ALREADY_TAKEN);
     }
 
     public List<OrderResponse> getUserOrders(UUID userId) {
@@ -106,15 +76,40 @@ public class OrderService {
         publishOrderCompletedEvent(order.getUserId(), performanceId);
     }
 
-    @Transactional(readOnly = true)
-    public Order findOrderById(UUID orderId){
+    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
+        val event = OrderCompletedEvent.create(userId, performanceId);
+        eventApplicationService.publishOrderCompletedEvent(event);
+    }
+
+    @Transactional
+    private Order saveOrderWithOrderSeat(UUID userId, OrderSeatResponse orderData) {
+        Order order = Order.from(userId, orderData);
+        Order savedOrder = orderRepository.save(order);
+
+        OrderSeat orderSeat = OrderSeat.from(orderData, savedOrder);
+        savedOrder.updateOrderSeat(orderSeat);
+
+        return savedOrder;
+    }
+
+    private Order findOrderById(UUID orderId){
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
     }
 
-    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
-        val event = OrderCompletedEvent.create(userId, performanceId);
-        eventApplicationService.publishOrderCompletedEvent(event);
+    private void validateDuplicateOrder(Order order, UUID userId) {
+        UUID seatId = order.getOrderSeat().getSeatId();
+        UUID scheduleId = order.getScheduleId();
+
+        List<Order> duplicateOrders = orderRepository.findByScheduleIdAndOrderSeatSeatId(seatId, scheduleId)
+                .stream()
+                .filter(o -> !o.getUserId().equals(userId) &&
+                        (o.getOrderStatus().equals(OrderStatus.PENDING) ||
+                                o.getOrderStatus().equals(OrderStatus.COMPLETED)))
+                .toList();
+
+        if(!duplicateOrders.isEmpty())
+            throw new ApplicationException(SEAT_ALREADY_TAKEN);
     }
 
 }

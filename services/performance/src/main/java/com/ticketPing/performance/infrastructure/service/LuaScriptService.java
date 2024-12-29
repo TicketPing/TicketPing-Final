@@ -3,7 +3,6 @@ package com.ticketPing.performance.infrastructure.service;
 import com.ticketPing.performance.common.exception.SeatExceptionCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
@@ -22,7 +21,7 @@ public class LuaScriptService {
     @Value("${seat.pre-reserve-ttl}")
     private int PRE_RESERVE_TTL;
 
-    public void preReserveSeat(UUID scheduleId, UUID seatId) {
+    public void preReserveSeat(UUID scheduleId, UUID seatId, UUID  userId) {
         String hashKey = "seat:{" + scheduleId + "}";
         String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
 
@@ -32,7 +31,7 @@ public class LuaScriptService {
                         preReserveScript,
                         RScript.ReturnType.VALUE,
                         Arrays.asList(hashKey, ttlKey),
-                        "\"" + seatId.toString() + "\"", PRE_RESERVE_TTL
+                        seatId.toString(), userId.toString(), PRE_RESERVE_TTL
                 );
 
         if (!response.equals("SUCCESS")) {
