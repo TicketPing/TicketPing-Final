@@ -1,6 +1,5 @@
 package com.ticketPing.order.application.service;
 
-import com.ticketPing.order.infrastructure.service.RedisLuaService;
 import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.domain.model.entity.Order;
@@ -23,7 +22,6 @@ import caching.repository.RedisRepository;
 import performance.OrderInfoResponse;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
-import static caching.enums.RedisKeyPrefix.SEAT_CACHE;
 import static com.ticketPing.order.common.exception.OrderExceptionCase.*;
 
 @Service
@@ -34,24 +32,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final EventApplicationService eventApplicationService;
     private final RedisRepository redisRepository;
-    private final RedisLuaService redisLuaService;
     private final PerformanceClient performanceClient;
 
-    private final static String SEAT_PREFIX = SEAT_CACHE.getValue();
     private final static String TTL_PREFIX = "{Seat}:seat_ttl:";
-    private final static String SEAT_LOCK_CACHE_EXPIRE_SECONDS = "300";
 
     @Transactional
     public OrderResponse createOrder(OrderCreateDto orderCreateRequestDto, UUID userId) {
-        UUID scheduleId = orderCreateRequestDto.scheduleId();
         UUID seatId = orderCreateRequestDto.seatId();
-
         Order order = saveOrderWithOrderSeat(seatId, userId);
-
-        String seatKey = SEAT_PREFIX + scheduleId + ":" + seatId;
-        String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + order.getId();
-        redisLuaService.updateSeatStatus(seatKey, ttlKey, SEAT_LOCK_CACHE_EXPIRE_SECONDS);
-
         return OrderResponse.from(order);
     }
 
