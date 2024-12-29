@@ -26,6 +26,19 @@ public class SeatController {
                 .body(CommonResponse.success(seatResponse));
     }
 
+    @Operation(summary = "좌석 선점")
+    @PostMapping("/{seatId}/pre-reserve")
+    public ResponseEntity<CommonResponse<Object>> preReserveSeat(@RequestParam("performanceId") UUID performanceId,
+                                                                 @RequestParam("scheduleId") UUID scheduleId,
+                                                                 @PathVariable("seatId") UUID seatId)  {
+        seatService.preReserveSeat(scheduleId, seatId);
+        return ResponseEntity
+                .status(200)
+                .body(CommonResponse.success());
+    }
+
+    // TODO: 좌석 선점 취소
+
     @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
     @GetMapping("/{seatId}/order-info")
     public ResponseEntity<CommonResponse<OrderInfoResponse>> getOrderInfo(@PathVariable("seatId") UUID seatId) {

@@ -18,3 +18,6 @@ spring:
 server:
   port: 10012
 
+seat:
+  pre-reserve-ttl: 300
+

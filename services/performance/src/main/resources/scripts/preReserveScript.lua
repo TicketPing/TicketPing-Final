@@ -1,8 +1,15 @@
-local seatData = redis.call("GET", KEYS[1])
+local hashKey  = KEYS[1]
+local ttlKey = KEYS[2]
+local seatId = ARGV[1]
+local ttl = tonumber(ARGV[2])
+
+local seatData = redis.call("HGET", hashKey, seatId)
+
 if not seatData then
     return "SEAT_CACHE_NOT_FOUND"
 end
 
+local seatData = redis.call("HGET", hashKey, seatId)
 local seatObj = cjson.decode(seatData)
 
 if seatObj.seatStatus ~= "AVAILABLE" then
@@ -10,11 +17,9 @@ if seatObj.seatStatus ~= "AVAILABLE" then
 end
 
 seatObj.seatStatus = "HELD"
-redis.call("SET", KEYS[1], cjson.encode(seatObj))
+redis.call("HSET", hashKey, seatId, cjson.encode(seatObj))
 
-local newKey = KEYS[2]
-local ttl = tonumber(ARGV[1])
-redis.call("SET", newKey, "HELD")
-redis.call("EXPIRE", newKey, ttl)
+redis.call("SET", ttlKey, "HELD")
+redis.call("EXPIRE", ttlKey, ttl)
 
 return "SUCCESS"

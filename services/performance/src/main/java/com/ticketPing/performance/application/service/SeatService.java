@@ -8,8 +8,10 @@ import com.ticketPing.performance.domain.model.entity.Seat;
 import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.SeatRepository;
 import com.ticketPing.performance.infrastructure.service.CacheService;
+import com.ticketPing.performance.infrastructure.service.LuaScriptService;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -25,11 +27,16 @@ public class SeatService {
 
     private final SeatRepository seatRepository;
     private final CacheService cacheService;
+    private final LuaScriptService luaScriptService;
 
     public SeatResponse getSeat(UUID id) {
         Seat seat = seatRepository.findByIdWithSeatCost(id)
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
         return SeatResponse.of(seat);
+    }
+
+    public void preReserveSeat(UUID scheduleId, UUID seatId) {
+        luaScriptService.preReserveSeat(scheduleId, seatId);
     }
 
     public OrderInfoResponse getOrderInfo(UUID seatId) {

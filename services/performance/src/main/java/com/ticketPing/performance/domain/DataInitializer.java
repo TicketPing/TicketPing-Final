@@ -77,7 +77,7 @@ public class DataInitializer implements CommandLineRunner {
         performance1.addSchedule(schedule2);
 
         Schedule schedule3 = Schedule.createTestData(LocalDate.now().plusDays(15), performance2);
-        performance2.addSchedule(schedule2);
+        performance2.addSchedule(schedule3);
 
         // 좌석 가격 더미 데이터 생성
         SeatCost seatCost1 = SeatCost.createTestData("S", 120000, performance1);
@@ -101,6 +101,7 @@ public class DataInitializer implements CommandLineRunner {
         // 좌석 더미 데이터 생성
         createSeats(schedule1);
         createSeats(schedule2);
+        createSeats(schedule3);
 
         // 공연1 좌석 캐싱
         performanceService.cacheAllSeatsForPerformance(performance1.getId());
