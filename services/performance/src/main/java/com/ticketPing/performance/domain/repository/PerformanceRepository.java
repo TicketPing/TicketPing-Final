@@ -10,9 +10,11 @@ import java.util.UUID;
 public interface PerformanceRepository {
     Performance save(Performance performance);
 
-    Optional<Performance> findById(UUID id);
-
     Page<Performance> findAll(Pageable pageable);
 
     Performance findByName(String name);
+
+    Optional<Performance> findByIdWithSchedules(UUID id);
+
+    Optional<Performance> findByIdWithDetails(UUID id);
 }

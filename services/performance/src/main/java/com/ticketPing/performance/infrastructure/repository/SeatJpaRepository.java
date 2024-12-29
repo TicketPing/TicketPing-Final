@@ -14,17 +14,17 @@ public interface SeatJpaRepository extends SeatRepository, JpaRepository<Seat, U
     @Query(value = "select s from Seat s " +
             "join fetch s.seatCost sc " +
             "where s.id=:seatId")
-    Optional<Seat> findByIdJoinSeatCost(UUID seatId);
+    Optional<Seat> findByIdWithSeatCost(UUID seatId);
 
     @Query(value = "select s from Seat s " +
             "join fetch s.seatCost sc " +
             "where s.schedule=:schedule")
-    List<Seat> findByScheduleJoinSeatCost(Schedule schedule);
+    List<Seat> findByScheduleWithSeatCost(Schedule schedule);
 
     @Query(value = "select s from Seat s " +
             "join fetch s.seatCost sc " +
             "join fetch s.schedule sd " +
             "join fetch sd.performance p " +
             "where s.id=:seatId")
-    Optional<Seat> findByIdJoinAll(UUID seatId);
+    Optional<Seat> findByIdWithAll(UUID seatId);
 }

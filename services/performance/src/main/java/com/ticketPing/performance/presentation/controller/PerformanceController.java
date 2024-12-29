@@ -4,10 +4,6 @@ import com.ticketPing.performance.application.dtos.PerformanceListResponse;
 import com.ticketPing.performance.application.dtos.PerformanceResponse;
 import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.service.PerformanceService;
-import com.ticketPing.performance.application.service.ScheduleService;
-import com.ticketPing.performance.application.service.SeatService;
-import com.ticketPing.performance.domain.model.entity.Performance;
-import com.ticketPing.performance.domain.model.entity.Schedule;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +20,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PerformanceController {
     private final PerformanceService performanceService;
-    private final ScheduleService scheduleService;
-    private final SeatService seatService;
 
     @Operation(summary = "공연 조회")
     @GetMapping("/{performanceId}")
@@ -47,9 +41,8 @@ public class PerformanceController {
 
     @Operation(summary = "공연 스케줄 목록 조회")
     @GetMapping("/{performanceId}/schedules")
-    public ResponseEntity<CommonResponse<Page<ScheduleResponse>>> getSchedulesByPerformance(@PathVariable("performanceId") UUID performanceId, Pageable pageable) {
-        Performance performance = performanceService.getAndValidatePerformance(performanceId);
-        Page<ScheduleResponse> scheduleResponses = scheduleService.getSchedulesByPerformance(performance, pageable);
+    public ResponseEntity<CommonResponse<List<ScheduleResponse>>> getSchedulesByPerformance(@PathVariable("performanceId") UUID performanceId) {
+        List<ScheduleResponse> scheduleResponses = performanceService.getPerformanceSchedules(performanceId);
         return ResponseEntity
                 .status(200)
                 .body(CommonResponse.success(scheduleResponses));
@@ -58,9 +51,7 @@ public class PerformanceController {
     @Operation(summary = "공연 전체 좌석 캐싱 생성")
     @PostMapping("/{performanceId}/seats-cache")
     public ResponseEntity<CommonResponse<Object>> createSeatsCache(@PathVariable("performanceId") UUID performanceId) {
-        Performance performance = performanceService.findPerformanceById(performanceId);
-        List<Schedule> schedules = scheduleService.finadAllScheduleByPerformance(performance);
-        seatService.createSeatsCache(schedules, performanceId);
+        performanceService.cacheAllSeatsForPerformance(performanceId);
         return ResponseEntity
                 .status(201)
                 .body(CommonResponse.success());

@@ -1,6 +1,6 @@
 package com.ticketPing.performance.domain;
 
-import com.ticketPing.performance.application.service.SeatService;
+import com.ticketPing.performance.application.service.PerformanceService;
 import com.ticketPing.performance.domain.model.entity.*;
 import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.PerformanceHallRepository;
@@ -13,17 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
+    private final PerformanceService performanceService;
     private final PerformanceRepository performanceRepository;
     private final PerformanceHallRepository performanceHallRepository;
     private final SeatRepository seatRepository;
-    private final SeatService seatService;
 
     @Override
     @Transactional
@@ -31,8 +30,7 @@ public class DataInitializer implements CommandLineRunner {
         if (performanceHallRepository.count() > 0) {
             Performance performance = performanceRepository.findByName("햄릿");
             if(performance != null) {
-                List<Schedule> schedules = performance.getSchedules();
-                seatService.createSeatsCache(schedules, performance.getId());
+                performanceService.cacheAllSeatsForPerformance(performance.getId());
             }
             return;
         }
@@ -104,8 +102,8 @@ public class DataInitializer implements CommandLineRunner {
         createSeats(schedule1);
         createSeats(schedule2);
 
-        // 스케줄1 좌석 캐싱
-        seatService.createSeatsCache(List.of(schedule1), performance1.getId());
+        // 공연1 좌석 캐싱
+        performanceService.cacheAllSeatsForPerformance(performance1.getId());
     }
 
     private void createSeats(Schedule schedule) {
