@@ -12,8 +12,12 @@ import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +41,13 @@ public class SeatService {
     public long cacheSeatsForSchedule(Schedule schedule) {
         List<Seat> seats = seatRepository.findByScheduleWithSeatCost(schedule);
 
-        cacheService.cacheSeats(schedule.getId(), seats);
+        Map<String, SeatResponse> seatMap = seats.stream()
+                .collect(Collectors.toMap(seat -> seat.getId().toString(), SeatResponse::of));
+
+        LocalDateTime expiration = schedule.getStartDate().atTime(23, 59, 59);
+        Duration ttl = Duration.between(LocalDateTime.now(), expiration);
+
+        cacheService.cacheSeats(schedule.getId(), seatMap, ttl);
 
         return seats.stream()
                 .filter(seat -> seat.getSeatStatus() == SeatStatus.AVAILABLE)
