@@ -24,6 +24,8 @@ public record PerformanceResponse(
         int grade,
         UUID companyId,
         String performanceHallName,
+        int rows,
+        int columns,
         List<SeatCostResponse> seatCostResponses
 ){
     public static PerformanceResponse of(Performance performance) {
@@ -39,6 +41,8 @@ public record PerformanceResponse(
                 .grade(performance.getGrade())
                 .companyId(performance.getCompanyId())
                 .performanceHallName(performance.getPerformanceHall().getName())
+                .rows(performance.getPerformanceHall().getRows())
+                .columns(performance.getPerformanceHall().getColumns())
                 .seatCostResponses(performance.getSeatCosts().stream()
                         .map(SeatCostResponse::of)
                         .collect(Collectors.toList())
