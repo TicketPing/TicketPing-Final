@@ -28,7 +28,7 @@ public class Order extends BaseEntity {
     private LocalDate startDate;
     private UUID performanceHallId;
     private String performanceHallName;
-    private int totalCost;
+    private int amount;
     private OrderStatus orderStatus;
     private LocalDateTime reservationDate;
     private UUID userId;
@@ -46,7 +46,7 @@ public class Order extends BaseEntity {
                 .performanceHallName(orderData.performanceHallName())
                 .scheduleId(orderData.scheduleId())
                 .startDate(orderData.startDate())
-                .totalCost(orderData.cost())
+                .amount(orderData.cost())
                 .orderStatus(OrderStatus.PENDING)
                 .reservationDate(LocalDateTime.now())
                 .userId(userId)

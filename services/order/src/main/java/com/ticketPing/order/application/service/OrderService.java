@@ -36,6 +36,7 @@ public class OrderService {
 
     @Transactional
     public OrderResponse createOrder(UUID scheduleId, UUID seatId, UUID userId) {
+        validateDuplicateOrder(seatId);
         OrderSeatResponse orderData = performanceClient.getOrderInfo(userId, scheduleId, seatId).getBody().getData();
         Order order = saveOrderWithOrderSeat(userId, orderData);
         return OrderResponse.from(order);
@@ -44,10 +45,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponse validateOrder(UUID orderId, UUID userId) {
         Order order = findOrderById(orderId);
-        validateDuplicateOrder(order, userId);
-
-        // TODO 좌석 선점 TTL 갱신
-
+        // TODO: 본인 좌석 인지 확인, 좌석 선점 TTL 갱신
         return OrderResponse.from(order);
     }
 
@@ -97,15 +95,11 @@ public class OrderService {
                 .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
     }
 
-    private void validateDuplicateOrder(Order order, UUID userId) {
-        UUID seatId = order.getOrderSeat().getSeatId();
-        UUID scheduleId = order.getScheduleId();
-
-        List<Order> duplicateOrders = orderRepository.findByScheduleIdAndOrderSeatSeatId(seatId, scheduleId)
+    private void validateDuplicateOrder(UUID seatId) {
+        List<Order> duplicateOrders = orderRepository.findByOrderSeatSeatId(seatId)
                 .stream()
-                .filter(o -> !o.getUserId().equals(userId) &&
-                        (o.getOrderStatus().equals(OrderStatus.PENDING) ||
-                                o.getOrderStatus().equals(OrderStatus.COMPLETED)))
+                .filter(o -> o.getOrderStatus().equals(OrderStatus.PENDING) ||
+                                o.getOrderStatus().equals(OrderStatus.COMPLETED))
                 .toList();
 
         if(!duplicateOrders.isEmpty())
