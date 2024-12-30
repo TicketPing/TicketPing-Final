@@ -1,6 +1,5 @@
 package com.ticketPing.order.presentation.controller;
 
-import com.ticketPing.order.presentation.request.OrderCreateDto;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.application.service.OrderService;
 import response.CommonResponse;
@@ -19,12 +18,13 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Operation(summary = "예매 좌석 생성 + 좌석 선점")
+    @Operation(summary = "예매 좌석 생성")
     @PostMapping
-    public CommonResponse<OrderResponse> createOrder(@RequestBody OrderCreateDto requestDto,
+    public CommonResponse<OrderResponse> createOrder(@RequestHeader("X_USER_ID") UUID userId,
                                                      @RequestParam("performanceId") UUID performanceId,
-                                                     @RequestHeader("X_USER_ID") UUID userId) {
-        OrderResponse orderResponse = orderService.createOrder(requestDto, userId);
+                                                     @RequestParam("scheduleId") UUID scheduleId,
+                                                     @RequestParam("seatId") UUID seatId) {
+        OrderResponse orderResponse = orderService.createOrder(scheduleId, seatId, userId);
         return CommonResponse.success(orderResponse);
     }
 

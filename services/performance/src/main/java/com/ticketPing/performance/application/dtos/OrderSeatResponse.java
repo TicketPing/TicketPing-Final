@@ -11,40 +11,37 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Builder(access = AccessLevel.PRIVATE)
-public record OrderInfoResponse(
-        UUID seatId,
-        Integer row,
-        Integer col,
-        String seatGrade,
-        Integer cost,
+public record OrderSeatResponse(
+        UUID performanceId,
+        String performanceName,
         UUID scheduleId,
         LocalDate startDate,
         UUID performanceHallId,
         String performanceHallName,
-        UUID performanceId,
-        String performanceName,
-        Integer performanceGrade,
-        UUID companyId
+        UUID companyId,
+        UUID seatId,
+        Integer row,
+        Integer col,
+        String seatGrade,
+        Integer cost
 ) {
-    public static OrderInfoResponse of(Seat seat) {
+    public static OrderSeatResponse of(Seat seat) {
         Schedule schedule = seat.getSchedule();
         Performance performance = schedule.getPerformance();
         PerformanceHall performanceHall = performance.getPerformanceHall();
 
-        return OrderInfoResponse.builder()
-                .seatId(seat.getId())
-                .row(seat.getRow())
-                .col(seat.getCol())
-                .seatGrade(seat.getSeatCost().getSeatGrade())
-                .cost(seat.getSeatCost().getCost())
+        return OrderSeatResponse.builder()
+                .performanceId(performance.getId())
+                .performanceName(performance.getName())
                 .scheduleId(schedule.getId())
                 .startDate(schedule.getStartDate())
                 .performanceHallId(performanceHall.getId())
                 .performanceHallName(performanceHall.getName())
-                .performanceId(performance.getId())
-                .performanceName(performance.getName())
-                .performanceGrade(performance.getGrade())
-                .companyId(performance.getCompanyId())
+                .companyId(performance.getCompanyId()).seatId(seat.getId())
+                .row(seat.getRow())
+                .col(seat.getCol())
+                .seatGrade(seat.getSeatCost().getSeatGrade())
+                .cost(seat.getSeatCost().getCost())
                 .build();
     }
 }

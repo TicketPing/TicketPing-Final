@@ -1,13 +1,15 @@
 package com.ticketPing.performance.application.service;
 
-import com.ticketPing.performance.application.dtos.OrderInfoResponse;
+import com.ticketPing.performance.application.dtos.OrderSeatResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.common.exception.SeatExceptionCase;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.model.entity.Seat;
+import com.ticketPing.performance.domain.model.entity.SeatCache;
 import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.SeatRepository;
 import com.ticketPing.performance.infrastructure.service.CacheService;
+import com.ticketPing.performance.infrastructure.service.LuaScriptService;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class SeatService {
 
     private final SeatRepository seatRepository;
     private final CacheService cacheService;
+    private final LuaScriptService luaScriptService;
 
     public SeatResponse getSeat(UUID id) {
         Seat seat = seatRepository.findByIdWithSeatCost(id)
@@ -32,17 +35,24 @@ public class SeatService {
         return SeatResponse.of(seat);
     }
 
-    public OrderInfoResponse getOrderInfo(UUID seatId) {
+    public void preReserveSeat(UUID scheduleId, UUID seatId, UUID userId) {
+        luaScriptService.preReserveSeat(scheduleId, seatId, userId);
+    }
+
+    public OrderSeatResponse getOrderInfo(UUID scheduleId, UUID seatId, UUID userId) {
+        validatePreserve(scheduleId, seatId, userId);
+
         Seat seat = seatRepository.findByIdWithAll(seatId)
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
-        return OrderInfoResponse.of(seat);
+
+        return OrderSeatResponse.of(seat);
     }
 
     public long cacheSeatsForSchedule(Schedule schedule) {
         List<Seat> seats = seatRepository.findByScheduleWithSeatCost(schedule);
 
-        Map<String, SeatResponse> seatMap = seats.stream()
-                .collect(Collectors.toMap(seat -> seat.getId().toString(), SeatResponse::of));
+        Map<String, SeatCache> seatMap = seats.stream()
+                .collect(Collectors.toMap(seat -> seat.getId().toString(), SeatCache::from));
 
         LocalDateTime expiration = schedule.getStartDate().atTime(23, 59, 59);
         Duration ttl = Duration.between(LocalDateTime.now(), expiration);
@@ -56,6 +66,17 @@ public class SeatService {
 
     public void cacheAvailableSeatsForPerformance(UUID performanceId, long availableSeats) {
         cacheService.cacheAvailableSeats(performanceId, availableSeats);
+    }
+
+    private void validatePreserve(UUID scheduleId, UUID seatId, UUID userId) {
+        SeatCache seatCache = cacheService.getSeatFromCache(scheduleId, seatId);
+
+        if(!seatCache.getSeatStatus().equals(SeatStatus.HELD.getValue())) {
+            throw new ApplicationException(SeatExceptionCase.SEAT_NOT_PRE_RESERVED);
+        } else if(!seatCache.getUserId().equals(userId)) {
+            System.out.println(seatCache.getUserId() + " " + userId);
+            throw new ApplicationException(SeatExceptionCase.USER_NOT_MATCH);
+        }
     }
 }
 

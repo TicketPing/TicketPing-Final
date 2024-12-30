@@ -1,6 +1,6 @@
 package com.ticketPing.performance.presentation.controller;
 
-import com.ticketPing.performance.application.dtos.OrderInfoResponse;
+import com.ticketPing.performance.application.dtos.OrderSeatResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.application.service.SeatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,12 +26,28 @@ public class SeatController {
                 .body(CommonResponse.success(seatResponse));
     }
 
-    @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
-    @GetMapping("/{seatId}/order-info")
-    public ResponseEntity<CommonResponse<OrderInfoResponse>> getOrderInfo(@PathVariable("seatId") UUID seatId) {
-        OrderInfoResponse orderInfoResponse = seatService.getOrderInfo(seatId);
+    @Operation(summary = "좌석 선점")
+    @PostMapping("/{seatId}/pre-reserve")
+    public ResponseEntity<CommonResponse<Object>> preReserveSeat(@RequestHeader("X_USER_ID") UUID userId,
+                                                                 @RequestParam("performanceId") UUID performanceId,
+                                                                 @RequestParam("scheduleId") UUID scheduleId,
+                                                                 @PathVariable("seatId") UUID seatId) {
+        seatService.preReserveSeat(scheduleId, seatId, userId);
         return ResponseEntity
                 .status(200)
-                .body(CommonResponse.success(orderInfoResponse));
+                .body(CommonResponse.success());
+    }
+
+    // TODO: 좌석 선점 취소
+
+    @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
+    @GetMapping("/{seatId}/order-info")
+    public ResponseEntity<CommonResponse<OrderSeatResponse>> getOrderInfo(@RequestHeader("X_USER_ID") UUID userId,
+                                                                          @RequestParam("scheduleId") UUID scheduleId,
+                                                                          @PathVariable("seatId") UUID seatId) {
+        OrderSeatResponse orderSeatResponse = seatService.getOrderInfo(scheduleId, seatId, userId);
+        return ResponseEntity
+                .status(200)
+                .body(CommonResponse.success(orderSeatResponse));
     }
 }
