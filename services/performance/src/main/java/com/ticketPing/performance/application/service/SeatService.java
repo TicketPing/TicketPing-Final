@@ -39,6 +39,11 @@ public class SeatService {
         luaScriptService.preReserveSeat(scheduleId, seatId, userId);
     }
 
+    public void cancelPreReserveSeat(UUID scheduleId, UUID seatId, UUID userId) {
+        validatePreserve(scheduleId, seatId, userId);
+        cacheService.canclePreReserveSeat(scheduleId, seatId);
+    }
+
     public OrderSeatResponse getOrderInfo(UUID scheduleId, UUID seatId, UUID userId) {
         validatePreserve(scheduleId, seatId, userId);
 

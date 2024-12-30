@@ -1,6 +1,7 @@
 package com.ticketPing.performance.domain.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import lombok.*;
 
 import java.util.UUID;
@@ -28,5 +29,10 @@ public class SeatCache {
                 .seatGrade(seat.getSeatCost().getSeatGrade())
                 .cost(seat.getSeatCost().getCost())
                 .build();
+    }
+
+    public void cancelPreReserveSeat() {
+        seatStatus = SeatStatus.AVAILABLE.getValue();;
+        userId = null;
     }
 }
