@@ -38,7 +38,17 @@ public class SeatController {
                 .body(CommonResponse.success());
     }
 
-    // TODO: 좌석 선점 취소
+    @Operation(summary = "좌석 선점 취소")
+    @PostMapping("/{seatId}/cancel-reserve")
+    public ResponseEntity<CommonResponse<Object>> cancelPreReserveSeat(@RequestHeader("X_USER_ID") UUID userId,
+                                                                       @RequestParam("performanceId") UUID performanceId,
+                                                                       @RequestParam("scheduleId") UUID scheduleId,
+                                                                       @PathVariable("seatId") UUID seatId) {
+        seatService.cancelPreReserveSeat(scheduleId, seatId, userId);
+        return ResponseEntity
+                .status(200)
+                .body(CommonResponse.success());
+    }
 
     @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
     @GetMapping("/{seatId}/order-info")
