@@ -6,7 +6,7 @@ import com.ticketPing.order.common.exception.OrderExceptionCase;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
-import com.ticketPing.order.infrastructure.repository.OrderRepository;
+import com.ticketPing.order.domain.repository.OrderRepository;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +20,8 @@ import performance.OrderSeatResponse;
 import java.util.List;
 import java.util.UUID;
 
+import static com.ticketPing.order.common.exception.OrderExceptionCase.DUPLICATED_ORDER;
 import static com.ticketPing.order.common.exception.OrderExceptionCase.ORDER_NOT_FOUND;
-import static com.ticketPing.order.common.exception.OrderExceptionCase.SEAT_ALREADY_TAKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +45,9 @@ public class OrderService {
         return orders.stream().map(OrderResponse::from).toList();
     }
 
-    public OrderResponse validateOrderAndExtendTTL(UUID orderId, UUID userId) {
-        Order order = validateOrder(orderId, userId);
+    public void validateOrderAndExtendTTL(UUID orderId, UUID userId) {
+        Order order = validateAndGetOrder(orderId, userId);
         performanceClient.extendPreReserveTTL(order.getScheduleId(), order.getOrderSeat().getSeatId());
-        return OrderResponse.from(order);
     }
 
     @Transactional
@@ -71,26 +70,29 @@ public class OrderService {
         return savedOrder;
     }
 
+    private void validateDuplicateOrder(UUID seatId) {
+        boolean hasDuplicate = orderRepository.existsByOrderSeatSeatIdAndOrderStatusIn(
+                seatId, List.of(OrderStatus.PENDING, OrderStatus.COMPLETED));
+
+        if (hasDuplicate) {
+            throw new ApplicationException(DUPLICATED_ORDER);
+        }
+    }
+
+    private Order validateAndGetOrder(UUID orderId, UUID userId) {
+        Order order = orderRepository.findByIdAndOrderStatus(orderId, OrderStatus.PENDING)
+                .orElseThrow(() -> new ApplicationException(OrderExceptionCase.INVALID_ORDER));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new ApplicationException(OrderExceptionCase.INVALID_ORDER);
+        }
+
+        return order;
+    }
+
     private Order findOrderById(UUID orderId){
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new ApplicationException(ORDER_NOT_FOUND));
-    }
-
-    private void validateDuplicateOrder(UUID seatId) {
-        List<Order> duplicateOrders = orderRepository.findByOrderSeatSeatId(seatId)
-                .stream()
-                .filter(o -> o.getOrderStatus().equals(OrderStatus.PENDING) || o.getOrderStatus().equals(OrderStatus.COMPLETED))
-                .toList();
-
-        if(!duplicateOrders.isEmpty())
-            throw new ApplicationException(SEAT_ALREADY_TAKEN);
-    }
-
-    private Order validateOrder(UUID orderId, UUID userId) {
-        Order order = findOrderById(orderId);
-        if(!order.getOrderStatus().equals(OrderStatus.PENDING) || !order.getUserId().equals(userId))
-            throw new ApplicationException(OrderExceptionCase.INVALID_ORDER);
-        return order;
     }
 
     private void publishForSeatReservation(UUID scheduleId, UUID seatId) {
