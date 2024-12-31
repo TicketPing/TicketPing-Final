@@ -6,20 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.client.codec.StringCodec;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.UUID;
+
+import static com.ticketPing.performance.common.constants.SeatConstants.PRE_RESERVE_TTL;
 
 @Service
 @RequiredArgsConstructor
 public class LuaScriptService {
     private final RedissonClient redissonClient;
     private final String preReserveScript;
-
-    @Value("${seat.pre-reserve-ttl}")
-    private int PRE_RESERVE_TTL;
 
     public void preReserveSeat(UUID scheduleId, UUID seatId, UUID  userId) {
         String hashKey = "seat:{" + scheduleId + "}";

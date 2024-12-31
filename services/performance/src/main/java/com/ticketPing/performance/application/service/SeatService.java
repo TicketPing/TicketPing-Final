@@ -12,6 +12,7 @@ import com.ticketPing.performance.infrastructure.service.CacheService;
 import com.ticketPing.performance.infrastructure.service.LuaScriptService;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -29,6 +30,9 @@ public class SeatService {
     private final CacheService cacheService;
     private final LuaScriptService luaScriptService;
 
+    @Value("${seat.pre-reserve-ttl}")
+    private int PRE_RESERVE_TTL;
+
     public SeatResponse getSeat(UUID id) {
         Seat seat = seatRepository.findByIdWithSeatCost(id)
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
@@ -44,13 +48,17 @@ public class SeatService {
         cacheService.canclePreReserveSeat(scheduleId, seatId);
     }
 
-    public OrderSeatResponse getOrderInfo(UUID scheduleId, UUID seatId, UUID userId) {
+    public OrderSeatResponse getOrderSeatInfo(UUID scheduleId, UUID seatId, UUID userId) {
         validatePreserve(scheduleId, seatId, userId);
 
         Seat seat = seatRepository.findByIdWithAll(seatId)
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
 
         return OrderSeatResponse.of(seat);
+    }
+
+    public void extendPreReserveTTL(UUID scheduleId, UUID seatId) {
+        cacheService.extendPreReserveTTL(scheduleId, seatId, Duration.ofSeconds(PRE_RESERVE_TTL));
     }
 
     public long cacheSeatsForSchedule(Schedule schedule) {

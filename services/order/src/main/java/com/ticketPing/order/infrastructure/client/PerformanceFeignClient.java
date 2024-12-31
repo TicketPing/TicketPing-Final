@@ -13,10 +13,14 @@ import org.springframework.http.ResponseEntity;
 @FeignClient(name = "performance")
 public interface PerformanceFeignClient extends PerformanceClient {
 
-    @GetMapping("/api/v1/seats/{seatId}/order-info")
+    @GetMapping("/api/v1/client/seats/{seatId}/order-info")
     ResponseEntity<CommonResponse<OrderSeatResponse>> getOrderInfo(@RequestHeader("X_USER_ID") UUID userId,
                                                                    @RequestParam("scheduleId") UUID scheduleId,
                                                                    @PathVariable("seatId") UUID seatId);
+
+    @PostMapping("/api/v1/client/seats/{seatId}/extend-ttl")
+    ResponseEntity<CommonResponse<Object>> extendPreReserveTTL(@RequestParam("scheduleId") UUID scheduleId,
+                                                               @PathVariable("seatId") UUID seatId);
 
     @PutMapping("/api/v1/seats/{seatId}")
     ResponseEntity<CommonResponse<SeatResponse>> updateSeatState(@PathVariable("seatId") UUID seatId,
