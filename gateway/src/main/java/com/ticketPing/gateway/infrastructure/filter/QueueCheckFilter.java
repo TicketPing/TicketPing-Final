@@ -33,7 +33,7 @@ public class QueueCheckFilter {
                         switch (api) {
                             case ENTER_WAITING_QUEUE -> handleEnterWaitingQueueApi(exchange, chain);
                             case GET_QUEUE_INFO -> handleGetQueueInfoApi(exchange, chain);
-                            case CREATE_ORDER -> handleCreateOrderApi(exchange, chain);
+                            case PRE_RESERVE_SEAT, CREATE_ORDER, VALIDATE_ORDER -> handleCreateOrderApi(exchange, chain);
                         })
                 .switchIfEmpty(chain.filter(exchange));
     }
