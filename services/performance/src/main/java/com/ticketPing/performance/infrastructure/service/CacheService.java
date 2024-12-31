@@ -55,6 +55,9 @@ public class CacheService {
     }
 
     public void canclePreReserveSeat(UUID scheduleId, UUID seatId) {
+        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        redissonClient.getBucket(ttlKey).delete();
+
         String key = "seat:{" + scheduleId + "}";
         RMap<String, SeatCache> seatCacheMap = redissonClient.getMap(key, JsonJacksonCodec.INSTANCE);
 
@@ -63,9 +66,20 @@ public class CacheService {
         seatCache.cancelPreReserveSeat();
 
         seatCacheMap.put(seatId.toString(), seatCache);
+    }
 
+    public void reserveSeat(String scheduleId, String seatId) {
         String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
         redissonClient.getBucket(ttlKey).delete();
+
+        String key = "seat:{" + scheduleId + "}";
+        RMap<String, SeatCache> seatCacheMap = redissonClient.getMap(key, JsonJacksonCodec.INSTANCE);
+
+        SeatCache seatCache = Optional.ofNullable(seatCacheMap.get(seatId.toString()))
+                .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_CACHE_NOT_FOUND));
+        seatCache.reserveSeat();
+
+        seatCacheMap.put(seatId.toString(), seatCache);
     }
 
     public void cacheAvailableSeats(UUID performanceId, long availableSeats) {

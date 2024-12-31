@@ -10,9 +10,11 @@ import java.util.UUID;
 public interface SeatRepository {
     Seat save(Seat seat);
 
+    Optional<Seat> findById(UUID uuid);
+
+    Optional<Seat> findByIdWithAll(UUID seatId);
+
     Optional<Seat> findByIdWithSeatCost(UUID id);
 
     List<Seat> findByScheduleWithSeatCost(Schedule schedule);
-
-    Optional<Seat> findByIdWithAll(UUID seatId);
 }

@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.ticketPing.performance", "aop", "exception", "audit"})
+@ComponentScan(basePackages = {"com.ticketPing.performance", "aop", "exception", "audit", "messaging"})
 public class PerformanceApplication {
     public static void main(String[] args) {
         SpringApplication.run(PerformanceApplication.class, args);

@@ -7,21 +7,21 @@ import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.infrastructure.repository.OrderRepository;
-import messaging.events.OrderCompletedEvent;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import messaging.events.OrderCompletedForQueueTokenRemovalEvent;
+import messaging.events.OrderCompletedForSeatReservationEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import performance.OrderSeatResponse;
 
 import java.util.List;
 import java.util.UUID;
-import caching.repository.RedisRepository;
-import performance.OrderSeatResponse;
 
-import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
-import static com.ticketPing.order.common.exception.OrderExceptionCase.*;
+import static com.ticketPing.order.common.exception.OrderExceptionCase.ORDER_NOT_FOUND;
+import static com.ticketPing.order.common.exception.OrderExceptionCase.SEAT_ALREADY_TAKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +30,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final EventApplicationService eventApplicationService;
-    private final RedisRepository redisRepository;
     private final PerformanceClient performanceClient;
-
-    private final static String TTL_PREFIX = "{Seat}:seat_ttl:";
 
     @Transactional
     public OrderResponse createOrder(UUID scheduleId, UUID seatId, UUID userId) {
@@ -55,23 +52,12 @@ public class OrderService {
     }
 
     @Transactional
-    public void updateOrderStatus(UUID orderId, UUID paymentId) {
+    public void completeOrder(UUID orderId, UUID paymentId) {
         Order order = findOrderById(orderId);
-        order.complete();
+        order.complete(paymentId);
 
-        UUID performanceId = order.getPerformanceId();
-        UUID scheduleId = order.getScheduleId();
-        UUID seatId = order.getOrderSeat().getSeatId();
-
-        performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);
-
-        String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
-        redisRepository.deleteKey(ttlKey);
-
-        String counterKey = AVAILABLE_SEATS.getValue() + performanceId;
-        redisRepository.decrement(counterKey);
-
-        publishOrderCompletedEvent(order.getUserId(), performanceId);
+        publishForSeatReservation(order.getScheduleId(), order.getOrderSeat().getSeatId());
+        publishForQueueTokenRemoval(order.getUserId(), order.getPerformanceId());
     }
 
     @Transactional
@@ -107,9 +93,14 @@ public class OrderService {
         return order;
     }
 
-    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
-        val event = OrderCompletedEvent.create(userId, performanceId);
-        eventApplicationService.publishOrderCompletedEvent(event);
+    private void publishForSeatReservation(UUID scheduleId, UUID seatId) {
+        val event = OrderCompletedForSeatReservationEvent.create(scheduleId, seatId);
+        eventApplicationService.publishForSeatReservation(event);
+    }
+
+    private void publishForQueueTokenRemoval(UUID userId, UUID performanceId) {
+        val event = OrderCompletedForQueueTokenRemovalEvent.create(userId, performanceId);
+        eventApplicationService.publishForQueueTokenRemoval(event);
     }
 
 }

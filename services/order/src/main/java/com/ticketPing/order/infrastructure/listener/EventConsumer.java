@@ -20,7 +20,7 @@ public class EventConsumer {
     public void handlePaymentCompletedEvent(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         EventLogger.logReceivedMessage(record);
         PaymentCompletedEvent event = EventSerializer.deserialize(record.value(), PaymentCompletedEvent.class);
-        orderService.updateOrderStatus(event.orderId(), event.paymentId());
+        orderService.completeOrder(event.orderId(), event.paymentId());
         acknowledgment.acknowledge();
     }
 
