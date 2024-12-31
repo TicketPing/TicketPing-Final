@@ -32,7 +32,11 @@ public class SeatCache {
     }
 
     public void cancelPreReserveSeat() {
-        seatStatus = SeatStatus.AVAILABLE.getValue();;
+        seatStatus = SeatStatus.AVAILABLE.getValue();
         userId = null;
+    }
+
+    public void reserveSeat() {
+        seatStatus = SeatStatus.RESERVED.getValue();
     }
 }

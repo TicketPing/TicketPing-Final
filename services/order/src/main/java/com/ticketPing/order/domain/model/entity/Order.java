@@ -58,8 +58,9 @@ public class Order extends BaseEntity {
         this.orderSeat = orderSeat;
     }
 
-    public void complete(){
+    public void complete(UUID paymentId){
         this.orderStatus = OrderStatus.COMPLETED;
+        this.paymentId =  paymentId;
     }
 
 }

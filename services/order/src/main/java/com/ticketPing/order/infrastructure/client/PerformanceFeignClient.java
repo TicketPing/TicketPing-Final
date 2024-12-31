@@ -3,12 +3,12 @@ package com.ticketPing.order.infrastructure.client;
 
 import com.ticketPing.order.application.client.PerformanceClient;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import performance.OrderSeatResponse;
-import performance.SeatResponse;
 import response.CommonResponse;
+
 import java.util.UUID;
-import org.springframework.http.ResponseEntity;
 
 @FeignClient(name = "performance")
 public interface PerformanceFeignClient extends PerformanceClient {
@@ -22,8 +22,5 @@ public interface PerformanceFeignClient extends PerformanceClient {
     ResponseEntity<CommonResponse<Object>> extendPreReserveTTL(@RequestParam("scheduleId") UUID scheduleId,
                                                                @PathVariable("seatId") UUID seatId);
 
-    @PutMapping("/api/v1/seats/{seatId}")
-    ResponseEntity<CommonResponse<SeatResponse>> updateSeatState(@PathVariable("seatId") UUID seatId,
-                                                                 @RequestParam("seatState") Boolean seatState);
 }
 

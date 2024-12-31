@@ -19,6 +19,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,12 @@ public class SeatService {
 
     public void extendPreReserveTTL(UUID scheduleId, UUID seatId) {
         cacheService.extendPreReserveTTL(scheduleId, seatId, Duration.ofSeconds(PRE_RESERVE_TTL));
+    }
+
+    public void reserveSeat(String scheduleId, String seatId) {
+        Seat seat = seatRepository.findById(UUID.fromString(seatId))
+                .orElseThrow(() ->  new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
+        cacheService.reserveSeat(scheduleId, seatId);
     }
 
     public long cacheSeatsForSchedule(Schedule schedule) {

@@ -41,6 +41,7 @@ dependencies {
 	implementation(project(':common:caching')) {
 		exclude(group: 'org.springframework.boot', module: 'spring-boot-starter-data-redis')
 	}
+	implementation project(':common:messaging')
 	implementation project(':common:monitoring')
 
 	// MVC
