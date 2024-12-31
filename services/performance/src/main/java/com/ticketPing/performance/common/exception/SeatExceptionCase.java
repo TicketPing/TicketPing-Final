@@ -15,7 +15,8 @@ public enum SeatExceptionCase implements ErrorCase {
     PRE_RESERVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "좌석 선점 과정에서 오류가 발생했습니다."),
     SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다."),
     USER_NOT_MATCH(HttpStatus.BAD_REQUEST, "본인이 선점한 좌석이 아닙니다."),
-    SEAT_NOT_PRE_RESERVED(HttpStatus.BAD_REQUEST, "좌석이 선점 상태가 아닙니다.");
+    SEAT_NOT_PRE_RESERVED(HttpStatus.BAD_REQUEST, "좌석이 선점 상태가 아닙니다."),
+    TTL_NOT_EXIST(HttpStatus.BAD_REQUEST, "좌석 선점 상태가 아닙니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

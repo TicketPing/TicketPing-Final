@@ -39,7 +39,7 @@ public class OrderController {
     @PostMapping("/{orderId}/validate")
     public CommonResponse<OrderResponse> validateOrder(@RequestHeader("X_USER_ID") UUID userId,
                                                        @PathVariable("orderId") UUID orderId) {
-        OrderResponse orderResponse = orderService.validateOrder(orderId, userId);
+        OrderResponse orderResponse = orderService.validateOrderAndExtendTTL(orderId, userId);
         return CommonResponse.success(orderResponse);
     }
 

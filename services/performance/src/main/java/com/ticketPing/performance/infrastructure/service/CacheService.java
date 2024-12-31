@@ -4,6 +4,7 @@ import com.ticketPing.performance.common.exception.SeatExceptionCase;
 import com.ticketPing.performance.domain.model.entity.SeatCache;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
@@ -42,6 +43,15 @@ public class CacheService {
 
         return Optional.ofNullable(seatCacheMap.get(seatId.toString()))
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_CACHE_NOT_FOUND));
+    }
+
+    public void extendPreReserveTTL(UUID scheduleId, UUID seatId, Duration ttl) {
+        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        RBucket<Object> bucket = redissonClient.getBucket(ttlKey);
+        if (!bucket.isExists()) {
+            throw new ApplicationException(SeatExceptionCase.TTL_NOT_EXIST);
+        }
+        bucket.expire(ttl);
     }
 
     public void canclePreReserveSeat(UUID scheduleId, UUID seatId) {

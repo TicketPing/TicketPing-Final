@@ -49,15 +49,4 @@ public class SeatController {
                 .status(200)
                 .body(CommonResponse.success());
     }
-
-    @Operation(summary = "좌석 주문 정보 조회 (order 서비스에서 호출용)")
-    @GetMapping("/{seatId}/order-info")
-    public ResponseEntity<CommonResponse<OrderSeatResponse>> getOrderInfo(@RequestHeader("X_USER_ID") UUID userId,
-                                                                          @RequestParam("scheduleId") UUID scheduleId,
-                                                                          @PathVariable("seatId") UUID seatId) {
-        OrderSeatResponse orderSeatResponse = seatService.getOrderInfo(scheduleId, seatId, userId);
-        return ResponseEntity
-                .status(200)
-                .body(CommonResponse.success(orderSeatResponse));
-    }
 }

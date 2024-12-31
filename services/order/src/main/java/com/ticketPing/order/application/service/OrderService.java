@@ -2,6 +2,7 @@ package com.ticketPing.order.application.service;
 
 import com.ticketPing.order.application.client.PerformanceClient;
 import com.ticketPing.order.application.dtos.OrderResponse;
+import com.ticketPing.order.common.exception.OrderExceptionCase;
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
@@ -42,16 +43,15 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    @Transactional(readOnly = true)
-    public OrderResponse validateOrder(UUID orderId, UUID userId) {
-        Order order = findOrderById(orderId);
-        // TODO: 본인 좌석 인지 확인, 좌석 선점 TTL 갱신
-        return OrderResponse.from(order);
-    }
-
     public List<OrderResponse> getUserOrders(UUID userId) {
         List<Order> orders = orderRepository.findByUserId(userId);
         return orders.stream().map(OrderResponse::from).toList();
+    }
+
+    public OrderResponse validateOrderAndExtendTTL(UUID orderId, UUID userId) {
+        Order order = validateOrder(orderId, userId);
+        performanceClient.extendPreReserveTTL(order.getScheduleId(), order.getOrderSeat().getSeatId());
+        return OrderResponse.from(order);
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class OrderService {
         UUID scheduleId = order.getScheduleId();
         UUID seatId = order.getOrderSeat().getSeatId();
 
-        performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);  // 1. 좌석 db 업데이트 (kafka로 변경?)
+        performanceClient.updateSeatState(order.getOrderSeat().getSeatId(), true);
 
         String ttlKey = TTL_PREFIX + scheduleId + ":" + seatId + ":" + orderId;
         redisRepository.deleteKey(ttlKey);
@@ -72,11 +72,6 @@ public class OrderService {
         redisRepository.decrement(counterKey);
 
         publishOrderCompletedEvent(order.getUserId(), performanceId);
-    }
-
-    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
-        val event = OrderCompletedEvent.create(userId, performanceId);
-        eventApplicationService.publishOrderCompletedEvent(event);
     }
 
     @Transactional
@@ -98,12 +93,23 @@ public class OrderService {
     private void validateDuplicateOrder(UUID seatId) {
         List<Order> duplicateOrders = orderRepository.findByOrderSeatSeatId(seatId)
                 .stream()
-                .filter(o -> o.getOrderStatus().equals(OrderStatus.PENDING) ||
-                                o.getOrderStatus().equals(OrderStatus.COMPLETED))
+                .filter(o -> o.getOrderStatus().equals(OrderStatus.PENDING) || o.getOrderStatus().equals(OrderStatus.COMPLETED))
                 .toList();
 
         if(!duplicateOrders.isEmpty())
             throw new ApplicationException(SEAT_ALREADY_TAKEN);
+    }
+
+    private Order validateOrder(UUID orderId, UUID userId) {
+        Order order = findOrderById(orderId);
+        if(!order.getOrderStatus().equals(OrderStatus.PENDING) || !order.getUserId().equals(userId))
+            throw new ApplicationException(OrderExceptionCase.INVALID_ORDER);
+        return order;
+    }
+
+    private void publishOrderCompletedEvent(UUID userId, UUID performanceId) {
+        val event = OrderCompletedEvent.create(userId, performanceId);
+        eventApplicationService.publishOrderCompletedEvent(event);
     }
 
 }
