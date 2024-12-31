@@ -2,7 +2,9 @@ package com.ticketPing.order.presentation.controller;
 
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.application.service.OrderService;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,9 +37,10 @@ public class OrderController {
     }
 
     @Operation(summary = "사용자 예매 목록 전체 조회")
-    @GetMapping("/user/reservations")
-    public ResponseEntity<CommonResponse<List<OrderResponse>>> getUserReservation(@RequestHeader("X_USER_ID") UUID userId) {
-        List<OrderResponse> userReservationDto = orderService.getUserOrders(userId);
+    @GetMapping("/user-orders")
+    public ResponseEntity<CommonResponse<Slice<OrderResponse>>> getUserReservation(@RequestHeader("X_USER_ID") UUID userId,
+                                                                                  Pageable pageable) {
+        Slice<OrderResponse> userReservationDto = orderService.getUserOrders(userId, pageable);
         return ResponseEntity
                 .status(200)
                 .body(success(userReservationDto));
