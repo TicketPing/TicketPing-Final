@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import messaging.events.OrderCompletedForQueueTokenRemovalEvent;
 import messaging.events.OrderCompletedForSeatReservationEvent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import performance.OrderSeatResponse;
@@ -40,9 +43,9 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    public List<OrderResponse> getUserOrders(UUID userId) {
-        List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream().map(OrderResponse::from).toList();
+    public Slice<OrderResponse> getUserOrders(UUID userId, Pageable pageable) {
+        Slice<Order> orders = orderRepository.findUserOrdersExcludingStatus(userId, OrderStatus.FAIL, pageable);
+        return orders.map(OrderResponse::from);
     }
 
     public void validateOrderAndExtendTTL(UUID orderId, UUID userId) {

@@ -2,6 +2,8 @@ package com.ticketPing.order.domain.repository;
 
 import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +16,7 @@ public interface OrderRepository {
 
     Optional<Order> findByIdAndOrderStatus(UUID orderId, OrderStatus orderStatus);
 
-    List<Order> findByUserId(UUID userId);
-
     boolean existsByOrderSeatSeatIdAndOrderStatusIn(UUID seatId, List<OrderStatus> pending);
+
+    Slice<Order> findUserOrdersExcludingStatus(UUID userId, OrderStatus orderStatus, Pageable pageable);
 }
