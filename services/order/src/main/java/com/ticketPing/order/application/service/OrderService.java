@@ -44,7 +44,8 @@ public class OrderService {
     }
 
     public Slice<OrderResponse> getUserOrders(UUID userId, Pageable pageable) {
-        Slice<Order> orders = orderRepository.findUserOrdersExcludingStatus(userId, OrderStatus.FAIL, pageable);
+        Slice<Order> orders = orderRepository.findUserOrdersExcludingStatus(
+                userId, List.of(OrderStatus.PENDING, OrderStatus.FAIL), pageable);
         return orders.map(OrderResponse::from);
     }
 

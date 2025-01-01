@@ -16,7 +16,7 @@ public interface OrderRepository {
 
     Optional<Order> findByIdAndOrderStatus(UUID orderId, OrderStatus orderStatus);
 
-    boolean existsByOrderSeatSeatIdAndOrderStatusIn(UUID seatId, List<OrderStatus> pending);
+    boolean existsByOrderSeatSeatIdAndOrderStatusIn(UUID seatId, List<OrderStatus> statuses);
 
-    Slice<Order> findUserOrdersExcludingStatus(UUID userId, OrderStatus orderStatus, Pageable pageable);
+    Slice<Order> findUserOrdersExcludingStatus(UUID userId, List<OrderStatus> statuses, Pageable pageable);
 }
