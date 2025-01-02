@@ -22,3 +22,5 @@ server:
 seat:
   pre-reserve-ttl: 300
 
+discord:
+  webhook-url: ${DISCORD_WEBHOOK_URL}
