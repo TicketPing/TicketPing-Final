@@ -46,7 +46,7 @@ public class PerformanceService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tenMinutesLater = now.plusMinutes(10);
 
-        return performanceRepository.findFirstByReservationStartDateBetween(now, tenMinutesLater);
+        return performanceRepository.findUpcomingPerformance(now, tenMinutesLater);
     }
 
     public void cacheAllSeatsForPerformance(UUID performanceId) {

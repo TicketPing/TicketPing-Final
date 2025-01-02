@@ -2,13 +2,14 @@ package com.ticketPing.performance.infrastructure.repository;
 
 import com.ticketPing.performance.domain.model.entity.Performance;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,4 +24,10 @@ public interface PerformanceJpaRepository extends PerformanceRepository, JpaRepo
             "LEFT JOIN FETCH p.seatCosts sc " +
             "WHERE p.id = :id ")
     Optional<Performance> findByIdWithDetails(UUID id);
+
+    @Query("SELECT p " +
+            "FROM Performance p " +
+            "WHERE p.reservationStartDate > :now " +
+            "AND p.reservationStartDate <= :tenMinutesLater")
+    Performance findUpcomingPerformance(@Param("now") LocalDateTime now, @Param("tenMinutesLater") LocalDateTime tenMinutesLater);
 }

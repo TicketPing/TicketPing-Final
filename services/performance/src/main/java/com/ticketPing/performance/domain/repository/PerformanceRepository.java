@@ -19,5 +19,5 @@ public interface PerformanceRepository {
 
     Optional<Performance> findByIdWithDetails(UUID id);
 
-    Performance findFirstByReservationStartDateBetween(LocalDateTime start, LocalDateTime end);
+    Performance findUpcomingPerformance(LocalDateTime start, LocalDateTime end);
 }
