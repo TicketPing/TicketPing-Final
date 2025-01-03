@@ -33,7 +33,7 @@ public class PerformanceService {
     }
 
     public Slice<PerformanceListResponse> getAllPerformances(Pageable pageable) {
-        return performanceRepository.findAll(pageable)
+        return performanceRepository.findAllWithPerformanceHall(pageable)
                 .map(PerformanceListResponse::of);
     }
 

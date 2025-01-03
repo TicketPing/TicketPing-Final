@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static caching.enums.RedisKeyPrefix.AVAILABLE_SEATS;
+import static com.ticketPing.performance.common.constants.SeatConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,27 +28,27 @@ public class CacheRepositoryImpl implements CacheRepository {
     private final LuaScriptService luaScriptService;
 
     public void cacheSeats(UUID scheduleId, Map<String, SeatCache> seatMap, Duration ttl) {
-        String key = "seat:{" + scheduleId + "}";
+        String key = SEAT_CACHE_KEY +":{" + scheduleId + "}";
         RMap<String, SeatCache> seatCache = redissonClient.getMap(key, JsonJacksonCodec.INSTANCE);
         seatCache.putAll(seatMap);
         seatCache.expire(ttl);
     }
 
     public Map<String, SeatCache> getSeatCaches(UUID scheduleId) {
-        String key = "seat:{" + scheduleId + "}";
+        String key = SEAT_CACHE_KEY +":{" + scheduleId + "}";
         RMap<String, SeatCache> seatCacheRMap = redissonClient.getMap(key, JsonJacksonCodec.INSTANCE);
         return seatCacheRMap.readAllMap();
     }
 
     public SeatCache getSeatCache(UUID scheduleId, UUID seatId) {
-        String seatKey = "seat:{" + scheduleId + "}";
+        String seatKey = SEAT_CACHE_KEY +":{" + scheduleId + "}";
         RMap<String, SeatCache> seatCacheMap = redissonClient.getMap(seatKey, JsonJacksonCodec.INSTANCE);
         return Optional.ofNullable(seatCacheMap.get(seatId.toString()))
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_CACHE_NOT_FOUND));
     }
 
     public void putSeatCache(SeatCache seatCache, UUID scheduleId, UUID seatId) {
-        String seatKey = "seat:{" + scheduleId + "}";
+        String seatKey = SEAT_CACHE_KEY +":{" + scheduleId + "}";
         RMap<String, SeatCache> seatCacheMap = redissonClient.getMap(seatKey, JsonJacksonCodec.INSTANCE);
         seatCacheMap.put(seatId.toString(), seatCache);
     }
@@ -57,14 +58,14 @@ public class CacheRepositoryImpl implements CacheRepository {
     }
 
     public String getPreReservTTL(UUID scheduleId, UUID seatId) {
-        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        String ttlKey = PRE_RESERVE_SEAT_KEY + ":{" + scheduleId + "}:" + seatId;
         RBucket<String> bucket = redissonClient.getBucket(ttlKey);
         return Optional.ofNullable(bucket.get())
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.TTL_NOT_EXIST));
     }
 
     public void extendPreReserveTTL(UUID scheduleId, UUID seatId, Duration ttl) {
-        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        String ttlKey = PRE_RESERVE_SEAT_KEY + ":{" + scheduleId + "}:" + seatId;
         RBucket<Object> bucket = redissonClient.getBucket(ttlKey);
 
         boolean success = bucket.expire(ttl);
@@ -74,7 +75,7 @@ public class CacheRepositoryImpl implements CacheRepository {
     }
 
     public void deletePreReserveTTL(UUID scheduleId, UUID seatId) {
-        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        String ttlKey = PRE_RESERVE_SEAT_KEY + ":{" + scheduleId + "}:" + seatId;
         RBucket<Object> bucket = redissonClient.getBucket(ttlKey);
 
         boolean deleted = bucket.delete();

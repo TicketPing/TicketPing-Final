@@ -1,5 +1,6 @@
 package com.ticketPing.order.application.service;
 
+import com.ticketPing.order.application.client.PaymentClient;
 import com.ticketPing.order.application.client.PerformanceClient;
 import com.ticketPing.order.application.dtos.OrderResponse;
 import com.ticketPing.order.common.exception.OrderExceptionCase;
@@ -9,12 +10,13 @@ import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.domain.repository.OrderRepository;
 import com.ticketPing.order.presentation.request.CreateOrderRequest;
 import exception.ApplicationException;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import messaging.events.OrderCompletedForQueueTokenRemovalEvent;
 import messaging.events.OrderCompletedForSeatReservationEvent;
-import org.springframework.data.domain.Page;
+import messaging.events.OrderFailedEvent;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import performance.OrderSeatResponse;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.ticketPing.order.common.exception.OrderExceptionCase.DUPLICATED_ORDER;
@@ -35,6 +38,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final EventApplicationService eventApplicationService;
     private final PerformanceClient performanceClient;
+    private final PaymentClient paymentClient;
 
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest createOrderRequest, UUID userId) {
@@ -56,6 +60,23 @@ public class OrderService {
     public void validateOrderAndExtendTTL(UUID orderId, UUID userId) {
         Order order = validateAndGetOrder(orderId, userId);
         performanceClient.extendPreReserveTTL(order.getScheduleId(), order.getOrderSeat().getSeatId());
+    }
+
+    @Transactional
+    public void failOrder(UUID scheduleId, UUID seatId) {
+        Optional<Order> optionalOrder = orderRepository.findByOrderSeatSeatIdAndOrderStatus(seatId, OrderStatus.PENDING);
+
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            try {
+                paymentClient.getCompletedPaymentByOrderId(order.getId());
+            } catch (FeignException.NotFound e) {
+                order.fail();
+                publishOrderFailed(scheduleId, seatId);
+            }
+        } else {
+            publishOrderFailed(scheduleId, seatId);
+        }
     }
 
     @Transactional
@@ -111,5 +132,10 @@ public class OrderService {
     private void publishForQueueTokenRemoval(UUID userId, UUID performanceId) {
         val event = OrderCompletedForQueueTokenRemovalEvent.create(userId, performanceId);
         eventApplicationService.publishForQueueTokenRemoval(event);
+    }
+
+    private void publishOrderFailed(UUID scheduleId, UUID seatId) {
+        val event = OrderFailedEvent.create(scheduleId, seatId);
+        eventApplicationService.publishOrderFailed(event);
     }
 }

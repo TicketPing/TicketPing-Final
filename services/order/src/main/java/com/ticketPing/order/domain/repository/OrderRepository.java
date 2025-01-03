@@ -14,6 +14,8 @@ public interface OrderRepository {
 
     Optional<Order> findById(UUID orderId);
 
+    Optional<Order> findByOrderSeatSeatIdAndOrderStatus(UUID seatId, OrderStatus orderStatus);
+
     Optional<Order> findByIdAndOrderStatus(UUID orderId, OrderStatus orderStatus);
 
     boolean existsByOrderSeatSeatIdAndOrderStatusIn(UUID seatId, List<OrderStatus> statuses);

@@ -9,22 +9,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import static com.ticketPing.performance.common.constants.SeatConstants.CACHE_SCHEDULER_LOCK_KEY;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class SeatCacheScheduler {
+
     private final PerformanceService performanceService;
     private final DistributedLockService lockService;
     private final NotificationService notificationService;
 
-    private static final String LOCK_KEY = "SchedulerLock";
     private static final int LOCK_TIMEOUT = 300;
 
     @Scheduled(cron = "0 0/10 * * * *")
     public void runScheduler() {
         log.info("Scheduler triggered");
         try {
-            boolean executed = lockService.executeWithLock(LOCK_KEY, 0, LOCK_TIMEOUT, this::cacheSeatsForUpcomingPerformance);
+            boolean executed = lockService.executeWithLock(CACHE_SCHEDULER_LOCK_KEY, 0, LOCK_TIMEOUT, this::cacheSeatsForUpcomingPerformance);
             if (!executed) {
                 log.warn("Another server is running the scheduler");
             }

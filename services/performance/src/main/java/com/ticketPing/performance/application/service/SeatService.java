@@ -36,7 +36,14 @@ public class SeatService {
 
     public void cancelPreReserveSeat(UUID scheduleId, UUID seatId, UUID userId) {
         validatePreserve(scheduleId, seatId, userId);
+        cacheRepository.deletePreReserveTTL(scheduleId, seatId);
         cancelPreReserveSeatInCache(scheduleId, seatId);
+    }
+
+    public void cancelPreReserveSeatInCache(UUID scheduleId, UUID seatId) {
+        SeatCache seatCache = cacheRepository.getSeatCache(scheduleId, seatId);
+        seatCache.cancelPreReserveSeat();
+        cacheRepository.putSeatCache(seatCache, scheduleId, seatId);
     }
 
     @Transactional
@@ -85,13 +92,6 @@ public class SeatService {
         String preReserveUserId = cacheRepository.getPreReservTTL(scheduleId, seatId);
         if(!preReserveUserId.equals(userId.toString()))
             throw new ApplicationException(SeatExceptionCase.USER_NOT_MATCH);
-    }
-
-    private void cancelPreReserveSeatInCache(UUID scheduleId, UUID seatId) {
-        cacheRepository.deletePreReserveTTL(scheduleId, seatId);
-        SeatCache seatCache = cacheRepository.getSeatCache(scheduleId, seatId);
-        seatCache.cancelPreReserveSeat();
-        cacheRepository.putSeatCache(seatCache, scheduleId, seatId);
     }
 
     private void reserveSeatInCache(UUID scheduleId, UUID seatId) {

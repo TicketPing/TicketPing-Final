@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,11 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PerformanceJpaRepository extends PerformanceRepository, JpaRepository<Performance, UUID> {
+
+    @Query(value = "SELECT p FROM Performance p LEFT JOIN FETCH p.performanceHall ph",
+            countQuery = "SELECT count(p) FROM Performance p")
+    Slice<Performance> findAllWithPerformanceHall(Pageable pageable);
+
     @Query("SELECT p FROM Performance p " +
             "LEFT JOIN FETCH p.schedules s " +
             "WHERE p.id = :id ")
