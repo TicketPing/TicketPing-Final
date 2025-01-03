@@ -17,8 +17,6 @@ public class SeatCache {
     private Integer col;
     private String seatStatus;
     private String seatGrade;
-    private Integer cost;
-    private UUID userId;
 
     public static SeatCache from(Seat seat) {
         return SeatCache.builder()
@@ -27,13 +25,11 @@ public class SeatCache {
                 .col(seat.getCol())
                 .seatStatus(seat.getSeatStatus().getValue())
                 .seatGrade(seat.getSeatCost().getSeatGrade())
-                .cost(seat.getSeatCost().getCost())
                 .build();
     }
 
     public void cancelPreReserveSeat() {
         seatStatus = SeatStatus.AVAILABLE.getValue();
-        userId = null;
     }
 
     public void reserveSeat() {

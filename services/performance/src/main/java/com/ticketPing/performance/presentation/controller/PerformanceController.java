@@ -6,8 +6,8 @@ import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.service.PerformanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.CommonResponse;
@@ -32,8 +32,8 @@ public class PerformanceController {
 
     @Operation(summary = "공연 목록 조회")
     @GetMapping
-    public ResponseEntity<CommonResponse<Page<PerformanceListResponse>>> getAllPerformances(Pageable pageable) {
-        Page<PerformanceListResponse> response = performanceService.getAllPerformances(pageable);
+    public ResponseEntity<CommonResponse<Slice<PerformanceListResponse>>> getAllPerformances(Pageable pageable) {
+        Slice<PerformanceListResponse> response = performanceService.getAllPerformances(pageable);
         return ResponseEntity
                 .status(200)
                 .body(CommonResponse.success(response));

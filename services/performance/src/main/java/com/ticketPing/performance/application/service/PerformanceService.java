@@ -7,10 +7,11 @@ import com.ticketPing.performance.common.exception.PerformanceExceptionCase;
 import com.ticketPing.performance.domain.model.entity.Performance;
 import com.ticketPing.performance.domain.model.entity.Schedule;
 import com.ticketPing.performance.domain.repository.PerformanceRepository;
+import com.ticketPing.performance.infrastructure.repository.CacheRepositoryImpl;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class PerformanceService {
 
     private final PerformanceRepository performanceRepository;
+    private final CacheRepositoryImpl cacheRepositoryImpl;
     private final SeatService seatService;
 
     public PerformanceResponse getPerformance(UUID performanceId) {
@@ -30,7 +32,7 @@ public class PerformanceService {
         return PerformanceResponse.of(performance);
     }
 
-    public Page<PerformanceListResponse> getAllPerformances(Pageable pageable) {
+    public Slice<PerformanceListResponse> getAllPerformances(Pageable pageable) {
         return performanceRepository.findAll(pageable)
                 .map(PerformanceListResponse::of);
     }
@@ -58,8 +60,7 @@ public class PerformanceService {
             long availableSeats = seatService.cacheSeatsForSchedule(schedule);
             totalAvailableSeats += availableSeats;
         }
-
-        seatService.cacheAvailableSeatsForPerformance(performanceId, totalAvailableSeats);
+        cacheRepositoryImpl.cacheAvailableSeats(performanceId, totalAvailableSeats);
     }
 
     private Performance findPerformanceWithSchedules(UUID id) {

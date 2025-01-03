@@ -18,10 +18,9 @@ if seatObj.seatStatus ~= "AVAILABLE" then
 end
 
 seatObj.seatStatus = "HELD"
-seatObj.userId = userId
 redis.call("HSET", hashKey, seatId, cjson.encode(seatObj))
 
-redis.call("SET", ttlKey, "HELD")
+redis.call("SET", ttlKey, userId)
 redis.call("EXPIRE", ttlKey, ttl)
 
 return "SUCCESS"

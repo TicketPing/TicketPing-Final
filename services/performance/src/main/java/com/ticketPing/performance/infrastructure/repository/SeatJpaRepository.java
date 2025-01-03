@@ -11,10 +11,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface SeatJpaRepository extends SeatRepository, JpaRepository<Seat, UUID> {
-    @Query(value = "select s from Seat s " +
-            "join fetch s.seatCost sc " +
-            "where s.id=:seatId")
-    Optional<Seat> findByIdWithSeatCost(UUID seatId);
 
     @Query(value = "select s from Seat s " +
             "join fetch s.seatCost sc " +

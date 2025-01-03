@@ -1,5 +1,6 @@
 package com.ticketPing.performance.infrastructure.service;
 
+import com.ticketPing.performance.application.service.NotificationService;
 import com.ticketPing.performance.common.exception.MessageExceptionCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,14 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DiscordNotificationService {
+public class DiscordNotificationService implements NotificationService {
 
     @Value("${discord.webhook-url}")
     private String discordWebhookUrl;
 
     private final RestTemplate restTemplate;
 
+    @Override
     public void sendErrorNotification(String errorMessage) {
         try {
             String message = String.format("**Error occurred in SeatCacheScheduler**: %s", errorMessage);

@@ -1,6 +1,5 @@
 package com.ticketPing.performance.presentation.controller;
 
-import com.ticketPing.performance.application.dtos.ScheduleResponse;
 import com.ticketPing.performance.application.dtos.SeatResponse;
 import com.ticketPing.performance.application.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,14 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
-    @Operation(summary = "스케줄 조회")
-    @GetMapping("/{scheduleId}")
-    public ResponseEntity<CommonResponse<ScheduleResponse>> getSchedule(@PathVariable("scheduleId") UUID scheduleId) {
-        ScheduleResponse scheduleResponse = scheduleService.getSchedule(scheduleId);
-        return ResponseEntity
-                .status(200)
-                .body(CommonResponse.success(scheduleResponse));
-    }
 
     @Operation(summary = "스케줄 전체 좌석 조회")
     @GetMapping("/{scheduleId}/seats")
