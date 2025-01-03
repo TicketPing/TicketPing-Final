@@ -7,6 +7,7 @@ import com.ticketPing.order.domain.model.entity.Order;
 import com.ticketPing.order.domain.model.entity.OrderSeat;
 import com.ticketPing.order.domain.model.enums.OrderStatus;
 import com.ticketPing.order.domain.repository.OrderRepository;
+import com.ticketPing.order.presentation.request.CreateOrderRequest;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,10 @@ public class OrderService {
     private final PerformanceClient performanceClient;
 
     @Transactional
-    public OrderResponse createOrder(UUID scheduleId, UUID seatId, UUID userId) {
+    public OrderResponse createOrder(CreateOrderRequest createOrderRequest, UUID userId) {
+        UUID scheduleId = createOrderRequest.scheduleId();
+        UUID seatId = createOrderRequest.seatId();
+
         validateDuplicateOrder(seatId);
         OrderSeatResponse orderData = performanceClient.getOrderInfo(userId, scheduleId, seatId).getBody().getData();
         Order order = saveOrderWithOrderSeat(userId, orderData);
@@ -108,5 +112,4 @@ public class OrderService {
         val event = OrderCompletedForQueueTokenRemovalEvent.create(userId, performanceId);
         eventApplicationService.publishForQueueTokenRemoval(event);
     }
-
 }
