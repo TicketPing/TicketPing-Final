@@ -12,7 +12,6 @@ spring:
     import:
       - "classpath:application-eureka.yml"
       - "classpath:application-jpa.yml"
-      - "classpath:application-redis.yml"
       - "classpath:application-kafka.yml"
       - "classpath:application-monitoring.yml"
 
