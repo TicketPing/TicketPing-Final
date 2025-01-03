@@ -14,8 +14,7 @@ public record SeatResponse (
         Integer row,
         Integer col,
         String seatStatus,
-        String seatGrade,
-        Integer cost
+        String seatGrade
 ) {
     public static SeatResponse of(Seat seat) {
         return SeatResponse.builder()
@@ -24,7 +23,6 @@ public record SeatResponse (
                 .col(seat.getCol())
                 .seatStatus(seat.getSeatStatus().getValue())
                 .seatGrade(seat.getSeatCost().getSeatGrade())
-                .cost(seat.getSeatCost().getCost())
                 .build();
     }
 
@@ -35,7 +33,6 @@ public record SeatResponse (
                 .col(seatCache.getCol())
                 .seatStatus(seatCache.getSeatStatus())
                 .seatGrade(seatCache.getSeatGrade())
-                .cost(seatCache.getCost())
                 .build();
     }
 }
