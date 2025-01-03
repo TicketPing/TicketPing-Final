@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.ticketPing.performance.common.constants.SeatConstants.PRE_RESERVE_TTL;
+import static com.ticketPing.performance.common.constants.SeatConstants.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class LuaScriptService {
     private final String preReserveScript;
 
     public void preReserveSeat(UUID scheduleId, UUID seatId, UUID  userId) {
-        String hashKey = "seat:{" + scheduleId + "}";
-        String ttlKey = "ttl:{" + scheduleId + "}:" + seatId;
+        String hashKey = SEAT_CACHE_KEY +":{" + scheduleId + "}";
+        String ttlKey = PRE_RESERVE_SEAT_KEY + ":{" + scheduleId + "}:" + seatId;
 
         String response = redissonClient.getScript(StringCodec.INSTANCE)
                 .evalSha(
