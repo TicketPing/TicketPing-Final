@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface PerformanceRepository {
     Performance save(Performance performance);
 
-    Slice<Performance> findAll(Pageable pageable);
+    Slice<Performance> findAllWithPerformanceHall(Pageable pageable);
 
     Performance findByName(String name);
 
