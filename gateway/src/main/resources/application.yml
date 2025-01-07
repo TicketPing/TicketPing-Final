@@ -33,6 +33,10 @@ token-value:
   secret-key: ${USER_TOKEN_SECRET_KEY}
 
 resilience4j:
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 10s
   circuitbreaker:
     configs:
       default:
