@@ -30,7 +30,7 @@ public class RedisKeyExpiredListener implements MessageListener<String> {
 
             String scheduleId = expiredKey.split(":")[1].replaceAll("[{}]", "");
             String seatId = expiredKey.split(":")[2];
-            String lockKey = CACHE_SCHEDULER_LOCK_KEY + ":" + seatId;
+            String lockKey = PRE_RESERVE_EXPIRE_LOCK_KEY + ":" + seatId;
 
             try {
                 boolean executed = lockService.executeWithLock(lockKey, 0, LOCK_TIMEOUT, () -> {

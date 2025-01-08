@@ -9,7 +9,7 @@ public class SeatConstants {
     public static final String SEAT_CACHE_KEY = "seat";
     public static final String PRE_RESERVE_SEAT_KEY = "seat-ttl";
     public static final String CACHE_SCHEDULER_LOCK_KEY = "SchedulerLock";
-    public final static String PRE_RESERVE_EXPIRE_LOCK_KEY = "PreReserveLock:";
+    public static final String PRE_RESERVE_EXPIRE_LOCK_KEY = "PreReserveLock:";
 
 
     public static int PRE_RESERVE_TTL;
