@@ -1,6 +1,7 @@
-package com.ticketPing.auth.application.service;
+package com.ticketPing.auth.infrastructure.service;
 
 import caching.repository.RedisRepository;
+import com.ticketPing.auth.application.service.CacheService;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +15,7 @@ import static com.ticketPing.auth.common.constants.AuthConstants.REFRESH_TOKEN_E
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenCacheService {
+public class RedisCacheService implements CacheService {
 
     private final RedisRepository redisRepository;
 

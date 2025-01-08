@@ -5,7 +5,6 @@ import com.ticketPing.auth.application.client.UserClient;
 import com.ticketPing.auth.application.dto.TokenResponse;
 import com.ticketPing.auth.common.enums.Role;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
-import com.ticketPing.auth.infrastructure.jwt.JwtTokenProvider;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
@@ -24,9 +23,9 @@ import static com.ticketPing.auth.common.constants.AuthConstants.BEARER_PREFIX;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenCacheService refreshTokenCacheService;
-    private final RefreshTokenCookieService refreshTokenCookieService;
+    private final TokenService tokenService;
+    private final CacheService cacheService;
+    private final CookieService cookieService;
     private final UserClient userClient;
 
     public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
@@ -37,18 +36,18 @@ public class AuthService {
     }
 
     public UserCacheDto validateToken(String authHeader) {
-        String accessToken = jwtTokenProvider.parseToken(authHeader);
-        jwtTokenProvider.validateToken(accessToken);
-        Claims claims = jwtTokenProvider.getClaimsFromToken(accessToken);
+        String accessToken = tokenService.parseToken(authHeader);
+        tokenService.validateToken(accessToken);
+        Claims claims = tokenService.getClaimsFromToken(accessToken);
         return extractUserFromClaims(claims);
     }
 
     public TokenResponse refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String cookieRefreshToken = getValidatedRefreshToken(request);
 
-        Claims claims = jwtTokenProvider.getClaimsFromToken(cookieRefreshToken);
-        UUID userId = jwtTokenProvider.getUserId(claims);
-        Role userRole = jwtTokenProvider.getUserRole(claims);
+        Claims claims = tokenService.getClaimsFromToken(cookieRefreshToken);
+        UUID userId = tokenService.getUserId(claims);
+        Role userRole = tokenService.getUserRole(claims);
 
         validateStoredRefreshToken(cookieRefreshToken, userId, response);
 
@@ -59,8 +58,8 @@ public class AuthService {
     }
 
     public void logout(UUID userId, HttpServletResponse response) {
-        refreshTokenCacheService.deleteRefreshToken(userId);
-        refreshTokenCookieService.deleteRefreshToken(response);
+        cacheService.deleteRefreshToken(userId);
+        cookieService.deleteRefreshToken(response);
     }
 
     private UUID authenticateUser(LoginRequest loginRequest) {
@@ -70,29 +69,29 @@ public class AuthService {
     }
 
     private String createAccessToken(UUID userId, Role role) {
-        return BEARER_PREFIX + jwtTokenProvider.createAccessToken(userId, role);
+        return BEARER_PREFIX + tokenService.createAccessToken(userId, role);
     }
 
     private void createAndSaveRefreshToken(UUID userId, Role role, HttpServletResponse response) {
-        String refreshToken = jwtTokenProvider.createRefreshToken(userId, role);
-        refreshTokenCacheService.saveRefreshToken(userId, refreshToken);
-        refreshTokenCookieService.setRefreshToken(response, refreshToken);
+        String refreshToken = tokenService.createRefreshToken(userId, role);
+        cacheService.saveRefreshToken(userId, refreshToken);
+        cookieService.setRefreshToken(response, refreshToken);
     }
 
     private UserCacheDto extractUserFromClaims(Claims claims) {
-        UUID userId = jwtTokenProvider.getUserId(claims);
-        Role role = jwtTokenProvider.getUserRole(claims);
+        UUID userId = tokenService.getUserId(claims);
+        Role role = tokenService.getUserRole(claims);
         return new UserCacheDto(userId, role.getValue());
     }
 
     private String getValidatedRefreshToken(HttpServletRequest request) {
-        String refreshToken = refreshTokenCookieService.getRefreshToken(request);
-        jwtTokenProvider.validateToken(refreshToken);
+        String refreshToken = cookieService.getRefreshToken(request);
+        tokenService.validateToken(refreshToken);
         return refreshToken;
     }
 
     private void validateStoredRefreshToken(String cookieRefreshToken, UUID userId, HttpServletResponse response) {
-        String storedRefreshToken = refreshTokenCacheService.getRefreshToken(userId);
+        String storedRefreshToken = cacheService.getRefreshToken(userId);
         if (!cookieRefreshToken.equals(storedRefreshToken)) {
             logout(userId, response);
             throw new ApplicationException(AuthErrorCase.INVALID_REFRESH_TOKEN);

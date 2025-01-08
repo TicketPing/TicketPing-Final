@@ -1,5 +1,6 @@
-package com.ticketPing.auth.application.service;
+package com.ticketPing.auth.infrastructure.service;
 
+import com.ticketPing.auth.application.service.CookieService;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import com.ticketPing.auth.infrastructure.http.HttpCookieManager;
 import exception.ApplicationException;
@@ -15,7 +16,7 @@ import static com.ticketPing.auth.common.constants.AuthConstants.REFRESH_TOKEN_E
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenCookieService {
+public class HttpCookieService implements CookieService {
 
     private final HttpCookieManager cookieManager;
 

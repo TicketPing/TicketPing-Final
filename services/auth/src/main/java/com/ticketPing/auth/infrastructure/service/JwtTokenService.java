@@ -1,5 +1,6 @@
-package com.ticketPing.auth.infrastructure.jwt;
+package com.ticketPing.auth.infrastructure.service;
 
+import com.ticketPing.auth.application.service.TokenService;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import com.ticketPing.auth.common.enums.Role;
 import exception.ApplicationException;
@@ -16,11 +17,11 @@ import java.util.UUID;
 import static com.ticketPing.auth.common.constants.AuthConstants.*;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenService implements TokenService {
 
     private final Key secretKey;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
+    public JwtTokenService(@Value("${jwt.secret}") String secret) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
     }
