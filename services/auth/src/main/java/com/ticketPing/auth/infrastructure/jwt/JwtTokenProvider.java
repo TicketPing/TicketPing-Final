@@ -13,22 +13,16 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.ticketPing.auth.common.constants.AuthConstants.BEARER_PREFIX;
+import static com.ticketPing.auth.common.constants.AuthConstants.*;
 
 @Component
 public class JwtTokenProvider {
 
     private final Key secretKey;
-    private final long accessTokenExpiration;
-    private final long refreshTokenExpiration;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.accessToken.expiration}") long accessTokenExpiration,
-                            @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
+    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
-        this.accessTokenExpiration = accessTokenExpiration;
-        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
     public String createAccessToken(UUID userId, Role role) {
@@ -37,7 +31,7 @@ public class JwtTokenProvider {
                         .setSubject(userId.toString())
                         .claim("role", role)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
+                        .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }
@@ -48,7 +42,7 @@ public class JwtTokenProvider {
                         .setSubject(userId.toString())
                         .claim("role", role)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
+                        .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }

@@ -6,23 +6,21 @@ import exception.ApplicationException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.ticketPing.auth.common.constants.AuthConstants.REFRESH_COOKIE;
+import static com.ticketPing.auth.common.constants.AuthConstants.REFRESH_TOKEN_EXPIRATION;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenCookieService {
 
-    @Value("${jwt.refreshToken.expiration}")
-    private long refreshTokenExpiration;
     private final HttpCookieManager cookieManager;
 
     public void setRefreshToken(HttpServletResponse response, String refreshToken) {
-        cookieManager.setCookie(response, REFRESH_COOKIE, refreshToken, (int) TimeUnit.MILLISECONDS.toSeconds(refreshTokenExpiration));
+        cookieManager.setCookie(response, REFRESH_COOKIE, refreshToken, (int) TimeUnit.MILLISECONDS.toSeconds(REFRESH_TOKEN_EXPIRATION));
     }
 
     public String getRefreshToken(HttpServletRequest request) {
