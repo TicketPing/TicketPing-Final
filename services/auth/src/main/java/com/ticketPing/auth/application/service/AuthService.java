@@ -9,8 +9,6 @@ import com.ticketPing.auth.infrastructure.jwt.JwtTokenProvider;
 import com.ticketPing.auth.presentation.request.LoginRequest;
 import exception.ApplicationException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +31,7 @@ public class AuthService {
 
     public TokenResponse login(LoginRequest loginRequest, HttpServletResponse response) {
         UUID userId = authenticateUser(loginRequest);
-        createAndSaveRefreshToken(userId, response);
+        createAndSaveRefreshToken(userId, Role.USER, response);
         String accessToken = createAccessToken(userId, Role.USER);
         return TokenResponse.of(accessToken);
     }
@@ -45,14 +43,18 @@ public class AuthService {
         return extractUserFromClaims(claims);
     }
 
-    public TokenResponse refreshAccessToken(String authHeader, HttpServletRequest request, HttpServletResponse response) {
-        Claims claims = validateAndExtractClaimsFromExpiredToken(authHeader, response);
+    public TokenResponse refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
+        String cookieRefreshToken = getValidatedRefreshToken(request);
+
+        Claims claims = jwtTokenProvider.getClaimsFromToken(cookieRefreshToken);
         UUID userId = jwtTokenProvider.getUserId(claims);
         Role userRole = jwtTokenProvider.getUserRole(claims);
 
-        validateAndRotateRefreshToken(userId, request, response);
+        validateStoredRefreshToken(cookieRefreshToken, userId, response);
 
+        createAndSaveRefreshToken(userId, userRole, response);
         String newAccessToken = createAccessToken(userId, userRole);
+
         return TokenResponse.of(newAccessToken);
     }
 
@@ -71,44 +73,29 @@ public class AuthService {
         return BEARER_PREFIX + jwtTokenProvider.createAccessToken(userId, role);
     }
 
-    private void createAndSaveRefreshToken(UUID userId, HttpServletResponse response) {
-        String refreshToken = jwtTokenProvider.createRefreshToken(userId);
+    private void createAndSaveRefreshToken(UUID userId, Role role, HttpServletResponse response) {
+        String refreshToken = jwtTokenProvider.createRefreshToken(userId, role);
         refreshTokenCacheService.saveRefreshToken(userId, refreshToken);
         refreshTokenCookieService.setRefreshToken(response, refreshToken);
-    }
-
-    private Claims validateAndExtractClaimsFromExpiredToken(String authHeader, HttpServletResponse response) {
-        String token = jwtTokenProvider.parseToken(authHeader);
-        try {
-            Claims claims = jwtTokenProvider.getClaimsFromToken(token);
-            UUID userId = jwtTokenProvider.getUserId(claims);
-            logout(userId, response);
-            throw new ApplicationException(AuthErrorCase.ACCESS_TOKEN_NOT_EXPIRED);
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        } catch (JwtException e) {
-            throw new ApplicationException(AuthErrorCase.INVALID_TOKEN);
-        }
-    }
-
-    private void validateAndRotateRefreshToken(UUID userId, HttpServletRequest request, HttpServletResponse response) {
-        String storedRefreshToken = refreshTokenCacheService.getRefreshToken(userId);
-        String cookieRefreshToken = refreshTokenCookieService.getRefreshToken(request);
-        validateRefreshToken(userId, response, cookieRefreshToken, storedRefreshToken);
-        createAndSaveRefreshToken(userId, response);
-    }
-
-    private void validateRefreshToken(UUID userId, HttpServletResponse response, String cookieRefreshToken, String storedRefreshToken) {
-        if (!cookieRefreshToken.equals(storedRefreshToken)) {
-            logout(userId, response);
-            throw new ApplicationException(AuthErrorCase.INVALID_REFRESH_TOKEN);
-        }
-        jwtTokenProvider.validateToken(storedRefreshToken);
     }
 
     private UserCacheDto extractUserFromClaims(Claims claims) {
         UUID userId = jwtTokenProvider.getUserId(claims);
         Role role = jwtTokenProvider.getUserRole(claims);
         return new UserCacheDto(userId, role.getValue());
+    }
+
+    private String getValidatedRefreshToken(HttpServletRequest request) {
+        String refreshToken = refreshTokenCookieService.getRefreshToken(request);
+        jwtTokenProvider.validateToken(refreshToken);
+        return refreshToken;
+    }
+
+    private void validateStoredRefreshToken(String cookieRefreshToken, UUID userId, HttpServletResponse response) {
+        String storedRefreshToken = refreshTokenCacheService.getRefreshToken(userId);
+        if (!cookieRefreshToken.equals(storedRefreshToken)) {
+            logout(userId, response);
+            throw new ApplicationException(AuthErrorCase.INVALID_REFRESH_TOKEN);
+        }
     }
 }

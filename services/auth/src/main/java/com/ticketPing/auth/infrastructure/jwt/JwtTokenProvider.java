@@ -42,10 +42,11 @@ public class JwtTokenProvider {
                         .compact();
     }
 
-    public String createRefreshToken(UUID userId) {
+    public String createRefreshToken(UUID userId, Role role) {
         Date now = new Date();
         return Jwts.builder()
                         .setSubject(userId.toString())
+                        .claim("role", role)
                         .setIssuedAt(now)
                         .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
