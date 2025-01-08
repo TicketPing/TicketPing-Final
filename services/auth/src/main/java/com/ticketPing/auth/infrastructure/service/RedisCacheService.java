@@ -1,27 +1,28 @@
-package com.ticketPing.auth.application.service;
+package com.ticketPing.auth.infrastructure.service;
 
 import caching.repository.RedisRepository;
+import com.ticketPing.auth.application.service.CacheService;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.ticketPing.auth.common.constants.AuthConstants.REFRESH_TOKEN_EXPIRATION;
+
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenCacheService {
+public class RedisCacheService implements CacheService {
 
-    @Value("${jwt.refreshToken.expiration}")
-    private long refreshTokenExpiration;
     private final RedisRepository redisRepository;
 
     public void saveRefreshToken(UUID userId, String refreshToken) {
         String key = generateKey(userId);
-        redisRepository.setValueWithTTL(key, refreshToken, Duration.ofMillis(refreshTokenExpiration));
+        System.out.println(REFRESH_TOKEN_EXPIRATION);
+        redisRepository.setValueWithTTL(key, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRATION));
     }
 
     public String getRefreshToken(UUID userId) {
@@ -36,7 +37,7 @@ public class RefreshTokenCacheService {
     }
 
     private String generateKey(UUID userId) {
-        return String.format("auth:refreshToken:user:%s", userId);
+        return String.format("refreshToken:%s", userId);
     }
 
 }

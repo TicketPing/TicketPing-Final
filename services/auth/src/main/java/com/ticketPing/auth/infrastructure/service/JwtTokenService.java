@@ -1,5 +1,6 @@
-package com.ticketPing.auth.infrastructure.jwt;
+package com.ticketPing.auth.infrastructure.service;
 
+import com.ticketPing.auth.application.service.TokenService;
 import com.ticketPing.auth.common.exception.AuthErrorCase;
 import com.ticketPing.auth.common.enums.Role;
 import exception.ApplicationException;
@@ -13,22 +14,16 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.ticketPing.auth.common.constants.AuthConstants.BEARER_PREFIX;
+import static com.ticketPing.auth.common.constants.AuthConstants.*;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenService implements TokenService {
 
     private final Key secretKey;
-    private final long accessTokenExpiration;
-    private final long refreshTokenExpiration;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret,
-                            @Value("${jwt.accessToken.expiration}") long accessTokenExpiration,
-                            @Value("${jwt.refreshToken.expiration}") long refreshTokenExpiration) {
+    public JwtTokenService(@Value("${jwt.secret}") String secret) {
         byte[] bytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(bytes);
-        this.accessTokenExpiration = accessTokenExpiration;
-        this.refreshTokenExpiration = refreshTokenExpiration;
     }
 
     public String createAccessToken(UUID userId, Role role) {
@@ -37,17 +32,18 @@ public class JwtTokenProvider {
                         .setSubject(userId.toString())
                         .claim("role", role)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + accessTokenExpiration))
+                        .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRATION))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }
 
-    public String createRefreshToken(UUID userId) {
+    public String createRefreshToken(UUID userId, Role role) {
         Date now = new Date();
         return Jwts.builder()
                         .setSubject(userId.toString())
+                        .claim("role", role)
                         .setIssuedAt(now)
-                        .setExpiration(new Date(now.getTime() + refreshTokenExpiration))
+                        .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRATION))
                         .signWith(this.secretKey, SignatureAlgorithm.HS256)
                         .compact();
     }
