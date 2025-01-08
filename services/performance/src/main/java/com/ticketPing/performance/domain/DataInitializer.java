@@ -26,7 +26,7 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (performanceHallRepository.count() > 0) {
             Performance performance = performanceRepository.findByName("햄릿");
             if(performance != null) {
@@ -45,7 +45,7 @@ public class DataInitializer implements CommandLineRunner {
         // 공연 더미 데이터 생성
         Performance performance1 = Performance.createTestData(
                 "햄릿",
-                "https://fastly.picsum.photos/id/53/250/400.jpg?hmac=XvJLere1krZjwF7Vy_J4hZpWHL9R-Ic6Hup4lQb62Yw",
+                "https://image.kmib.co.kr/online_image/2017/0622/201706222053_61170011561894_1.jpg",
                 120,
                 LocalDateTime.now().minusDays(5),
                 LocalDateTime.now().plusDays(10),
@@ -58,7 +58,7 @@ public class DataInitializer implements CommandLineRunner {
 
         Performance performance2 = Performance.createTestData(
                 "라이온 킹",
-                "https://fastly.picsum.photos/id/110/250/400.jpg?hmac=zs2-YrgHbuu-kSuG4dw1bynTUoD6VpOEJguE3j9NOtQ",
+                "https://image.yes24.com/themusical/upFiles/Themusical/Play/post_%EB%9D%BC%EC%9D%B4%EC%98%A8%ED%82%B9-.JPG",
                 120,
                 LocalDateTime.now().plusDays(5),
                 LocalDateTime.now().plusDays(15),
@@ -69,6 +69,19 @@ public class DataInitializer implements CommandLineRunner {
                 hall2);
         performance2 = performanceRepository.save(performance2);
 
+        Performance performance3 = Performance.createTestData(
+                "데스노트",
+                "https://image.yes24.com/themusical/fileStorage/ThemusicalAdmin/Play/Image/20230207843266905c36ce1ad354a823e902457bc904d112.jpg",
+                120,
+                LocalDateTime.now().minusDays(7),
+                LocalDateTime.now().plusDays(13),
+                LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(13),
+                19,
+                UUID.randomUUID(),
+                hall1);
+        performance3 = performanceRepository.save(performance3);
+
         // 공연 일정 더미 데이터 생성
         Schedule schedule1 = Schedule.createTestData(LocalDate.now().plusDays(5), performance1);
         performance1.addSchedule(schedule1);
@@ -78,6 +91,9 @@ public class DataInitializer implements CommandLineRunner {
 
         Schedule schedule3 = Schedule.createTestData(LocalDate.now().plusDays(15), performance2);
         performance2.addSchedule(schedule3);
+
+        Schedule schedule4 = Schedule.createTestData(LocalDate.now().plusDays(5), performance2);
+        performance3.addSchedule(schedule4);
 
         // 좌석 가격 더미 데이터 생성
         SeatCost seatCost1 = SeatCost.createTestData("S", 120000, performance1);
@@ -98,13 +114,24 @@ public class DataInitializer implements CommandLineRunner {
         SeatCost seatCost6 = SeatCost.createTestData("B", 80000, performance2);
         performance2.addSeatCost(seatCost6);
 
+        SeatCost seatCost7 = SeatCost.createTestData("S", 150000, performance3);
+        performance3.addSeatCost(seatCost7);
+
+        SeatCost seatCost8 = SeatCost.createTestData("A", 110000, performance3);
+        performance3.addSeatCost(seatCost8);
+
+        SeatCost seatCost9 = SeatCost.createTestData("B", 80000, performance3);
+        performance3.addSeatCost(seatCost9);
+
         // 좌석 더미 데이터 생성
         createSeats(schedule1);
         createSeats(schedule2);
         createSeats(schedule3);
+        createSeats(schedule4);
 
-        // 공연1 좌석 캐싱
+        // 공연 좌석 캐싱
         performanceService.cacheAllSeatsForPerformance(performance1.getId());
+        performanceService.cacheAllSeatsForPerformance(performance3.getId());
     }
 
     private void createSeats(Schedule schedule) {
