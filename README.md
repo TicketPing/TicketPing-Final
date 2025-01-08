@@ -193,7 +193,8 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     <summary><h3>✏️ ERD</h3></summary> 
 <br>  
 
-![ticketping-erd](https://github.com/user-attachments/assets/4604f251-4e39-4856-8d67-853d29622a86)
+![image](https://github.com/user-attachments/assets/b7e067c7-ea8a-4a93-bc49-9466b7b1219b)
+
 
 </details>
 
