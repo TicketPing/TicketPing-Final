@@ -180,7 +180,8 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매 시퀀스 drawio (6)](https://github.com/user-attachments/assets/339a32a1-1c52-45dc-b605-6125262b3891)
+![ticketping_sa-예매 시퀀스 drawio (1)](https://github.com/user-attachments/assets/f1396b43-d583-4066-b288-e66796622e66)
+
 
 </details>
 
