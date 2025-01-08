@@ -217,6 +217,18 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
 
 - [🥶 Kafka Cluster 적용하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%A5%B6-Kafka-Cluster-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0)
 
+- [✅ 인증 인가 구상하기](https://github.com/TicketPing/TicketPing-Final/wiki/%E2%9C%85-%EC%9D%B8%EC%A6%9D-%EC%9D%B8%EA%B0%80-%EA%B5%AC%EC%83%81%ED%95%98%EA%B8%B0)
+
+- [🎫 좌석 예매 흐름 구상하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%AB-%EC%A2%8C%EC%84%9D-%EC%98%88%EB%A7%A4-%ED%9D%90%EB%A6%84-%EA%B5%AC%EC%83%81%ED%95%98%EA%B8%B0)
+
+- [💺 좌석 데이터 캐싱 구상하기](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%92%BA-%EC%A2%8C%EC%84%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%BA%90%EC%8B%B1-%EA%B5%AC%EC%83%81%ED%95%98%EA%B8%B0)
+
+- [↩️ Redis Keyspace Notifications을 이용한 좌석 선점 만료 구현](https://github.com/TicketPing/TicketPing-Final/wiki/%E2%86%A9%EF%B8%8F-Redis-Key-Expiration%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%A2%8C%EC%84%9D-%EC%84%A0%EC%A0%90-%EB%A7%8C%EB%A3%8C-%EA%B5%AC%ED%98%84)
+
+- [⏰ Grafana를 이용한 통합 모니터링 및 알람 구축](https://github.com/TicketPing/TicketPing-Final/wiki/%E2%8F%B0-Grafana%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%ED%86%B5%ED%95%A9-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81-%EB%B0%8F-%EC%95%8C%EB%9E%8C-%EA%B5%AC%EC%B6%95)
+
+- [⚡ 게이트웨이에 서킷브레이커 구축](https://github.com/TicketPing/TicketPing-Final/wiki/%E2%9A%A1-%EA%B2%8C%EC%9D%B4%ED%8A%B8%EC%9B%A8%EC%9D%B4%EC%97%90-%EC%84%9C%ED%82%B7%EB%B8%8C%EB%A0%88%EC%9D%B4%EC%BB%A4-%EA%B5%AC%EC%B6%95)
+
 <br>
 
 ## ⚽️ 트러블슈팅
