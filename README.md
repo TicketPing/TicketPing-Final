@@ -16,10 +16,18 @@
 <br>
 
 ### 대기열 화면
-<img src="https://github.com/user-attachments/assets/4f73176c-d9e3-4965-bf35-ba08869a1647" alt="대기열 화면" style="width: 650px; height: auto;">
+<br>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/4f73176c-d9e3-4965-bf35-ba08869a1647" alt="대기열 화면" style="width: 650px; height: auto;">
+</p>
+<br>
 
 ### 예매 화면
-<img src="https://github.com/user-attachments/assets/c04aca0d-089d-4327-a59e-42064b45b2c9" alt="예매 화면" style="width: 500px; height: auto;">
+<br>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c04aca0d-089d-4327-a59e-42064b45b2c9" alt="예매 화면" style="width: 500px; height: auto;">
+</p>
+<br>
 
 ## 🎯 프로젝트 목표
 
@@ -158,6 +166,50 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     </ul>
 </details>
 
+## 🥇 Jmeter 성능 비교를 통한 좌석 선점 방식 선정
+
+Redis 데이터의 동시성 문제를 해결할 수 있는 Lua Script를 이용한 원자적 처리와, 분산락을 이용한 처리 두 가지 방법을 고민하였습니다.
+
+### 1-1. 장단점 비교
+
+  | 장점 | 단점
+-- | -- | --
+Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 오류에 대한 위험성 없음 | - Redis 기본 함수를 알아야 함 <br> - Spring 실행 시 디버깅이 어려움
+분산락 | - Spring 코드로 디버깅이 편리 <br> - Redis 함수를 알지 못해도 쉽게 구현 가능 | - 분산락을 얻기 위한 네트워크 호출이 늘어남 <br> - 분산락이 해제되지 않을 가능성이 존재
+
+<br>
+
+### 1-2. Jmeter 성능 테스트
+
+좌석 선점은 빠른 속도가 중요하다고 생각해 로컬 컴퓨터에서 `1,000`명의 동시 좌석 선점 속도를 비교해보았습니다.
+
+(CPU: AMD Ryzen 7 5700G, RAM: 32GB)
+
+<img src="https://github.com/user-attachments/assets/b0597fb9-9ab3-4d99-b958-6b1717a57bbe" alt="image" width="90%">
+
+동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처치량도 더 높은 것을 확인할 수 있었습니다.
+
+<details>
+<summary>결과 상세</summary>
+
+-  Lua Script
+
+   ![LuaScript](https://github.com/user-attachments/assets/1623bcf9-29fc-4b7c-b9ac-726b1a39436a)
+
+-  분산락
+
+   ![Distributed Lock](https://github.com/user-attachments/assets/157b9dc0-ffab-402f-89b8-061ef566cbab)
+
+</details>
+
+<br>
+
+### 1-3. 결론
+
+두 방식의 장단점과 실제 성능 결과를 바탕으로 속도도 빠르고 더 안정성도 높은 Luascript를 활용해 좌석 선점을 구현하였습니다.
+
+<br>
+
 ## 📃 다이어그램
 
 ### 🧑 유저 플로우
@@ -186,7 +238,7 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매 시퀀스 drawio (1)](https://github.com/user-attachments/assets/f1396b43-d583-4066-b288-e66796622e66)
+![ticketping_sa-예매 시퀀스 drawio](https://github.com/user-attachments/assets/5dc9826f-a4d0-4394-bbbd-4da5a4ea9498)
 
 
 </details>
@@ -242,9 +294,9 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
 
 - [🎁 Lua Script를 활용한 대기열 진입 동시성 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%8E%81-Lua-Script%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EB%8C%80%EA%B8%B0%EC%97%B4-%EC%A7%84%EC%9E%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
-- [🗣️ Redis Cluster 적용 이후 Lua Script 실행 오류 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%97%A3%EF%B8%8F-Redis-Cluster-%EC%A0%81%EC%9A%A9-%EC%9D%B4%ED%9B%84-Lua-Script-%EC%8B%A4%ED%96%89-%EC%98%A4%EB%A5%98-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+- [🥇 루아 스크립트를 이용한 좌석 선점 동시성 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%A5%87-%EB%A3%A8%EC%95%84-%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%A2%8C%EC%84%9D-%EC%84%A0%EC%A0%90-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0) 
 
-- [🖍️ Redis @class로 인해 다른 서버에서 캐시를 읽지 못하는 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%96%8D%EF%B8%8F-Redis-@class%EB%A1%9C-%EC%9D%B8%ED%95%B4-%EB%8B%A4%EB%A5%B8-%EC%84%9C%EB%B2%84%EC%97%90%EC%84%9C-%EC%BA%90%EC%8B%9C%EB%A5%BC-%EC%9D%BD%EC%A7%80-%EB%AA%BB%ED%95%98%EB%8A%94-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)  
+- [🗣️ Redis Cluster 적용 이후 Lua Script 실행 오류 문제 해결](https://github.com/TicketPing/TicketPing-Final/wiki/%F0%9F%97%A3%EF%B8%8F-Redis-Cluster-%EC%A0%81%EC%9A%A9-%EC%9D%B4%ED%9B%84-Lua-Script-%EC%8B%A4%ED%96%89-%EC%98%A4%EB%A5%98-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
 <br>
   
