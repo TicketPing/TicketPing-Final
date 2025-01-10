@@ -18,14 +18,14 @@
 ### 대기열 화면
 <br>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/4f73176c-d9e3-4965-bf35-ba08869a1647" alt="대기열 화면" style="width: 650px; height: auto;">
+  <img src="https://github.com/user-attachments/assets/4f73176c-d9e3-4965-bf35-ba08869a1647" alt="대기열 화면">
 </p>
 <br>
 
 ### 예매 화면
 <br>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c04aca0d-089d-4327-a59e-42064b45b2c9" alt="예매 화면" style="width: 500px; height: auto;">
+  <img src="https://github.com/user-attachments/assets/c04aca0d-089d-4327-a59e-42064b45b2c9" alt="예매 화면" style="width: 700px; height: auto;">
 </p>
 <br>
 
@@ -185,7 +185,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
 
 (CPU: AMD Ryzen 7 5700G, RAM: 32GB)
 
-<img src="https://github.com/user-attachments/assets/b0597fb9-9ab3-4d99-b958-6b1717a57bbe" alt="image" width="90%">
+<img src="https://github.com/user-attachments/assets/c7cc88b4-4e29-4c2c-b063-d3caa61c3012" alt="image" width="90%">
 
 동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처치량도 더 높은 것을 확인할 수 있었습니다.
 
