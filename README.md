@@ -187,7 +187,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
 
 <img src="https://github.com/user-attachments/assets/4261228a-4a3c-40b7-80ca-12cd1e9314d2" alt="image" width="90%">
 
-동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처치량도 더 높은 것을 확인할 수 있었습니다.
+동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처리량도 더 높은 것을 확인할 수 있었습니다.
 
 <details>
 <summary>결과 상세</summary>
@@ -206,7 +206,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
 
 ### 결론
 
-두 방식의 장단점과 실제 성능 결과를 바탕으로 속도도 빠르고 더 안정성도 높은 Luascript를 활용해 좌석 선점을 구현하였습니다.
+두 방식의 장단점과 실제 성능 결과를 바탕으로 속도도 빠르고 더 안정성도 높은 Lua Script를 활용해 좌석 선점을 구현하였습니다.
 
 <br>
 
@@ -327,6 +327,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
           - 공연 서비스 개발 <br>
           - 주문 서비스 개발 <br>
           - 게이트웨이 JWT 인증 필터 개발 <br>
+          - 게이트웨이 서킷 브레이커 설정 <br>
           - 모니터링 시스템 구축 <br>
         </td>
         <td align="center"><a href="https://github.com/mii2026">GitHub</a></td>
