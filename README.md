@@ -185,7 +185,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
 
 (CPU: AMD Ryzen 7 5700G, RAM: 32GB)
 
-<img src="https://github.com/user-attachments/assets/c7cc88b4-4e29-4c2c-b063-d3caa61c3012" alt="image" width="90%">
+<img src="https://github.com/user-attachments/assets/4261228a-4a3c-40b7-80ca-12cd1e9314d2" alt="image" width="90%">
 
 동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처치량도 더 높은 것을 확인할 수 있었습니다.
 
