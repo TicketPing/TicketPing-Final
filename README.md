@@ -15,6 +15,12 @@
 
 <br>
 
+### 대기열 화면
+<img src="https://github.com/user-attachments/assets/4f73176c-d9e3-4965-bf35-ba08869a1647" alt="대기열 화면" style="width: 650px; height: auto;">
+
+### 예매 화면
+<img src="https://github.com/user-attachments/assets/c04aca0d-089d-4327-a59e-42064b45b2c9" alt="예매 화면" style="width: 500px; height: auto;">
+
 ## 🎯 프로젝트 목표
 
 - **MSA**: 특정 서비스에 대한 부하가 증가할 때 해당 서비스만 독립적으로 스케일 아웃할 수 있는 MSA 적용
