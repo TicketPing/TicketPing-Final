@@ -33,7 +33,7 @@
 
 - **MSA**: 특정 서비스에 대한 부하가 증가할 때 해당 서비스만 독립적으로 스케일 아웃할 수 있는 MSA 적용
 
-- **느슨한 결합**: 메시지 큐를 활용한 비동기 처리로 각 서비스 간의 의존성을 최소화
+- **느슨한 결합**: 메시지 큐를 활용한 비동기 처리로 각 서비스 간의 의존성 최소화
 
 - **고가용성**: 서버 장애 시에도 서비스가 지속적으로 운영될 수 있도록 고가용성 보장
 
@@ -149,38 +149,23 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
 <br> 
 
 <details>
-    <summary><h4>결과 상세</h4></summary> 
-    <ul>
-        <li>
-            <h2>MVC</h2>
-            <ul>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/318073b3-cb86-4871-bc21-ea7b4e319cf8" alt="mvc result" style="max-width: 100%; height: auto;">
-                </li>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/d63be685-863c-451c-bb73-f9ecc86b24a5" alt="mvc cpu" style="max-width: 100%; height: auto;">
-                </li>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/5c6a90cc-18ba-4cdc-8d07-b15c43bd9b7e" alt="mvc load" style="max-width: 100%; height: auto;">
-                </li>
-            </ul>
-        </li>
-        <li>
-            <h2>WebFlux</h2>
-            <ul>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/6c93c553-9789-49ac-ac7e-c374bf524842" alt="wf result" style="max-width: 100%; height: auto;">
-                </li>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/0ee46ed3-8400-49c2-ad17-466cd7b1bb91" alt="wf cpu" style="max-width: 100%; height: auto;">
-                </li>
-                <li>
-                    <img src="https://github.com/user-attachments/assets/361909fe-4c7c-48d0-b11c-b9b57d1a74db" alt="wf load" style="max-width: 100%; height: auto;">
-                </li>
-            </ul>
-        </li>
-    </ul>
+<summary><h4>결과 상세</h4></summary> 
+
+- MVC
+  
+  <img src="https://github.com/user-attachments/assets/318073b3-cb86-4871-bc21-ea7b4e319cf8" alt="mvc result" style="max-width: 100%; height: auto;">
+  <img src="https://github.com/user-attachments/assets/d63be685-863c-451c-bb73-f9ecc86b24a5" alt="mvc cpu" style="max-width: 100%; height: auto;">
+  <img src="https://github.com/user-attachments/assets/5c6a90cc-18ba-4cdc-8d07-b15c43bd9b7e" alt="mvc load" style="max-width: 100%; height: auto;">
+
+- WebFlux
+
+  <img src="https://github.com/user-attachments/assets/6c93c553-9789-49ac-ac7e-c374bf524842" alt="wf result" style="max-width: 100%; height: auto;">
+  <img src="https://github.com/user-attachments/assets/0ee46ed3-8400-49c2-ad17-466cd7b1bb91" alt="wf cpu" style="max-width: 100%; height: auto;">
+  <img src="https://github.com/user-attachments/assets/361909fe-4c7c-48d0-b11c-b9b57d1a74db" alt="wf load" style="max-width: 100%; height: auto;">
+
 </details>
+
+<br>
 
 ## 🥇 Jmeter 성능 비교를 통한 좌석 선점 방식 선정
 
@@ -206,7 +191,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
 동일 환경에서 테스트한 결과 Lua Script에서 응답 속도가 2배 빠르고, 처리량도 더 높은 것을 확인할 수 있었습니다.
 
 <details>
-<summary>결과 상세</summary>
+<summary><h4>결과 상세</h4></summary>
 
 -  Lua Script
 
