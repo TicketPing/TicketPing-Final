@@ -153,15 +153,31 @@ CPU 사용량과 Load Average가 상대적으로 낮은 것을 확인할 수 있
     <ul>
         <li>
             <h2>MVC</h2>
-            <img src="https://github.com/user-attachments/assets/318073b3-cb86-4871-bc21-ea7b4e319cf8" alt="mvc result" style="max-width: 100%; height: auto;">
-            <img src="https://github.com/user-attachments/assets/d63be685-863c-451c-bb73-f9ecc86b24a5" alt="mvc cpu" style="max-width: 100%; height: auto;">
-            <img src="https://github.com/user-attachments/assets/5c6a90cc-18ba-4cdc-8d07-b15c43bd9b7e" alt="mvc load" style="max-width: 100%; height: auto;">
+            <ul>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/318073b3-cb86-4871-bc21-ea7b4e319cf8" alt="mvc result" style="max-width: 100%; height: auto;">
+                </li>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/d63be685-863c-451c-bb73-f9ecc86b24a5" alt="mvc cpu" style="max-width: 100%; height: auto;">
+                </li>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/5c6a90cc-18ba-4cdc-8d07-b15c43bd9b7e" alt="mvc load" style="max-width: 100%; height: auto;">
+                </li>
+            </ul>
         </li>
         <li>
             <h2>WebFlux</h2>
-            <img src="https://github.com/user-attachments/assets/6c93c553-9789-49ac-ac7e-c374bf524842" alt="wf result" style="max-width: 100%; height: auto;">
-            <img src="https://github.com/user-attachments/assets/0ee46ed3-8400-49c2-ad17-466cd7b1bb91" alt="wf cpu" style="max-width: 100%; height: auto;">
-            <img src="https://github.com/user-attachments/assets/361909fe-4c7c-48d0-b11c-b9b57d1a74db" alt="wf load" style="max-width: 100%; height: auto;">
+            <ul>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/6c93c553-9789-49ac-ac7e-c374bf524842" alt="wf result" style="max-width: 100%; height: auto;">
+                </li>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/0ee46ed3-8400-49c2-ad17-466cd7b1bb91" alt="wf cpu" style="max-width: 100%; height: auto;">
+                </li>
+                <li>
+                    <img src="https://github.com/user-attachments/assets/361909fe-4c7c-48d0-b11c-b9b57d1a74db" alt="wf load" style="max-width: 100%; height: auto;">
+                </li>
+            </ul>
         </li>
     </ul>
 </details>
