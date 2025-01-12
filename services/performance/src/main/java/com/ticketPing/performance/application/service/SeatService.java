@@ -8,7 +8,6 @@ import com.ticketPing.performance.domain.model.entity.SeatCache;
 import com.ticketPing.performance.domain.model.enums.SeatStatus;
 import com.ticketPing.performance.domain.repository.CacheRepository;
 import com.ticketPing.performance.domain.repository.SeatRepository;
-import com.ticketPing.performance.infrastructure.service.LuaScriptService;
 import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -81,7 +80,6 @@ public class SeatService {
                 .orElseThrow(() -> new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
     }
 
-    @Transactional
     private void reserveSeatInDB(String seatId) {
         Seat seat = seatRepository.findById(UUID.fromString(seatId))
                 .orElseThrow(() ->  new ApplicationException(SeatExceptionCase.SEAT_NOT_FOUND));
@@ -89,7 +87,7 @@ public class SeatService {
     }
 
     private void validatePreserve(UUID scheduleId, UUID seatId, UUID userId) {
-        String preReserveUserId = cacheRepository.getPreReservTTL(scheduleId, seatId);
+        String preReserveUserId = cacheRepository.getPreReserveUserId(scheduleId, seatId);
         if(!preReserveUserId.equals(userId.toString()))
             throw new ApplicationException(SeatExceptionCase.USER_NOT_MATCH);
     }

@@ -17,7 +17,7 @@ public interface CacheRepository {
 
     void preReserveSeatCache(UUID scheduleId, UUID seatId, UUID userId);
 
-    String getPreReservTTL(UUID scheduleId, UUID seatId);
+    String getPreReserveUserId(UUID scheduleId, UUID seatId);
 
     void extendPreReserveTTL(UUID scheduleId, UUID seatId, Duration ttl);
 

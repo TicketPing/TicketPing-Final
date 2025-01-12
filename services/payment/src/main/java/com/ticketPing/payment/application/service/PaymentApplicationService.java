@@ -84,5 +84,6 @@ public class PaymentApplicationService {
         Payment payment = paymentDomainService.getCompletedPaymentByOrderId(orderId);
         return PaymentResponse.from(payment);
     }
+
 }
 

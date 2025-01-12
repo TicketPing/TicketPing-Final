@@ -32,4 +32,5 @@ public class PaymentDomainService {
         return paymentRepository.findByOrderIdAndStatus(orderId, PaymentStatus.COMPLETED)
                 .orElseThrow(() -> new ApplicationException(PAYMENT_NOT_FOUND));
     }
+
 }

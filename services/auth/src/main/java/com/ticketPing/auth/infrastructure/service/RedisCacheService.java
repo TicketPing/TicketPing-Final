@@ -21,7 +21,6 @@ public class RedisCacheService implements CacheService {
 
     public void saveRefreshToken(UUID userId, String refreshToken) {
         String key = generateKey(userId);
-        System.out.println(REFRESH_TOKEN_EXPIRATION);
         redisRepository.setValueWithTTL(key, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRATION));
     }
 
