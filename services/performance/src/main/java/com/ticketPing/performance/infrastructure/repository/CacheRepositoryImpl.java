@@ -57,7 +57,7 @@ public class CacheRepositoryImpl implements CacheRepository {
         luaScriptService.preReserveSeat(scheduleId, seatId, userId);
     }
 
-    public String getPreReservTTL(UUID scheduleId, UUID seatId) {
+    public String getPreReserveUserId(UUID scheduleId, UUID seatId) {
         String ttlKey = PRE_RESERVE_SEAT_KEY + ":{" + scheduleId + "}:" + seatId;
         RBucket<String> bucket = redissonClient.getBucket(ttlKey);
         return Optional.ofNullable(bucket.get())

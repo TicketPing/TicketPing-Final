@@ -33,7 +33,7 @@ public class QueueCheckFilter {
                         switch (api) {
                             case ENTER_WAITING_QUEUE -> handleEnterWaitingQueueApi(exchange, chain);
                             case GET_QUEUE_INFO -> handleGetQueueInfoApi(exchange, chain);
-                            case PRE_RESERVE_SEAT, CREATE_ORDER, VALIDATE_ORDER -> handleCreateOrderApi(exchange, chain);
+                            case PRE_RESERVE_SEAT, CREATE_ORDER, VALIDATE_ORDER -> handleReservationApi(exchange, chain);
                         })
                 .switchIfEmpty(chain.filter(exchange));
     }
@@ -53,7 +53,7 @@ public class QueueCheckFilter {
                 .then(chain.filter(exchange));
     }
 
-    private Mono<Void> handleCreateOrderApi(ServerWebExchange exchange, GatewayFilterChain chain) {
+    private Mono<Void> handleReservationApi(ServerWebExchange exchange, GatewayFilterChain chain) {
         return Mono.zip(
                         getPerformanceIdFromQueryParams(exchange),
                         getUserIdFromAuthentication()

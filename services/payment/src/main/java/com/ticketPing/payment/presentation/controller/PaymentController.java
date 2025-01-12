@@ -32,14 +32,14 @@ public class PaymentController {
 
     @Operation(summary = "결제 단일 조회 (Feign)")
     @GetMapping("/{paymentId}")
-    public ResponseEntity<CommonResponse<PaymentResponse>> getPayment(
+    public ResponseEntity<CommonResponse<PaymentResponse>> getPaymentInfo(
             @Valid @PathVariable("paymentId") UUID paymentId) {
         return ResponseEntity
                 .status(200)
                 .body(success(paymentApplicationService.getPayment(paymentId)));
     }
 
-    @Operation(summary = "성공 예매 확인")
+    @Operation(summary = "결제 성공 확인 (Feign)")
     @GetMapping("/completed")
     public ResponseEntity<CommonResponse<PaymentResponse>> getCompletedPaymentByOrderId(
             @Valid @RequestParam("orderId") UUID orderId) {
