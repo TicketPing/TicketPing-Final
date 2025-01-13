@@ -239,7 +239,7 @@ Lua Script | - 네트워크 호출을 최소화할 수 있음 <br> - 락 해제 
     <summary><h3>🎫 예매 시퀀스 다이어그램</h3></summary> 
 <br>  
 
-![ticketping_sa-예매 시퀀스 drawio](https://github.com/user-attachments/assets/5dc9826f-a4d0-4394-bbbd-4da5a4ea9498)
+![ticketping_sa-예매 시퀀스 drawio](https://github.com/user-attachments/assets/1dca9e45-dfa9-40fe-9d9b-045a10d46495)
 
 
 </details>
