@@ -145,7 +145,7 @@ groups:
             model:
               disableTextWrap: false
               editorMode: builder
-              expr: sum by(name) (resilience4j_circuitbreaker_state{state=~"open|half_open"})
+              expr: sum by(name, instance) (resilience4j_circuitbreaker_state{state=~"open|half_open"})
               fullMetaSearch: false
               includeNullMetadata: true
               instant: true
@@ -187,7 +187,7 @@ groups:
         execErrState: Error
         for: 0s
         annotations:
-          description: CircuitBreaker ''{{ $labels.name }}'' has change from CLOSED to OPEN.
+          description: CircuitBreaker ''{{ $labels.instance }}'' ''{{ $labels.name }}'' has change from CLOSED to OPEN.
         labels: { }
         isPaused: false
         notification_settings:
@@ -210,7 +210,7 @@ groups:
               disableTextWrap: false
               editorMode: builder
               exemplar: false
-              expr: sum by(name) (avg_over_time(resilience4j_circuitbreaker_state{state=~"open|half_open"}[5m]))
+              expr: sum by(name, instance) (avg_over_time(resilience4j_circuitbreaker_state{state=~"open|half_open"}[5m]))
               fullMetaSearch: false
               includeNullMetadata: true
               instant: true
@@ -252,7 +252,7 @@ groups:
         execErrState: Error
         for: 1m
         annotations:
-          description: 'CircuitBreaker ''{{ $labels.name }}'' has been in an OPEN or HALF_OPEN state for 5 minutes.'
+          description: 'CircuitBreaker ''{{ $labels.instance }}'' ''{{ $labels.name }}'' has been in an OPEN or HALF_OPEN state for 5 minutes.'
         labels: {}
         isPaused: false
         notification_settings:

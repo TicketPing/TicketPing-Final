@@ -1,8 +1,11 @@
 package com.ticketPing.gateway.infrastructure.filter;
 
 import com.ticketPing.gateway.application.client.AuthClient;
+import exception.ApplicationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -51,6 +55,14 @@ public class JwtFilter implements ServerSecurityContextRepository {
                             .build();
 
                     return Mono.just((SecurityContext) new SecurityContextImpl(authentication));
+                })
+                .onErrorResume(ApplicationException.class, e -> {
+                    exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+                    DataBuffer buffer = exchange.getResponse()
+                            .bufferFactory()
+                            .wrap(e.getMessage().getBytes(StandardCharsets.UTF_8));
+                    return exchange.getResponse().writeWith(Mono.just(buffer))
+                            .then(Mono.empty());
                 })
                 .onErrorResume(WebClientResponseException.Unauthorized.class, e -> Mono.empty());
     }

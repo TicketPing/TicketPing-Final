@@ -54,8 +54,6 @@ resilience4j:
           - org.springframework.cloud.gateway.support.NotFoundException
           - io.netty.channel.AbstractChannel$AnnotatedConnectException
     instances:
-      authServiceCircuitBreaker:
-        baseConfig: default
       userServiceCircuitBreaker:
         baseConfig: default
       performanceServiceCircuitBreaker:
@@ -66,3 +64,14 @@ resilience4j:
         baseConfig: default
       queueManageServiceCircuitBreaker:
         baseConfig: default
+      authServiceCircuitBreaker:
+        baseConfig: default
+        record-exceptions:
+          - java.util.concurrent.TimeoutException
+          - org.springframework.cloud.gateway.support.NotFoundException
+          - io.netty.channel.AbstractChannel$AnnotatedConnectException
+          - org.springframework.web.reactive.function.client.WebClientRequestException
+          - org.springframework.web.reactive.function.client.WebClientResponseException.BadGateway
+          - org.springframework.web.reactive.function.client.WebClientResponseException.GatewayTimeout
+          - org.springframework.web.reactive.function.client.WebClientResponseException.TooManyRequests
+          - org.springframework.web.reactive.function.client.WebClientResponseException.ServiceUnavailable
