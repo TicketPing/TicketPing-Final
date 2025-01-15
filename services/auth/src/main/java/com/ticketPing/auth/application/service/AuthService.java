@@ -39,6 +39,11 @@ public class AuthService {
         String accessToken = tokenService.parseToken(authHeader);
         tokenService.validateToken(accessToken);
         Claims claims = tokenService.getClaimsFromToken(accessToken);
+        try {
+            Thread.sleep(60 * 1000);
+        } catch (Exception e) {
+            System.out.println("error");
+        }
         return extractUserFromClaims(claims);
     }
 
