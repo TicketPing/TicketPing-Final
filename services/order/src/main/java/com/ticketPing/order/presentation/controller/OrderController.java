@@ -24,15 +24,6 @@ import static response.CommonResponse.success;
 public class OrderController {
 
     private final OrderService orderService;
-    private final PaymentClient performanceClient;
-
-    @PostMapping("/test")
-    public ResponseEntity<CommonResponse<Object>> test() {
-        performanceClient.getCompletedPaymentByOrderId(UUID.randomUUID());
-        return ResponseEntity
-                .status(200)
-                .body(success());
-    }
 
     @Operation(summary = "예매 좌석 생성")
     @PostMapping
