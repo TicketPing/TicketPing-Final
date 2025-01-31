@@ -30,12 +30,6 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUser(UUID userId) {
-        User user = findUserById(userId);
-        return UserResponse.of(user);
-    }
-
-    @Transactional(readOnly = true)
     public UserResponse getUserByEmailAndPassword(UserLookupRequest request) {
         User user = findUserByEmail(request.email());
         validatePassword(request.password(), user.getPassword());
@@ -52,11 +46,6 @@ public class UserService {
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             throw new ApplicationException(UserErrorCase.PASSWORD_NOT_EQUAL);
         }
-    }
-
-    private User findUserById(UUID userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ApplicationException(UserErrorCase.USER_NOT_FOUND));
     }
 
     private User findUserByEmail(String email) {

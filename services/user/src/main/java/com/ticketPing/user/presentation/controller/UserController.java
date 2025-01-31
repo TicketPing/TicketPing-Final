@@ -38,13 +38,4 @@ public class UserController {
                 .status(200)
                 .body(CommonResponse.success(userResponse));
     }
-
-    @Operation(summary = "사용자 정보 확인")
-    @GetMapping("/{userId}")
-    public ResponseEntity<CommonResponse<UserResponse>> getUser(@PathVariable("userId") UUID userId) {
-        UserResponse userResponse = userService.getUser(userId);
-        return ResponseEntity
-                .status(200)
-                .body(CommonResponse.success(userResponse));
-    }
 }
